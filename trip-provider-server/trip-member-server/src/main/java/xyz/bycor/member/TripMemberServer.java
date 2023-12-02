@@ -11,9 +11,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class TripProviderServer {
+public class TripMemberServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(TripProviderServer.class, args);
+        SpringApplication.run(TripMemberServer.class, args);
     }
 }

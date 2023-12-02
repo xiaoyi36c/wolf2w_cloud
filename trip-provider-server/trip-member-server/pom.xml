@@ -16,7 +16,6 @@
         <dependency>
             <groupId>xyz.bycor</groupId>
             <artifactId>trip-member-api</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -44,5 +43,14 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
     </dependencies>
 </project>
