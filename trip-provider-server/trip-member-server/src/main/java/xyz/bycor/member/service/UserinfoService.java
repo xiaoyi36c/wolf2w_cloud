@@ -12,4 +12,10 @@ import xyz.bycor.member.domain.Userinfo;
 */
 public interface UserinfoService extends IService<Userinfo> {
 
+    /**
+     *
+     * @param phone
+     * @return
+     */
+    Userinfo getPhone(String phone);
 }

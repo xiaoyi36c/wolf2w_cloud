@@ -1,6 +1,7 @@
 package xyz.bycor.member.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import xyz.bycor.member.domain.Userinfo;
@@ -16,6 +17,10 @@ import xyz.bycor.member.service.UserinfoService;
 public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
     implements UserinfoService {
 
+    @Override
+    public Userinfo getPhone(String phone) {
+        return super.getOne(new QueryWrapper<Userinfo>().lambda().eq(Userinfo::getPhone, phone));
+    }
 }
 
 

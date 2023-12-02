@@ -111,4 +111,19 @@ public class UserinfoController {
         userinfoService.save(userinfo);
         return R.ok();
     }
+
+    /**
+     * 根据手机号查询用户信息
+     * @param phone
+     * @return true 存在 false 不存在
+     * 请求方法: GET
+     */
+    @GetMapping("/phone/exists")
+    @ApiOperation(value = "根据手机号查询用户信息")
+    public R<Boolean> exists(String phone) {
+        log.info("根据手机号查询用户信息");
+        Userinfo userinfo = userinfoService.getPhone(phone);
+
+        return R.ok(userinfo != null);
+    }
 }
