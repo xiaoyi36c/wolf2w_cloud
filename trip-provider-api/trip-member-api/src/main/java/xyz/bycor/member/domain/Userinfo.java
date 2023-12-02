@@ -73,6 +73,7 @@ public class Userinfo implements Serializable {
      * 逻辑删除
      */
     @TableLogic(value = "0", delval = "1")
+    @TableField("is_deleted")
     private Integer deleted;
 
     /**
