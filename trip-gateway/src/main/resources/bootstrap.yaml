@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: trip-gateway
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: nacos
+      password: Bai0514..
+      config:
+        namespace: 931f842c-27d0-4726-ad3d-a8bdfbdeb902
+        file-extension: yaml
+        shared-configs:
+          - data-id: nacos-dev.yaml
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 让gateway可以发现nacos中的微服务
+  profiles:
+    active: dev
