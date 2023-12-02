@@ -2,6 +2,22 @@
 
 狼行天下旅游点评网致力于打造一个真实详细的自助游咨询平台，为旅游爱好者提供景区旅游、宾馆酒店、渔家乐住宿、旅游车船、休闲娱乐、旅游购物等服务。
 
+### 项目环境
+- JDK 1.8
+- Maven 3.9.0
+- MySQL 5.7
+- Redis 5.*
+- Nacos 2.1.2
+- SpringCloud 
+- SpringBoot 
+- SpringCloud Alibaba 
+- MybatisPlus
+- lombok
+- Swagger
+- Hutool
+- sf4j
+- sentinel
+
 ## 项目模块
 
 ### 1. 展示前端
@@ -41,12 +57,13 @@
 
 请按照以下步骤运行项目：
 
-1. 克隆项目到本地：`git clone https://github.com/your/repository.git`
-2. 进入项目目录：`cd your-project`
-3. 安装依赖：`npm install`
-4. 启动应用：`npm start`
-
-注意：确保已经安装了Node.js和npm。
+1. 克隆项目到本地.
+2. 将项目开发工具.
+3. 将website,mgrsite 模块 放入tomcat中运行.
+4. 启动本地数据库
+5. 启动本地redis
+6. 启动本地nacos,并配置持久化和权限
+7. 启动本地server 模块
 
 ## 作者
 
