@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.bycor.core.response.R;
+import xyz.bycor.member.service.impl.SmsServiceImpl;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -19,6 +20,12 @@ import javax.validation.constraints.Pattern;
 @Slf4j
 @Validated
 public class SMSController {
+
+    private SmsServiceImpl smsService;
+
+    public SMSController(SmsServiceImpl smsService) {
+        this.smsService = smsService;
+    }
 
     /**
      * 发送短信验证码
@@ -32,6 +39,7 @@ public class SMSController {
             @NotNull(message = "手机号不能为空")
             @Pattern(regexp = "^1[3456789]\\d{9}$", message = "手机号格式不正确")
             String phone) {
+        smsService.registerSend(phone);
         return R.ok("发送成功");
     }
 
