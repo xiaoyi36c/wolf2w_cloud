@@ -17,3 +17,6 @@ spring:
           enabled: true # 让gateway可以发现nacos中的微服务
   profiles:
     active: dev
+
+swagger:
+  enable: true

@@ -1,4 +1,4 @@
-package xyz.bycor.response;
+package xyz.bycor.core.response;
 
 import lombok.Getter;
 import lombok.Setter;

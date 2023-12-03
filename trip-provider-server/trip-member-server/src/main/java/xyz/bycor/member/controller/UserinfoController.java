@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.service.UserinfoService;
-import xyz.bycor.response.R;
+import xyz.bycor.core.response.R;
 
 
 import java.util.List;
