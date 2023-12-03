@@ -77,17 +77,21 @@
 
 目录结构:
 ```
-├─.idea
-├─trip-common
-│  └─trip-common-core
-├─trip-gateway
-│
-├─trip-mgrsite
-│
-├─trip-provider-api
-|
-├─trip-provider-server
-│  └─trip-member-server
+├─ root(根)
 │  
-└─trip-website
+├─trip-common(通用模块)
+│  └─trip-common-core(通用核心模块)
+│  └─trip-common-redis-boot-starter(redis starter)
+│  
+├─trip-gateway(网关 + swagger )
+│
+├─trip-mgrsite(后台管理前端页面)
+│
+├─trip-provider-api(服务api)
+│  └─trip-member-api(用户服务api)
+|
+├─trip-provider-server(服务实现)
+│  └─trip-member-server(会员服务)
+│  
+└─trip-website(前台展示前端页面)
 ```
