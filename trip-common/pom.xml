@@ -11,6 +11,10 @@
 
     <artifactId>trip-common</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>trip-common-redis-boot-start</module>
+        <module>trip-common-core</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -18,9 +22,8 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.56</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
     </dependencies>
 

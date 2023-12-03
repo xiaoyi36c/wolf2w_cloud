@@ -12,6 +12,7 @@
     <modules>
         <module>trip-member-api</module>
     </modules>
+
     <artifactId>trip-provider-api</artifactId>
 
     <dependencies>
