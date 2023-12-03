@@ -11,9 +11,15 @@ spring:
         file-extension: yaml
         shared-configs:
           - data-id: nacos-dev.yaml
+          - data-id: trip-provider-server.yaml
     gateway:
       discovery:
         locator:
           enabled: true # 让gateway可以发现nacos中的微服务
   profiles:
     active: dev
+
+wolf2w:
+  sms:
+    limitKey: "wolf2w:sms:limit:key:"
+    codeKey: "wolf2w:sms:code:key:"
