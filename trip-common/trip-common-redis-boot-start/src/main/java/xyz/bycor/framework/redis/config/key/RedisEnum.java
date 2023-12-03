@@ -1,0 +1,37 @@
+package xyz.bycor.framework.redis.config.key;
+
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.concurrent.TimeUnit;
+@Getter
+public enum RedisEnum {
+
+
+
+    SMS_REGISTER_LIMIT_KEY("wolf2w:sms:limit:key:", 5L, TimeUnit.MINUTES),
+
+    SMS_REGISTER_CODE_KEY("wolf2w:sms:code:key:", 30L, TimeUnit.MINUTES);
+
+
+    private String prefix;
+    private Long timeOut =-1L;
+
+    private TimeUnit timeUnit;
+
+    RedisEnum(String prefix, Long timeOut, TimeUnit timeUnit) {
+        this.prefix = prefix;
+        this.timeOut = timeOut;
+        this.timeUnit = timeUnit;
+    }
+
+    public String join(String... suffix) {
+        StringBuilder sb = new StringBuilder(prefix);
+        sb.append(prefix);
+        for (String s : suffix) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+}
