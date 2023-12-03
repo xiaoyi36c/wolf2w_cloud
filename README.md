@@ -57,6 +57,9 @@
 
 请按照以下步骤运行项目：
 
+## ** 需要掌握SpringCloud,SpringBoot,SpringCloud Alibaba,MybatisPlus,Redis,Nacos,MySQL,Swagger,Hutool,Sf4j,Sentinel,Lombok等知识点.**
+## ** 请先阅读项目中的README.md文件,或阅读项目源代码,了解项目结构,再进行项目运行.**
+
 1. 克隆项目到本地.
 2. 将项目开发工具.
 3. 将website,mgrsite 模块 放入tomcat中运行.
