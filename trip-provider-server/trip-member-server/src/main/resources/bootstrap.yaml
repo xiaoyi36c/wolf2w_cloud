@@ -23,3 +23,6 @@ wolf2w:
   sms:
     limitKey: "wolf2w:sms:limit:key:"
     codeKey: "wolf2w:sms:code:key:"
+logging:
+  level:
+    xyz.bycor.member.mapper: debug
