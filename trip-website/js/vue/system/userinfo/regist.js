@@ -53,7 +53,7 @@ var vue = new Vue({
                 }, 1000);
 
                 var phone = $("#phone").val();
-                $.post(getServiceUrl("u") + "/sms/register", {phone:phone}, function (data) {
+                $.post(getServiceUrl("members") + "/sms/register", {phone:phone}, function (data) {
                     if(data.code == 200){
                         popup("发送成功")
                     }else{
