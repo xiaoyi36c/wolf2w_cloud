@@ -13,6 +13,13 @@ import lombok.Data;
 @TableName(value ="userinfo")
 @Data
 public class Userinfo implements Serializable {
+    public static final int GENDER_SECRET = 0; //保密
+    public static final int GENDER_MALE = 1;   //男
+    public static final int GENDER_FEMALE = 2;  //女
+    public static final int STATE_NORMAL = 0;  //正常
+    public static final int STATE_DISABLE = 1;  //冻结
+
+
     /**
      * 主键
      */

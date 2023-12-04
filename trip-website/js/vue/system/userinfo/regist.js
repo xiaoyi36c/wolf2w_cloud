@@ -64,7 +64,7 @@ var vue = new Vue({
         },
         //注册-完成注册
         regist:function (){
-            $.post(getServiceUrl("u") + "/users/register", $("#editForm").serialize(), function (data) {
+            $.post(getServiceUrl("members") + "/userinfo/register", $("#editForm").serialize(), function (data) {
                 if(data.code == 200){
                     location.href = "/login.html";
                 }else{

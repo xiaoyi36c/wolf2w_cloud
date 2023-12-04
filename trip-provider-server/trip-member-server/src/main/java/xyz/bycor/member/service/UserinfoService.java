@@ -3,7 +3,12 @@ package xyz.bycor.member.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.bycor.core.response.R;
 import xyz.bycor.member.domain.Userinfo;
+import xyz.bycor.member.vo.LoginRequestUserinfo;
+import xyz.bycor.member.vo.RegisterRequestUserinfo;
+
+import java.util.Map;
 
 /**
 * @author BAI
@@ -18,4 +23,8 @@ public interface UserinfoService extends IService<Userinfo> {
      * @return
      */
     Userinfo getPhone(String phone);
+
+    void doRegister(RegisterRequestUserinfo userinfo);
+
+    R<Map<String, Object>> doLogin(LoginRequestUserinfo userinfo);
 }

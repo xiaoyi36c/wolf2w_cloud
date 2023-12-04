@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.service.UserinfoService;
 import xyz.bycor.core.response.R;
+import xyz.bycor.member.vo.LoginRequestUserinfo;
+import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 
 import java.util.List;
@@ -24,6 +28,8 @@ import java.util.List;
 @RequestMapping("/userinfo")
 @Api(tags = "用户信息接口")
 @Slf4j
+@Validated
+@RefreshScope
 public class UserinfoController {
 
     private final UserinfoService userinfoService;
@@ -125,5 +131,45 @@ public class UserinfoController {
         Userinfo userinfo = userinfoService.getPhone(phone);
 
         return R.ok(userinfo != null);
+    }
+
+
+    /**
+     *  注册用户
+     * @param userinfo
+     * @return R<>
+     * 请求方法: POST
+     * 请求参数: phone nickname password verifyCode
+     */
+
+    /**
+     * Po => persistent object 持久化对象 => entity 实体 ,从数据库中查询出来的对象
+     * Vo => view object 值对象 => 封装数据库中查询出来的对象,超出数据库字段的属性
+     * Dto => data transfer object 数据传输对象 => 封装请求参数 ,用户服务内部传递的对象
+     * Bo => business object 业务对象 => 封装业务逻辑的对象,针对特殊业务逻辑的对象
+     */
+
+    @PostMapping("/register")
+    @ApiOperation(value = "注册用户")
+    public R<?> doRegister(@Validated RegisterRequestUserinfo userinfo) {
+        log.info("注册用户");
+        userinfoService.doRegister(userinfo);
+        return R.ok();
+    }
+
+
+    /**
+     *  根据手机号登录
+     * @param userinfo
+     * @return R<>
+     * 请求方法: GET
+     * 请求参数: phone
+     */
+    @PostMapping("/login")
+    @ApiOperation(value = "根据手机号登录")
+    public R<?> doLogin(@Validated LoginRequestUserinfo userinfo) {
+        log.info("根据手机号登录");
+        userinfoService.doLogin(userinfo);
+        return R.ok();
     }
 }
