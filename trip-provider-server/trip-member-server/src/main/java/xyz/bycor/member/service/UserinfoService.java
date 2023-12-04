@@ -6,9 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.core.response.R;
 import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
+import xyz.bycor.member.vo.LoginResponse;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
-
-import java.util.Map;
 
 /**
 * @author BAI
@@ -26,5 +25,5 @@ public interface UserinfoService extends IService<Userinfo> {
 
     void doRegister(RegisterRequestUserinfo userinfo);
 
-    R<Map<String, Object>> doLogin(LoginRequestUserinfo userinfo);
+    R<LoginResponse> doLogin(LoginRequestUserinfo userinfo);
 }

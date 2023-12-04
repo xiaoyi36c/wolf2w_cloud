@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class LoginRequestUserinfo {
     @NotNull(message = "手机号不能为空")
-    private String phone;
+    private String username;
     @NotNull(message = "密码不能为空")
     private String password;
 }

@@ -1,6 +1,8 @@
 package xyz.bycor.member.service.impl;
 
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,8 +17,11 @@ import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.mapper.UserinfoMapper;
 import xyz.bycor.member.service.UserinfoService;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
+import xyz.bycor.member.vo.LoginResponse;
+import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -73,8 +78,8 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
  * @return
  */
     @Override
-    public R<Map<String, Object>> doLogin(LoginRequestUserinfo userinfo) {
-        Userinfo user = this.getPhone(userinfo.getPhone());
+    public R<LoginResponse> doLogin(LoginRequestUserinfo userinfo) {
+        Userinfo user = this.getPhone(userinfo.getUsername());
         // 1.判断手机号是否注册
         if (user == null) {
             throw new BusinessException("手机号未注册");
@@ -89,15 +94,38 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
             throw new BusinessException("用户已被禁用");
         }
         // 4. 生成JWT token
+        Map<String, Object> map = new HashMap<String, Object>() {
+            {
+                put("uid", user.getId());
+                put("expire_time", System.currentTimeMillis() + 1000 * 60 * 60 * 24);
+            }
+        };
 
+        String secretToken = this.genToken(user.getPhone(), 60L);
+        String refreshToken = this.genToken(user.getPhone(), 120L);
+        // 5.  用户信息存入redis
+        LoginResponseUser loginResponseUser = new LoginResponseUser();
+        BeanUtil.copyProperties(user, loginResponseUser);
+        redisJsonService.set(RedisEnum.USER_LOGIN_INFO_KEY, user, user.getPhone());
+        // 6.  封装返回结果
+        LoginResponse loginResponse = new LoginResponse(secretToken, refreshToken, loginResponseUser);
 
-        // 5. 存入redis
-
-        // 6.  存入map,将token和用户信息一起返回
-
-
-        return null;
+        return R.ok(loginResponse);
     }
+
+
+    private String genToken(String phone,Long expireTime) {
+        Map<String, Object> map = new HashMap<String, Object>() {
+            {
+                put("phone", phone);
+                put("expire_time", System.currentTimeMillis() + 1000 * 60 * expireTime);
+            }
+        };
+       return JWTUtil.createToken(map,"wolf2w".getBytes());
+    }
+
+
+
 
     /**
      * 构建用户信息

@@ -12,10 +12,13 @@ import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.service.UserinfoService;
 import xyz.bycor.core.response.R;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
+import xyz.bycor.member.vo.LoginResponse;
+import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author baishuai
@@ -162,14 +165,15 @@ public class UserinfoController {
      *  根据手机号登录
      * @param userinfo
      * @return R<>
-     * 请求方法: GET
+     * 请求方法: Post
      * 请求参数: phone
+     *         password
+     * 请求地址: /userinfo/login
      */
     @PostMapping("/login")
     @ApiOperation(value = "根据手机号登录")
-    public R<?> doLogin(@Validated LoginRequestUserinfo userinfo) {
+    public R<LoginResponse> doLogin(@Validated LoginRequestUserinfo userinfo) {
         log.info("根据手机号登录");
-        userinfoService.doLogin(userinfo);
-        return R.ok();
+        return userinfoService.doLogin(userinfo);
     }
 }
