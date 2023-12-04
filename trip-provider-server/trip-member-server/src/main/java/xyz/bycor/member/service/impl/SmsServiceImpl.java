@@ -66,6 +66,8 @@ public class SmsServiceImpl implements SmsService {
             String code = response.getBody().getCode();
             if (!"OK".equalsIgnoreCase(code)) {
                 log.error("【发送短信验证码】发送短信验证码失败，手机号：{}，原因：{}", phone, response.getBody().getMessage());
+                //  删除限制
+                redisJsonService.delete(RedisEnum.SMS_REGISTER_LIMIT_KEY,phone);
                 throw new BusinessException("发送短信验证码失败，请稍后再试");
             }
         }catch (Exception error) {
