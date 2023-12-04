@@ -73,4 +73,16 @@ public class RedisJsonService {
         Object o = redisTemplate.opsForValue().get(redisEnum.join(suffix));
         return (T) o;
     }
+
+    /**
+     * 设置过期时间
+     * @param redisEnum 枚举
+     * @param timeOut 过期时间
+     * @param timeUnit 时间单位
+     * @param suffix key后缀
+     */
+    public void expire(RedisEnum redisEnum, long timeOut, TimeUnit timeUnit, String ...suffix) {
+        String key = redisEnum.join(suffix);
+        redisTemplate.expire(key, timeOut, timeUnit);
+    }
 }

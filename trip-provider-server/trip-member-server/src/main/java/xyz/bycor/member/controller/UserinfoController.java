@@ -1,6 +1,7 @@
 package xyz.bycor.member.controller;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -175,5 +177,12 @@ public class UserinfoController {
     public R<LoginResponse> doLogin(@Validated LoginRequestUserinfo userinfo) {
         log.info("根据手机号登录");
         return userinfoService.doLogin(userinfo);
+    }
+
+    @PostMapping("/refreshToken")
+    @ApiOperation(value = "刷新token")
+    public R<JSONObject> refreshToken(@NotNull(message = "登录过期") String refreshToken) {
+        log.info("刷新token");
+        return userinfoService.refreshToken(refreshToken);
     }
 }

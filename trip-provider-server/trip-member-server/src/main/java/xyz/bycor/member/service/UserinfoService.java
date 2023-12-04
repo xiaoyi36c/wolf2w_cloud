@@ -2,6 +2,7 @@ package xyz.bycor.member.service;
 
 
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.core.response.R;
 import xyz.bycor.member.domain.Userinfo;
@@ -26,4 +27,12 @@ public interface UserinfoService extends IService<Userinfo> {
     void doRegister(RegisterRequestUserinfo userinfo);
 
     R<LoginResponse> doLogin(LoginRequestUserinfo userinfo);
+
+    /**
+     * 刷新token
+     *
+     * @param refreshToken
+     * @return
+     */
+    R<JSONObject> refreshToken(String refreshToken);
 }

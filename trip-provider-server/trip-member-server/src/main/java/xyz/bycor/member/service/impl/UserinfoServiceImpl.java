@@ -2,7 +2,9 @@ package xyz.bycor.member.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +25,7 @@ import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author BAI
@@ -111,6 +114,38 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
         LoginResponse loginResponse = new LoginResponse(secretToken, refreshToken, loginResponseUser);
 
         return R.ok(loginResponse);
+    }
+
+    /**
+     * 刷新token
+     *
+     * @param refreshToken
+     * @return AccessToken,RefreshToken
+     */
+    @Override
+    public R<JSONObject> refreshToken(String refreshToken) {
+        // 校验Jwt token,判断是否过期
+        JWT jwt = JWTUtil.parseToken(refreshToken);
+        boolean verify = JWTUtil.verify(refreshToken, "wolf2w".getBytes());
+
+        if (!verify) {
+            throw new BusinessException(401,"token无效");
+        }
+
+        // 没有过期,生成新的token
+        String phone = (String) jwt.getPayload("phone");
+        String accessToken = this.genToken(phone, 60L);
+        String newRefreshToken = this.genToken(phone, 120L);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("accessToken", accessToken);
+        jsonObject.put("refreshToken", newRefreshToken);
+
+        // 刷新redis中的用户信息
+        redisJsonService.expire(RedisEnum.USER_LOGIN_INFO_KEY,60L, TimeUnit.MINUTES,phone);
+        return R.ok(jsonObject);
+
+
+
     }
 
 
