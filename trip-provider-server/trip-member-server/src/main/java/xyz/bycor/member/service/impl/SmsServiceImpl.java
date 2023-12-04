@@ -2,21 +2,14 @@ package xyz.bycor.member.service.impl;
 
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
-import com.aliyun.tea.TeaException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.framework.redis.config.RedisJsonService;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
 import xyz.bycor.member.config.AliyunProperties;
 import xyz.bycor.member.service.SmsService;
-
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
 @Service
 @Slf4j
 public class SmsServiceImpl implements SmsService {

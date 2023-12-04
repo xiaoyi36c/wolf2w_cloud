@@ -1,13 +1,15 @@
 package xyz.bycor.member.service.impl;
 
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.DefaultClaims;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.bycor.core.exception.BusinessException;
@@ -23,6 +25,7 @@ import xyz.bycor.member.vo.LoginResponse;
 import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -108,7 +111,7 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
         String refreshToken = this.genToken(user.getPhone(), 120L);
         // 5.  用户信息存入redis
         LoginResponseUser loginResponseUser = new LoginResponseUser();
-        BeanUtil.copyProperties(user, loginResponseUser);
+        BeanUtils.copyProperties(user, loginResponseUser);
         redisJsonService.set(RedisEnum.USER_LOGIN_INFO_KEY, user, user.getPhone());
         // 6.  封装返回结果
         LoginResponse loginResponse = new LoginResponse(secretToken, refreshToken, loginResponseUser);
@@ -124,39 +127,45 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
      */
     @Override
     public R<JSONObject> refreshToken(String refreshToken) {
-        // 校验Jwt token,判断是否过期
-        JWT jwt = JWTUtil.parseToken(refreshToken);
-        boolean verify = JWTUtil.verify(refreshToken, "wolf2w".getBytes());
+        try {
+            // 1. 解析tokoen是否有效
+            Claims claims = Jwts.parser()
+                    .setSigningKey("wolfcode")
+                    .parseClaimsJws(refreshToken)
+                    .getBody();
+            // 2. 创建新的 token
+            String accessToken = genToken(claims.getSubject(), 10L);// 新的 accessToken
+            refreshToken = genToken(claims.getSubject(), 30L);// 新的 refreshToken
+            // 3. 刷新 redis 中的用户信息为新的 30 分钟
+            redisJsonService.expire(RedisEnum.USER_LOGIN_INFO_KEY, 30L, TimeUnit.MINUTES, claims.getSubject());
 
-        if (!verify) {
-            throw new BusinessException(401,"token无效");
+            // 4. 封装响应对象
+            JSONObject json = new JSONObject();
+            json.put("accessToken", accessToken);
+            json.put("refreshToken", refreshToken);
+            return R.ok(json);
+        } catch (Exception e) {
+            log.error("[刷新token] 解析refreshToken失败", e);
+            throw new BusinessException(401, "refreshToken已失效");
         }
-
-        // 没有过期,生成新的token
-        String phone = (String) jwt.getPayload("phone");
-        String accessToken = this.genToken(phone, 60L);
-        String newRefreshToken = this.genToken(phone, 120L);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("accessToken", accessToken);
-        jsonObject.put("refreshToken", newRefreshToken);
-
-        // 刷新redis中的用户信息
-        redisJsonService.expire(RedisEnum.USER_LOGIN_INFO_KEY,60L, TimeUnit.MINUTES,phone);
-        return R.ok(jsonObject);
-
-
-
     }
 
-
-    private String genToken(String phone,Long expireTime) {
-        Map<String, Object> map = new HashMap<String, Object>() {
-            {
-                put("phone", phone);
-                put("expire_time", System.currentTimeMillis() + 1000 * 60 * expireTime);
-            }
-        };
-       return JWTUtil.createToken(map,"wolf2w".getBytes());
+    /**
+     * 生成token
+     *
+     * @param username
+     * @param expireTime
+     * @return
+     */
+    private String genToken(String username, Long expireTime) {
+        Claims claims = new DefaultClaims();
+        // 关联用户名
+        claims.setSubject(username);
+        return Jwts.builder()
+                .addClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + (expireTime * 60 * 1000)))
+                .signWith(SignatureAlgorithm.HS256, "wolfcode")
+                .compact();
     }
 
 
