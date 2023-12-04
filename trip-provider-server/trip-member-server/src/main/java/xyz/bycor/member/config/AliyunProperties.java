@@ -26,7 +26,7 @@ public class AliyunProperties {
     public static class Sms{
         private String endpoint;
         private String sign;
-
+        private Boolean isEnable = false;
         private Map<String,String> templateMap;
 
     }

@@ -17,7 +17,7 @@ public abstract class  AbstractControllerExceptionAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public R<?> handleException(BusinessException e){
-        return R.error(500, e.getMessage());
+        return R.error(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

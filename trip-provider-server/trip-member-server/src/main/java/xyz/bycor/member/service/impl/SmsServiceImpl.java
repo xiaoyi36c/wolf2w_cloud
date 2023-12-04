@@ -51,34 +51,40 @@ public class SmsServiceImpl implements SmsService {
         // 生成验证码
         String verifyCode = genVerifyCode(6);
         log.info("验证码为：{}", verifyCode);
+
+        if (aliyunProperties.getSms().getIsEnable()) {
+            // 发送验证码
+            send(phone, verifyCode);
+        }
+        // 保存验证码到redis 30分钟
+        redisJsonService.set(RedisEnum.SMS_REGISTER_CODE_KEY,verifyCode,phone);
+
+    }
+
+    private void send(String phone, String verifyCode) {
         // 发送验证码
         try {
-
-        com.aliyun.dysmsapi20170525.models.SendSmsRequest sendSmsRequest = new com.aliyun.dysmsapi20170525.models.SendSmsRequest()
-                .setSignName(aliyunProperties.getSms().getSign())
-                .setTemplateCode(aliyunProperties.getSms().getTemplateMap().get("register"))
-                .setPhoneNumbers(phone)
-                .setTemplateParam("{\"code\":\""+verifyCode+"\"}");
-        com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
-
+            com.aliyun.dysmsapi20170525.models.SendSmsRequest sendSmsRequest = new com.aliyun.dysmsapi20170525.models.SendSmsRequest()
+                    .setSignName(aliyunProperties.getSms().getSign())
+                    .setTemplateCode(aliyunProperties.getSms().getTemplateMap().get("register"))
+                    .setPhoneNumbers(phone)
+                    .setTemplateParam("{\"code\":\"" + verifyCode + "\"}");
+            com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
             // 复制代码运行请自行打印 API 的返回值
             SendSmsResponse response = client.sendSmsWithOptions(sendSmsRequest, runtime);
             String code = response.getBody().getCode();
             if (!"OK".equalsIgnoreCase(code)) {
                 log.error("【发送短信验证码】发送短信验证码失败，手机号：{}，原因：{}", phone, response.getBody().getMessage());
                 //  删除限制
-                redisJsonService.delete(RedisEnum.SMS_REGISTER_LIMIT_KEY,phone);
+                redisJsonService.delete(RedisEnum.SMS_REGISTER_LIMIT_KEY, phone);
                 throw new BusinessException("发送短信验证码失败，请稍后再试");
             }
-        }catch (Exception error) {
-           log.error("【发送短信验证码】发送短信验证码失败，手机号：{}", phone);
-           //  删除限制
-            redisJsonService.delete(RedisEnum.SMS_REGISTER_LIMIT_KEY,phone);
+        } catch (Exception error) {
+            log.error("【发送短信验证码】发送短信验证码失败，手机号：{}", phone);
+            //  删除限制
+            redisJsonService.delete(RedisEnum.SMS_REGISTER_LIMIT_KEY, phone);
             throw new BusinessException("发送短信验证码失败，请稍后再试");
         }
-        // 保存验证码到redis 30分钟
-        redisJsonService.set(RedisEnum.SMS_REGISTER_CODE_KEY,verifyCode,phone);
-
     }
 
 

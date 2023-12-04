@@ -68,4 +68,9 @@ public class RedisJsonService {
         String key = redisEnum.join(phone);
         redisTemplate.delete(key);
     }
+
+    public <T>T get(RedisEnum redisEnum, String ...suffix) {
+        Object o = redisTemplate.opsForValue().get(redisEnum.join(suffix));
+        return (T) o;
+    }
 }
