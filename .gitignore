@@ -368,3 +368,10 @@ yarn-error.log
 # *.ipr
 
 
+/.idea/.gitignore
+/.idea/dataSources.xml
+/.idea/encodings.xml
+/.idea/misc.xml
+/qodana.yaml
+/.idea/mybatisx/templates.xml
+/.idea/vcs.xml
