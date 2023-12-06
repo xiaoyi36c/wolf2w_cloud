@@ -27,7 +27,7 @@ function getServiceUrl(service) {
 }
 
 //异步请求
-function ajaxRequest(server, url, type, param, success, fail) {
+function ajaxRequest(server, url, type, param, success, fail,callback) {
     url = getServiceUrl(server) + url;
 
     // 通过js操作将加密之后的签名手动添加到参数中去
@@ -56,6 +56,10 @@ function ajaxRequest(server, url, type, param, success, fail) {
                         success(data);
                     }
                 } else if (data.code == 401) {
+                    if (callback) {
+                        console.log("token 已过期, 但是不需要重新发起请求, 只需要提示用户登录")
+                        return;
+                    }
                     // 如果第一次判断是未认证, 可以先通过 refreshToken 重新刷新 token
                     let config = {server, url, type, param, success, fail}
                     tryRefreshToken(config);
@@ -79,7 +83,7 @@ function tryRefreshToken(config) {
     $.post(getServiceUrl('members') + '/users/refreshToken', {refreshToken: getRefreshToken()}, function (resp) {
         console.log("获取刷新token接口响应数据", resp)
         // 如果响应回来的状态还是 401, 就说明 refreshToken 也失效了
-        if (resp.code == 401) {
+        if (resp.code === 401) {
             console.log("刷新token已过期")
             //未登录
             logout();
@@ -88,15 +92,15 @@ function tryRefreshToken(config) {
             // 隐藏登录成功后的用户头像与昵称信息
             $(".login_info").css("display", "none")
             popup("请先登录");
-            return;
-        } else if (resp.code == 200) {
+
+        } else if (resp.code === 200) {
             console.log("刷新token成功, 准备再次发起之前的请求", config)
             // 将新的 accessToken 和 refreshToken 替换
             let data = resp.data;
             localStorage.setItem('accessToken', data.accessToken);
             localStorage.setItem('refreshToken', data.refreshToken);
             // 并且重新发起之前没有请求成功的请求
-            ajaxRequest(config.server, config.url, config.type, config.param, config.success, config.fail);
+            ajaxRequest(config.server, config.url, config.type, config.param, config.success, config.fail,true);
         }
     });
 }
@@ -195,7 +199,7 @@ function buildPage(current, totalPages, doPage) {
         page: '<a href="javascript:void(0);">{{page}}<\/a>',
         last: '<a class="last" href="javascript:void(0);" >尾页<\/a>',
         onPageChange: function (page, type) {
-            if (type == 'change') {
+            if (type === 'change') {
                 if (doPage) {
                     doPage(page);
                 }
@@ -238,29 +242,29 @@ function getIndexTime() {
     var mm = new Date().getMonth() + 1;
     var dd = new Date().getDate();
     var my = '';
-    if (mm == 1) {
+    if (mm === 1) {
         my = 'Jan';
-    } else if (mm == 2) {
+    } else if (mm === 2) {
         my = 'Feb';
-    } else if (mm == 3) {
+    } else if (mm === 3) {
         my = 'Mar';
-    } else if (mm == 4) {
+    } else if (mm === 4) {
         my = 'Apr';
-    } else if (mm == 5) {
+    } else if (mm === 5) {
         my = 'May';
-    } else if (mm == 6) {
+    } else if (mm === 6) {
         my = 'Jun';
-    } else if (mm == 7) {
+    } else if (mm === 7) {
         my = 'Jul';
-    } else if (mm == 8) {
+    } else if (mm === 8) {
         my = 'Aug';
-    } else if (mm == 9) {
+    } else if (mm === 9) {
         my = 'Sept';
-    } else if (mm == 10) {
+    } else if (mm === 10) {
         my = 'Oct';
-    } else if (mm == 11) {
+    } else if (mm === 11) {
         my = 'Nov';
-    } else if (mm == 12) {
+    } else if (mm === 12) {
         my = 'Dec';
     }
 
