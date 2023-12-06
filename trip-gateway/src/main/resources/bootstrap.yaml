@@ -11,6 +11,7 @@ spring:
         file-extension: yaml
         shared-configs:
           - data-id: nacos-dev.yaml
+          - data-id: wolf2w-auth-dev.yaml
     gateway:
       discovery:
         locator:

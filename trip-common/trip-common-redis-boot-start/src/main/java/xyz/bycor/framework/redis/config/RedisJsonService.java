@@ -1,6 +1,5 @@
 package xyz.bycor.framework.redis.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
@@ -12,11 +11,11 @@ import java.util.concurrent.TimeUnit;
 public class RedisJsonService {
 
 
-    @Value("${wolf2w.sms.limitKey}")
-    private String ssmLimitKey;
+    //@Value("${wolf2w.sms.limitKey}")
+   // private String ssmLimitKey;
 
-    @Value("${wolf2w.sms.codeKey}")
-    private String ssmCodeKey;
+    // @Value("${wolf2w.sms.codeKey}")
+    // private String ssmCodeKey;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -44,26 +43,6 @@ public class RedisJsonService {
         }
     }
 
-    public void setSsmLimitKey( Object value,long timeOut, TimeUnit timeUnit) {
-        String key = ssmLimitKey + value;
-       redisTemplate.opsForValue().set(key, value, timeOut, timeUnit);
-    }
-
-    public void setIfAbsentLimitKey(Object value, long timeOut, TimeUnit timeUnit) {
-        String key = ssmLimitKey + value;
-        redisTemplate.opsForValue().set(key, value, timeOut, timeUnit);
-    }
-
-
-    public void setCodeKey( String phone,Object code,long timeOut, TimeUnit timeUnit) {
-        String key = ssmCodeKey + phone;
-        redisTemplate.opsForValue().set(key, code, timeOut, timeUnit);
-    }
-
-    public void setIfAbsentCodeKey(String phone,Object code, long timeOut, TimeUnit timeUnit) {
-        String key = ssmCodeKey + code;
-        redisTemplate.opsForValue().set(key, code, timeOut, timeUnit);
-    }
 
     public void delete(RedisEnum redisEnum, String phone) {
         String key = redisEnum.join(phone);
@@ -92,7 +71,21 @@ public class RedisJsonService {
     }
 
     public Set<Object> members(RedisEnum redisEnum, String... suffix) {
-        Set<Object> members = redisTemplate.opsForSet().members(redisEnum.join(suffix));
-        return members;
+        return redisTemplate.opsForSet().members(redisEnum.join(suffix));
+    }
+
+    public <T> T hget(RedisEnum keyPrefixEnum, String hashKey, String... suffix) {
+
+        return (T) redisTemplate.opsForHash().get(keyPrefixEnum.join(suffix), hashKey);
+    }
+
+    public void hRemove(RedisEnum redisEnum,Object[] array,String... suffix) {
+        redisTemplate.opsForSet().remove(redisEnum.join(suffix),array);
+
+    }
+
+    public void hSetAll(RedisEnum redisEnum, String applicationName, Object value, String... suffix) {
+        redisTemplate.opsForHash().put(redisEnum.join(suffix),applicationName,value);
+
     }
 }

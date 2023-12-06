@@ -1,33 +1,35 @@
-package xyz.bycor.member.listener;
+package xyz.bycor.auth.listener;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import xyz.bycor.auth.anno.RequiredLogin;
 import xyz.bycor.framework.redis.config.RedisJsonService;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
-import xyz.bycor.member.znno.RequiredLogin;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Component
 @Slf4j
-public class MemberApplicationStartedListener implements ApplicationListener<ApplicationStartedEvent> {
+public class AuthApplicationStartedListener implements ApplicationListener<ApplicationStartedEvent> {
 
     private final ApplicationContext applicationContext;
 
     private final RedisJsonService redisJsonService;
 
-    public MemberApplicationStartedListener(ApplicationContext applicationContext, RedisJsonService redisJsonService) {
+    public AuthApplicationStartedListener(ApplicationContext applicationContext, RedisJsonService redisJsonService) {
         this.applicationContext = applicationContext;
         this.redisJsonService = redisJsonService;
     }
+
+    @Value("${spring.application.name}")
+    private String applicationName;
 
 
 
@@ -58,7 +60,29 @@ public class MemberApplicationStartedListener implements ApplicationListener<App
                 blackList.addAll(requestURl);
             }
         }
+        if (blackList.isEmpty()) {
+            // 如果黑名单为空,则直接返回
+            return;
+        }
         log.error("[黑名单扫描]");
+        // 获取上一次的黑名单
+        Set<String> lastBlackList = redisJsonService.hget(RedisEnum.AUTH_LAST_BLACKLIST, applicationName);
+       // lastBlackList2.toString();
+
+        /*log.error("上一次的黑名单:{}", lastBlackList2);
+
+        HashSet<Object> lastBlackList = new HashSet<>();*/
+
+        log.error("上一次的黑名单:{}", lastBlackList);
+
+
+        if (lastBlackList != null && !lastBlackList.isEmpty()) {
+            // 如果上一次的黑名单不为空,则删除上一次的黑名单
+            redisJsonService.hRemove(RedisEnum.AUTH_BLACKLIST,lastBlackList.toArray());
+        }
+        // 将本次的黑名单存入redis
+        redisJsonService.hSetAll(RedisEnum.AUTH_LAST_BLACKLIST, applicationName, blackList);
+
         // 5.将黑名单存入redis
         redisJsonService.sAddAll(RedisEnum.AUTH_BLACKLIST, blackList.toArray());
         log.error("黑名单:{}", blackList);

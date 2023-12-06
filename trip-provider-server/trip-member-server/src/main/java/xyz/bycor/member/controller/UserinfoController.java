@@ -9,19 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import xyz.bycor.core.response.R;
 import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.service.UserinfoService;
-import xyz.bycor.core.response.R;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
 import xyz.bycor.member.vo.LoginResponse;
-import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
-import xyz.bycor.member.znno.RequiredLogin;
-
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author baishuai

@@ -12,6 +12,7 @@ spring:
         shared-configs:
           - data-id: nacos-dev.yaml
           - data-id: trip-provider-server.yaml
+          - data-id: wolf2w-auth-dev.yaml
     gateway:
       discovery:
         locator:

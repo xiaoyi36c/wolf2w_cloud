@@ -6,14 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import xyz.bycor.auth.config.AuthProperties;
 import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.response.R;
+import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.core.utils.SecurityUtils;
 import xyz.bycor.framework.redis.config.RedisJsonService;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
@@ -25,7 +24,6 @@ import xyz.bycor.member.vo.LoginResponse;
 import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -39,10 +37,13 @@ import java.util.concurrent.TimeUnit;
 public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
         implements UserinfoService {
 
+    private final AuthProperties authProperties;
+
     private final RedisJsonService redisJsonService;
 
-    public UserinfoServiceImpl(RedisJsonService redisJsonService) {
+    public UserinfoServiceImpl(RedisJsonService redisJsonService, AuthProperties authProperties) {
         this.redisJsonService = redisJsonService;
+        this.authProperties = authProperties;
     }
 
     @Override
@@ -107,8 +108,8 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
             }
         };
 
-        String secretToken = this.genToken(user.getPhone(), 60L);
-        String refreshToken = this.genToken(user.getPhone(), 120L);
+        String secretToken = JwtUtils.genToken(user.getPhone(), authProperties.getAccessTokenTimeOut(),authProperties.getPrivateKey());
+        String refreshToken = JwtUtils.genToken(user.getPhone(), authProperties.getRefreshTokenTimeOut(),authProperties.getPrivateKey());
         // 5.  用户信息存入redis
         LoginResponseUser loginResponseUser = new LoginResponseUser();
         BeanUtils.copyProperties(user, loginResponseUser);
@@ -129,15 +130,12 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
     public R<JSONObject> refreshToken(String refreshToken) {
         try {
             // 1. 解析tokoen是否有效
-            Claims claims = Jwts.parser()
-                    .setSigningKey("wolfcode")
-                    .parseClaimsJws(refreshToken)
-                    .getBody();
+            Claims claims = JwtUtils.parseToken(refreshToken, authProperties.getPrivateKey());
             // 2. 创建新的 token
-            String accessToken = genToken(claims.getSubject(), 10L);// 新的 accessToken
-            refreshToken = genToken(claims.getSubject(), 30L);// 新的 refreshToken
+            String accessToken = JwtUtils.genToken(claims.getSubject(), authProperties.getAccessTokenTimeOut(),authProperties.getPrivateKey());// 新的 accessToken
+            refreshToken = JwtUtils.genToken(claims.getSubject(), authProperties.getRefreshTokenTimeOut(),authProperties.getPrivateKey());// 新的 refreshToken
             // 3. 刷新 redis 中的用户信息为新的 30 分钟
-            redisJsonService.expire(RedisEnum.USER_LOGIN_INFO_KEY, 30L, TimeUnit.MINUTES, claims.getSubject());
+            redisJsonService.expire(RedisEnum.USER_LOGIN_INFO_KEY, authProperties.getRefreshTokenTimeOut(), TimeUnit.MINUTES, claims.getSubject());
 
             // 4. 封装响应对象
             JSONObject json = new JSONObject();
@@ -150,23 +148,7 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
         }
     }
 
-    /**
-     * 生成token
-     *
-     * @param username
-     * @param expireTime
-     * @return
-     */
-    private String genToken(String username, Long expireTime) {
-        Claims claims = new DefaultClaims();
-        // 关联用户名
-        claims.setSubject(username);
-        return Jwts.builder()
-                .addClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + (expireTime * 60 * 1000)))
-                .signWith(SignatureAlgorithm.HS256, "wolfcode")
-                .compact();
-    }
+
 
 
 

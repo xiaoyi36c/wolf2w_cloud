@@ -1,4 +1,4 @@
-package xyz.bycor.member.znno;
+package xyz.bycor.auth.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

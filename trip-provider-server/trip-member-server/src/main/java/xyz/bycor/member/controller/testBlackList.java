@@ -3,10 +3,10 @@ package xyz.bycor.member.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.bycor.member.znno.RequiredLogin;
+import xyz.bycor.auth.anno.RequiredLogin;
 
 @RestController
-@RequiredLogin
+// @RequiredLogin
 @RequestMapping("/blacklist")
 @Slf4j
 public class testBlackList {

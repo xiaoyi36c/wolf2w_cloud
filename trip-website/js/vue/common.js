@@ -28,7 +28,11 @@ function getServiceUrl(service) {
 
 //异步请求
 function ajaxRequest(server, url, type, param, success, fail,callback) {
-    url = getServiceUrl(server) + url;
+    if (!url.startsWith("http")) {
+        url = getServiceUrl(server) + url;
+    }
+
+
 
     // 通过js操作将加密之后的签名手动添加到参数中去
 
@@ -80,7 +84,7 @@ function ajaxRequest(server, url, type, param, success, fail,callback) {
 
 function tryRefreshToken(config) {
     console.log("tokoen 已过期, 尝试获取新的 token")
-    $.post(getServiceUrl('members') + '/users/refreshToken', {refreshToken: getRefreshToken()}, function (resp) {
+    $.post(getServiceUrl('members') + '/userinfo/refreshToken', {refreshToken: getRefreshToken()}, function (resp) {
         console.log("获取刷新token接口响应数据", resp)
         // 如果响应回来的状态还是 401, 就说明 refreshToken 也失效了
         if (resp.code === 401) {

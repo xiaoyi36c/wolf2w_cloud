@@ -11,7 +11,9 @@ public enum RedisEnum {
     SMS_REGISTER_LIMIT_KEY("wolf2w:sms:limit:key:", 5L, TimeUnit.MINUTES),
 
     SMS_REGISTER_CODE_KEY("wolf2w:sms:code:key:", 30L, TimeUnit.MINUTES),
-    USER_LOGIN_INFO_KEY("wolf2w:login:info:key:", 30L, TimeUnit.MINUTES), AUTH_BLACKLIST("wolf2w:auth:black_list");
+    USER_LOGIN_INFO_KEY("wolf2w:login:info:key:", 30L, TimeUnit.MINUTES),
+    AUTH_BLACKLIST("wolf2w:auth:black_list"),
+    AUTH_LAST_BLACKLIST("wolf2w:auth:last_black_list");
 
 
     private String prefix;
