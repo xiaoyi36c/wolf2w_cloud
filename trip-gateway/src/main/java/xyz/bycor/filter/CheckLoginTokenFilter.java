@@ -1,6 +1,7 @@
 package xyz.bycor.filter;
 
 import com.alibaba.fastjson2.JSONObject;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -11,23 +12,31 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import io.jsonwebtoken.Jwts;
+import xyz.bycor.framework.redis.config.RedisJsonService;
+import xyz.bycor.framework.redis.config.key.RedisEnum;
+
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
 public class CheckLoginTokenFilter implements GlobalFilter {
-    private static final List<String> WHITE_LIST = Arrays.asList("/userinfo/login", "/userinfo/register", "/ssm", "/userinfo/refreshToken");
+
+
+    private  final Set<Object> BLACK_LIST_URLS ;
+
+    public CheckLoginTokenFilter(RedisJsonService redisJsonService, Set<Object> blackList) {
+        // 从redis中获取黑名单
+        BLACK_LIST_URLS=redisJsonService.members(RedisEnum.AUTH_BLACKLIST);
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 1.获取当前请求的url
         String path = exchange.getRequest().getURI().getPath();
         // 2.判断是否是白名单中的url
-        if (WHITE_LIST.contains(path)) {
-            // 3.如果是白名单中的url,则直接放行
+        if (! BLACK_LIST_URLS.contains(path)) {
+            // 3.如果 不在 黑名单中,则直接放行
             return chain.filter(exchange);
         }
         // 4.如果不是白名单中的url,则获取请求头中的token

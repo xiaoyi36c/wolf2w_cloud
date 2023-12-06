@@ -53,5 +53,10 @@
             <artifactId>jjwt</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>xyz.bycor</groupId>
+            <artifactId>trip-common-redis-boot-start</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

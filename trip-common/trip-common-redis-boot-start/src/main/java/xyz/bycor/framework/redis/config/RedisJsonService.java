@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @ConfigurationProperties(prefix = "wolf2w.sms")
@@ -88,5 +89,10 @@ public class RedisJsonService {
 
     public void sAddAll(RedisEnum redisEnum, Object[] blackList, String... suffix) {
         redisTemplate.opsForSet().add(redisEnum.join(suffix), blackList);
+    }
+
+    public Set<Object> members(RedisEnum redisEnum, String... suffix) {
+        Set<Object> members = redisTemplate.opsForSet().members(redisEnum.join(suffix));
+        return members;
     }
 }
