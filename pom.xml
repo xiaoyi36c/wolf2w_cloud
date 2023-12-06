@@ -49,31 +49,34 @@
                 <scope>import</scope>
             </dependency>
 
-
-
+            <!--mybatis-plus-->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+            <!--mybatis-plus 注解-->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-annotation</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
+            <!--alibaba Druid 数据库连接池-->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>1.2.16</version>
             </dependency>
 
+            <!--swagger3-->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-boot-starter</artifactId>
                 <version>3.0.0</version>
             </dependency>
 
+            <!--fastjson2-->
             <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
@@ -98,12 +101,14 @@
                 <version>1.0.0</version>
             </dependency>
 
+            <!--阿里云 短信测试-->
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>dysmsapi20170525</artifactId>
                 <version>2.0.24</version>
             </dependency>
 
+            <!--JWT-->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
