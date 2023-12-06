@@ -17,7 +17,7 @@ import xyz.bycor.framework.redis.config.RedisJsonService;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -25,17 +25,22 @@ import java.util.Set;
 public class CheckLoginTokenFilter implements GlobalFilter {
 
 
-    private  final Set<Object> BLACK_URLS ;
+    private  Set<Object> BLACK_URLS;
 
     @Value("${trip.auth.private-key}")
     private String privateKey;
 
- @Value("${trip.auth.token-header}")
+    @Value("${trip.auth.token-header}")
     private String authorization;
 
     public CheckLoginTokenFilter(RedisJsonService redisJsonService) {
-        // 从redis中获取黑名单
-        BLACK_URLS=redisJsonService.members(RedisEnum.AUTH_BLACKLIST)!=null ? redisJsonService.members(RedisEnum.AUTH_BLACKLIST): Collections.emptySet();
+        // 从 redis 中获取黑名单
+        BLACK_URLS = redisJsonService.members(RedisEnum.AUTH_BLACKLIST);
+        if (this.BLACK_URLS == null) {
+            this.BLACK_URLS = new HashSet<>();
+        }
+
+
     }
 
     @Override
@@ -43,7 +48,7 @@ public class CheckLoginTokenFilter implements GlobalFilter {
         // 1.获取当前请求的url
         String path = exchange.getRequest().getURI().getPath();
         // 2.判断是否是白名单中的url
-        if (! BLACK_URLS.contains(path)) {
+        if (!BLACK_URLS.contains(path)) {
             // 3.如果 不在 黑名单中,则直接放行
             return chain.filter(exchange);
         }
@@ -51,7 +56,7 @@ public class CheckLoginTokenFilter implements GlobalFilter {
         String token = exchange.getRequest().getHeaders().getFirst(authorization);
         try {
             // 2. 解析 token
-           JwtUtils.parseToken(token, privateKey);
+            JwtUtils.parseToken(token, privateKey);
             log.info("[验证token] token 解析成功, 放行请求:{}", path);
             // 3. 解析成功直接放行
             return chain.filter(exchange);
@@ -76,4 +81,9 @@ public class CheckLoginTokenFilter implements GlobalFilter {
             return response.writeWith(Mono.just(buffer));
         }
     }
+
+    public void setBlackListUrls(Set<Object> blackListUrls) {
+        this.BLACK_URLS = blackListUrls;
+    }
+
 }

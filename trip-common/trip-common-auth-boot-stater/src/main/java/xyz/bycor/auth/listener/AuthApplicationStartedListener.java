@@ -85,6 +85,13 @@ public class AuthApplicationStartedListener implements ApplicationListener<Appli
 
         // 5.将黑名单存入redis
         redisJsonService.sAddAll(RedisEnum.AUTH_BLACKLIST, blackList.toArray());
+
+        //  通过redis 发布订阅模式,通知网关更新黑名单
+        redisJsonService.publish(RedisEnum.AUTH_BLACKLIST_CHANNEL, applicationName + "更新黑名单消息队列");
+
         log.error("黑名单:{}", blackList);
+
+
+
     }
 }

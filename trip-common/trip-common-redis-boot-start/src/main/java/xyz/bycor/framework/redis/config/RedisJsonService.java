@@ -23,6 +23,7 @@ public class RedisJsonService {
         this.redisTemplate = redisTemplate;
     }
 
+
     public boolean setIfAbsent(RedisEnum keyPrefixEnum, Object value, String... suffix) {
         String fullKey = keyPrefixEnum.join(suffix);
         Boolean ret;
@@ -87,5 +88,17 @@ public class RedisJsonService {
     public void hSetAll(RedisEnum redisEnum, String applicationName, Object value, String... suffix) {
         redisTemplate.opsForHash().put(redisEnum.join(suffix),applicationName,value);
 
+    }
+
+    public void publish(RedisEnum redisEnum, String message, String... suffix) {
+        redisTemplate.convertAndSend(redisEnum.join(suffix),message);
+    }
+
+    public String stringDeserializer(byte[] data) {
+        return redisTemplate.getStringSerializer().deserialize(data);
+    }
+
+    public Object valueDeserializer(byte[] data) {
+        return redisTemplate.getValueSerializer().deserialize(data);
     }
 }
