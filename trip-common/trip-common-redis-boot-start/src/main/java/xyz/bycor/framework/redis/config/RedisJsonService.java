@@ -85,4 +85,8 @@ public class RedisJsonService {
         String key = redisEnum.join(suffix);
         redisTemplate.expire(key, timeOut, timeUnit);
     }
+
+    public void sAddAll(RedisEnum redisEnum, Object[] blackList, String... suffix) {
+        redisTemplate.opsForSet().add(redisEnum.join(suffix), blackList);
+    }
 }

@@ -1,20 +1,20 @@
 package xyz.bycor.member.listener;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import xyz.bycor.framework.redis.config.RedisJsonService;
+import xyz.bycor.framework.redis.config.key.RedisEnum;
 import xyz.bycor.member.znno.RequiredLogin;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -22,9 +22,14 @@ public class MemberApplicationStartedListener implements ApplicationListener<App
 
     private final ApplicationContext applicationContext;
 
-    public MemberApplicationStartedListener(ApplicationContext applicationContext) {
+    private final RedisJsonService redisJsonService;
+
+    public MemberApplicationStartedListener(ApplicationContext applicationContext, RedisJsonService redisJsonService) {
         this.applicationContext = applicationContext;
+        this.redisJsonService = redisJsonService;
     }
+
+
 
 
     /**
@@ -53,6 +58,9 @@ public class MemberApplicationStartedListener implements ApplicationListener<App
                 blackList.addAll(requestURl);
             }
         }
+        log.error("[黑名单扫描]");
+        // 5.将黑名单存入redis
+        redisJsonService.sAddAll(RedisEnum.AUTH_BLACKLIST, blackList.toArray());
         log.error("黑名单:{}", blackList);
     }
 }
