@@ -20,8 +20,11 @@ import java.util.*;
 @Slf4j
 public class MemberApplicationStartedListener implements ApplicationListener<ApplicationStartedEvent> {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+
+    public MemberApplicationStartedListener(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
 
     /**
@@ -52,6 +55,4 @@ public class MemberApplicationStartedListener implements ApplicationListener<App
         }
         log.error("黑名单:{}", blackList);
     }
-
-
 }

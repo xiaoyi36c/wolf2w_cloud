@@ -16,6 +16,7 @@ import xyz.bycor.member.vo.LoginRequestUserinfo;
 import xyz.bycor.member.vo.LoginResponse;
 import xyz.bycor.member.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
+import xyz.bycor.member.znno.RequiredLogin;
 
 
 import javax.validation.constraints.NotNull;
