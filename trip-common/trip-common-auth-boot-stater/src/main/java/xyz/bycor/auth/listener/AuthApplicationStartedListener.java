@@ -60,25 +60,18 @@ public class AuthApplicationStartedListener implements ApplicationListener<Appli
                 blackList.addAll(requestURl);
             }
         }
-        if (blackList.isEmpty()) {
-            // 如果黑名单为空,则直接返回
-            return;
-        }
-        log.error("[黑名单扫描]");
         // 获取上一次的黑名单
         Set<String> lastBlackList = redisJsonService.hget(RedisEnum.AUTH_LAST_BLACKLIST, applicationName);
-       // lastBlackList2.toString();
-
-        /*log.error("上一次的黑名单:{}", lastBlackList2);
-
-        HashSet<Object> lastBlackList = new HashSet<>();*/
-
         log.error("上一次的黑名单:{}", lastBlackList);
-
 
         if (lastBlackList != null && !lastBlackList.isEmpty()) {
             // 如果上一次的黑名单不为空,则删除上一次的黑名单
             redisJsonService.hRemove(RedisEnum.AUTH_BLACKLIST,lastBlackList.toArray());
+            redisJsonService.publish(RedisEnum.AUTH_BLACKLIST_CHANNEL, applicationName + "更新黑名单消息队列");
+        }
+        if (blackList.isEmpty()) {
+            // 如果黑名单为空,则直接返回
+            return;
         }
         // 将本次的黑名单存入redis
         redisJsonService.hSetAll(RedisEnum.AUTH_LAST_BLACKLIST, applicationName, blackList);
