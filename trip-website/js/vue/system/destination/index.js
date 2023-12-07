@@ -29,7 +29,7 @@ var vue = new Vue({
         },
         queryRegion:function (rid) {
             //list<Destination>
-            ajaxGet("article","/destinations/hotList",{rid:rid}, function (data) {
+            ajaxGet("article","/destinations/hotList/" + rid,{}, function (data) {
                 var list = data.data;
                 vue.regionId=rid;
                 var destListLeft = [];  //左边

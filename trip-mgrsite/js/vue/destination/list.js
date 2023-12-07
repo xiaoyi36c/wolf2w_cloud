@@ -134,10 +134,14 @@ var vue = new Vue({
             //刷新列表
             $('#bootstrap-table').bootstrapTable('selectPage', 1);
 
-            //吐司
-            ajaxGet("article", "/destinations/toasts", {destId:id}, function (data){
-                vue.toasts = data.data;
-            })
+            if (id) {
+                //吐司
+                ajaxGet("article", "/backend/destinations/toasts/" + id, {}, function (data) {
+                    vue.toasts = data.data;
+                })
+            }else {
+                vue.toasts = [];
+            }
         }
     },
     mounted:function (){
