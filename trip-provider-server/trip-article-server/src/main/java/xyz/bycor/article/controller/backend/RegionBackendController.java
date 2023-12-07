@@ -7,12 +7,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import xyz.bycor.article.domain.Region;
 import xyz.bycor.article.service.RegionService;
+import xyz.bycor.core.qo.QueryObject;
 import xyz.bycor.core.response.R;
-
-import java.util.List;
 
 /**
  * @author baishuai
@@ -22,7 +23,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/region")
+@RequestMapping("/backend/regions")
 @Api(tags = "区域信息接口")
 @Slf4j
 @Validated
@@ -34,85 +35,14 @@ public class RegionBackendController {
     public RegionBackendController(RegionService regionService) {
         this.regionService = regionService;
     }
-
     /**
-     * 查询所有区域信息
+     * 分页查询所有区域
      * @return
      */
-
-    @ApiOperation(value = "查询所有区域信息")
-    @GetMapping("/list")
-    public R<List<Region>> list() {
-        log.info("查询所有区域信息");
-        return R.ok(regionService.list());
+    @ApiOperation(value = "分页查询所有区域")
+    @GetMapping()
+    public R<Page<Region>> listPage(QueryObject qo) {
+        log.info("查询所有目地址");
+        return R.ok(regionService.findPage(qo));
     }
-
-    /**
-     * 分页查询所有区域信息
-     * @return 分页对象
-     */
-    @ApiOperation(value = "分页查询所有区域信息")
-    @GetMapping("/listPage/{page}/{size}")
-    public R<Page<Region>> listPage(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
-        log.info("查询所有区域信息");
-        Page<Region> regionPage = new Page<>(page, size);
-        return R.ok(regionService.page(regionPage));
-    }
-
-    /**
-     * 根据id查询区域信息
-     * @param id
-     * @return
-     */
-    @ApiOperation(value = "根据id查询区域信息")
-    @GetMapping("/getById/{id}")
-    public R<Region> get(@PathVariable("id") Long id) {
-        log.info("根据id查询区域信息");
-        return R.ok(regionService.getById(id));
-    }
-
-
-    /**
-     * 根据id删除区域信息
-     * @param id
-     * @return
-     */
-    @ApiOperation(value = "根据id删除区域信息")
-    @DeleteMapping("/deleteById/{id}")
-    public R delete(@PathVariable("id") Long id) {
-        log.info("根据id删除区域信息");
-        regionService.removeById(id);
-        return R.ok();
-    }
-
-
-    /**
-     * 根据id更新区域信息
-     * @param id
-     * @param region
-     * @return
-     */
-    @ApiOperation(value = "根据id更新区域信息")
-    @PutMapping("/{id}")
-    public R update(@PathVariable("id") Long id, @RequestBody Region region) {
-        Region byId = regionService.getById(id);
-        log.info("根据id更新区域信息");
-        region.setId(id);
-        regionService.updateById(region);
-        return  R.ok();
-    }
-
-    /**
-     * 新增区域信息
-     * @param region
-     * @return
-     */
-    @ApiOperation(value = "新增区域信息")
-    @PostMapping
-    public R save(@RequestBody Region region) {
-        log.info("新增区域信息");
-        regionService.save(region);
-        return R.ok();
-    }
-
 }
