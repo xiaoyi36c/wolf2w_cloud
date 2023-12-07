@@ -76,6 +76,14 @@ function ajaxPost(server, url, params, success, fail){
     ajaxRequest(server, url, "POST", params, success, fail);
 }
 
+function ajaxPut(server, url, params, success, fail){
+    ajaxRequest(server, url, "PUT", params, success, fail);
+}
+
+function ajaxDelete(server, url, params, success, fail){
+    ajaxRequest(server, url, "DELETE", params, success, fail);
+}
+
 //获取url上的请求参数
 function getParams() {
     //获取问号及问号后面的内容

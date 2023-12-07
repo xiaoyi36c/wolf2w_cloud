@@ -11,7 +11,7 @@ var vue = new Vue({
         //初始化列表
         init:function (){
             var options = {
-                url: getServiceUrl("article") + "/destinations",
+                url: getServiceUrl("article") + "/backend/destinations",
                 contentType: "application/x-www-form-urlencoded",   //重要选项,必填
                 uniqueId: "id",                     //每一行的唯一标识，一般为主键列
                 striped : true, //是否显示行间隔色
@@ -107,7 +107,7 @@ var vue = new Vue({
                 content: $('#editModal'),
                 btn: ['提交', '取消'],
                 yes: function (index, layero) {
-                    ajaxPost("article", "/destinations/updateInfo", {info: $("#info").val(),id:id},function (data){
+                    ajaxPost("article", "/backend/destinations", {info: $("#info").val(),id:id},function (data){
                         layer.alert("编辑成功", {
                             title: '提示框',
                             icon: 1,
@@ -122,7 +122,7 @@ var vue = new Vue({
         },
         delete:function (id){
             layer.confirm('确认要删除吗？', function (index) {
-                ajaxPost("article", "/destinations/delete/" + id, {}, function (data){
+                ajaxDelete("article", "/backend/destinations/" + id, {}, function (data){
                     layer.msg('已删除!', {icon: 1, time: 200}, function (){
                         location.reload();
                     });
@@ -142,6 +142,5 @@ var vue = new Vue({
     },
     mounted:function (){
         this.init();
-
     }
 })

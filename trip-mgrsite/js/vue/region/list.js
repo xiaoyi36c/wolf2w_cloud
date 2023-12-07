@@ -105,7 +105,7 @@ var vue = new Vue({
         },
         showDests:function (id){
             //data.data = List<Destination>
-            ajaxGet("article", "/regions/"+id+"/destination", {},function (data){
+            ajaxGet("article", "/backend/regions/"+id+"/destination", {},function (data){
                 var msg = '';
                 $.each(data.data, function (index, item){
                     msg += item.name + " ";
@@ -131,7 +131,8 @@ var vue = new Vue({
                 btn: ['提交', '取消'],
                 yes: function (index, layero) {
                     var params = vue.getEditParam(type)
-                    ajaxPost("article", url, params,function (data){
+                    var method = type == 'save' ? 'POST' : 'PUT';
+                    ajaxRequest("article", url,method, params,function (data){
                         layer.alert(msg, {
                             title: '提示框',
                             icon: 1,
@@ -145,20 +146,20 @@ var vue = new Vue({
             });
         },
         addRegion:function (){
-            vue.showModel("/regions/save", "添加成功", "save");
+            vue.showModel("/backend/regions", "添加成功", "save");
         },
         editRegion:function (id){
-            ajaxGet("article", "/regions/detail", {id:id}, function (data){
+            ajaxGet("article", "/backend/regions/"+id, {}, function (data){
                 vue.region = data.data
                 if(vue.region.refIds){
                     vue.region.refIds = vue.region.refIds.split(",")
                 }
-                vue.showModel("/regions/update", "编辑成功", "edit");
+                vue.showModel("/backend/regions", "编辑成功", "edit");
             })
         },
         delete:function (id){
             layer.confirm('确认要删除吗？', function (index) {
-                ajaxPost("article", "/regions/delete/" + id, {}, function (data){
+                ajaxDelete("article", "/backend/regions/" + id, {}, function (data){
                     layer.msg('已删除!', {icon: 1, time: 200}, function (){
                         location.reload();
                     });
