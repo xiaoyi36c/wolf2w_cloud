@@ -67,9 +67,9 @@ public class AuthApplicationStartedListener implements ApplicationListener<Appli
         if (lastBlackList != null && !lastBlackList.isEmpty()) {
             // 如果上一次的黑名单不为空,则删除上一次的黑名单
             redisJsonService.hRemove(RedisEnum.AUTH_BLACKLIST,lastBlackList.toArray());
-            redisJsonService.publish(RedisEnum.AUTH_BLACKLIST_CHANNEL, applicationName + "更新黑名单消息队列");
         }
         if (blackList.isEmpty()) {
+            redisJsonService.publish(RedisEnum.AUTH_BLACKLIST_CHANNEL, applicationName + "更新黑名单消息队列");
             // 如果黑名单为空,则直接返回
             return;
         }
