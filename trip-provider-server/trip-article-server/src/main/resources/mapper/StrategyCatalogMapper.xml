@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.bycor.article.mapper.StrategyCatalogMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.bycor.article.domain.StrategyCatalog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="destId" column="dest_id" jdbcType="BIGINT"/>
+            <result property="state" column="state" jdbcType="INTEGER"/>
+            <result property="seq" column="seq" jdbcType="INTEGER"/>
+            <result property="destName" column="dest_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,dest_id,
+        state,seq,dest_name
+    </sql>
+</mapper>
