@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  * @createDate 2023-12-07 10:53:35
  */
 @Service
+@SuppressWarnings("all")
 public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Destination>
         implements DestinationService {
 
@@ -74,7 +75,7 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
 
     @Override
     public List<Destination> findHotList(Long rid) {
-        List<Destination> parents = new ArrayList<>();
+        List<Destination> parents;
         if (rid == -1) {
             parents = super.list(new QueryWrapper<Destination>().lambda().eq(Destination::getParentId, 1));
         } else {
@@ -94,9 +95,11 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
         List<Destination> children = super.list(new QueryWrapper<Destination>().lambda()
                 .in(Destination::getParentId, parentIds));
         // 将子级目的地放入父级目的地的children属性中
-         List<CompletableFuture<Void>> futures =new ArrayList<>();
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
         for (Destination child : children) {
-                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            // 异步执行
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                // 根据子级目的地的parentId查询父级目的地
                 Destination parent = parentMap.get(child.getParentId());
                 if (parent != null) {
                     Optional<List<Destination>> optional = Optional.ofNullable(parent.getChildren());
@@ -115,7 +118,8 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
         CompletableFuture<Void> voidCompletableFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         try {
             voidCompletableFuture.get();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
 
 
@@ -126,6 +130,7 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
             List<Destination> children = super.list(wrapper);
             parent.setChildren(children);
         }*/
+
         // 返回父级目的地
         return parents;
     }
