@@ -23,7 +23,7 @@ var vue = new Vue({
             });
 
             this.ck = CKEDITOR.replace('strategyContent', {
-                filebrowserUploadUrl: getServiceUrl("article") + '/strategies/uploadImg'
+                filebrowserUploadUrl: getServiceUrl("article") + '/backend/strategies/uploadImg'
             });
         },
         //查询主题

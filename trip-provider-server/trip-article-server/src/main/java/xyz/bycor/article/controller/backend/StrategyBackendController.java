@@ -120,7 +120,7 @@ public class StrategyBackendController {
         try {
             String fileMainName = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
             url = OssUtil.upload("images", fileMainName, upload);
-            re.put("url", url);
+            re.put("url","https://" +  url);
             re.put("uploaded",1);
             re.put("fileName",fileMainName + ".jpg");
         } catch (Exception e) {

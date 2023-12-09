@@ -28,7 +28,7 @@ var vue = new Vue({
             this.imgFile = imgFile;
 
             var ck = CKEDITOR.replace( 'strategyContent',{
-                filebrowserUploadUrl: '/strategies/uploadImg'
+                filebrowserUploadUrl: '/backend/strategies/uploadImg'
             });
             this.ck = ck;
 
