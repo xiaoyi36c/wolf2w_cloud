@@ -64,7 +64,7 @@
                           <select name="catalogId"  class="text_add" style="width: 50%;;margin-left: 10px;" >
                            <option value="-1">--请选择--</option>
                               <optgroup :label="c.destName" v-for="c in catalogVOs">
-                                  <option :value="v.id" v-for="v in c.catalogList">{{v.name}}</option>
+                                  <option :value="v.id" v-for="v in c.catalogs">{{v.name}}</option>
                               </optgroup>
                           </select>
 

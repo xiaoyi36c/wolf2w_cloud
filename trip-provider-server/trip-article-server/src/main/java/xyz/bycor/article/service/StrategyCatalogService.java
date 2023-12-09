@@ -3,7 +3,10 @@ package xyz.bycor.article.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import xyz.bycor.article.domain.StrategyCatalog;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.bycor.article.vo.CatalogGroup;
 import xyz.bycor.core.qo.QueryObject;
+
+import java.util.List;
 
 /**
 * @author BAI
@@ -13,4 +16,6 @@ import xyz.bycor.core.qo.QueryObject;
 public interface StrategyCatalogService extends IService<StrategyCatalog> {
 
     Page<StrategyCatalog> findPage(QueryObject qo);
+
+    List<CatalogGroup> findGroups();
 }

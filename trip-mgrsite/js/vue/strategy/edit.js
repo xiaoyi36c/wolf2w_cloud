@@ -35,13 +35,13 @@ var vue = new Vue({
         },
         //查询主题
         queryTheme:function (){
-            ajaxGet("article", "/strategies/themes/list", {}, function (data){
+            ajaxGet("article", "/backend/strategies/themes/list", {}, function (data){
                 vue.themes = data.data;
             });
         },
         //攻略分类分组下拉框
         queryCatalogGroup:function (){
-            ajaxGet("article", "/strategies/catalogs/groups", {}, function (data){
+            ajaxGet("article", "/backend/strategies/catalogs/groups", {}, function (data){
                 vue.catalogVOs = data.data;
                 //vue.getDetail(getParams().id)
             })
@@ -55,7 +55,7 @@ var vue = new Vue({
             param["content.content"] = vue.ck.getData();
 
 
-            ajaxPost("article", "/strategies/update",param, function (data){
+            ajaxPut("article", "/backend/strategies",param, function (data){
                 window.location.href = "/views/strategy/list.html"
             })
 
@@ -66,7 +66,7 @@ var vue = new Vue({
         //回显数据
         getDetail:function (id){
             var timer = setInterval(function () {
-                ajaxGet("article", "/strategies/detail", {id:id}, function (data){
+                ajaxGet("article", "/backend/strategies/" + id, {}, function (data){
                     vue.strategy = data.data;
                     vue.content = data.data.content;
                     vue.ck.setData(vue.content.content)

@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.service.StrategyCatalogService;
+import xyz.bycor.article.vo.CatalogGroup;
 import xyz.bycor.core.qo.QueryObject;
 import xyz.bycor.core.response.R;
 
@@ -24,8 +25,8 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/backend/strategys/catalogs")
-@Api(tags = "目地址接口")
+@RequestMapping("/backend/strategies/catalogs")
+@Api(tags = "攻略分类接口")
 @Slf4j
 @Validated
 @RefreshScope
@@ -38,68 +39,80 @@ public class StrategyCatalogBackendController {
     }
 
     /**
-     * 分页查询所有目地址
+     * 分页查询所有攻略分类
      * @return 分页对象
      */
-    @ApiOperation(value = "分页查询所有目地址")
+    @ApiOperation(value = "分页查询所有攻略分类")
     @GetMapping("/list")
     public R<List<StrategyCatalog>> list() {
-        log.info("查询所有目地址");
+        log.info("查询所有攻略分类");
         return R.ok(strategyCatalogService.list());
     }
 
 
     /**
-     * 分页查询所有目的地
+     * 分页查询所有攻略分类
      * @return
      */
-    @ApiOperation(value = "分页查询所有目的地")
+    @ApiOperation(value = "分页查询所有攻略分类")
     @GetMapping()
     public R<Page<StrategyCatalog>> listPage(QueryObject qo) {
-        log.info("查询所有目地址");
+        log.info("查询所有攻略分类");
         return R.ok(strategyCatalogService.findPage(qo));
     }
 
     @GetMapping("/{id}")
     public R<StrategyCatalog> get(@PathVariable @NotNull(message = "id 不能为空") Long id) {
-        log.info("查询单个目的地");
+        log.info("查询单个攻略分类");
         return R.ok(strategyCatalogService.getById(id));
     }
 
 
     /**
-     * 新增目的地
+     * 新增攻略分类
      * @return
      */
-    @ApiOperation(value = "新增目的地")
+    @ApiOperation(value = "新增攻略分类")
     @PostMapping()
     public R<?> add(StrategyCatalog strategyCatalog) {
-        log.info("新增目的地");
-        strategyCatalogService.save(strategyCatalog);
+        log.info("新增攻略分类");
+        strategyCatalogService.saveOrUpdate(strategyCatalog);
         return R.ok();
     }
     /**
-     * 新增目的地
+     * 新增攻略分类
      * @return
      */
-    @ApiOperation(value = "修改目的地")
+    @ApiOperation(value = "修改攻略分类")
     @PutMapping()
     public R<?> save(StrategyCatalog strategyCatalog) {
-        log.info("修改目的地");
-        strategyCatalogService.updateById(strategyCatalog);
+        log.info("修改攻略分类");
+        strategyCatalogService.saveOrUpdate(strategyCatalog);
         return R.ok();
     }
 
     /**
-     * 删除目的地
+     * 删除攻略分类
      * @return
      */
-    @ApiOperation(value = "删除目的地")
+    @ApiOperation(value = "删除攻略分类")
     @DeleteMapping("/{id}")
     public R<?> delete(@PathVariable @NotNull(message = "id 不能为空") Long id) {
-        log.info("删除目的地");
+        log.info("删除攻略分类");
         strategyCatalogService.removeById(id);
         return R.ok();
+    }
+
+    /**
+     * 分组查询攻略分类
+     *
+     * @return
+     */
+    @ApiOperation(value = "分组查询攻略分类")
+    @GetMapping("groups")
+    public R<List<CatalogGroup>> groups() {
+        log.info("分组查询攻略分类");
+        return R.ok(strategyCatalogService.findGroups());
     }
 
 

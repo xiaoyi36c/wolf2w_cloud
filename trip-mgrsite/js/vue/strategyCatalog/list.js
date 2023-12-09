@@ -21,7 +21,7 @@ var vue = new Vue({
         //初始化列表
         init:function (){
             var options = {
-                url: getServiceUrl("article") + "/strategies/catalogs/query",
+                url: getServiceUrl("article") + "/backend/strategies/catalogs",
                 contentType: "application/x-www-form-urlencoded",   //重要选项,必填
                 uniqueId: "id",                     //每一行的唯一标识，一般为主键列
                 striped : true, //是否显示行间隔色
@@ -94,7 +94,7 @@ var vue = new Vue({
             $('#bootstrap-table').bootstrapTable(options);
 
             //关联目的地
-            ajaxGet("article","/destinations/list", {}, function (data){
+            ajaxGet("article","/backend/destinations/list", {}, function (data){
                 vue.dests = data.data;
             })
         },
@@ -114,7 +114,8 @@ var vue = new Vue({
                 btn: ['提交', '取消'],
                 yes: function (index, layero) {
                     var params = vue.getEditParam(type)
-                    ajaxPost("article", url, params,function (data){
+                    var method = type == 'save' ? 'POST' : 'PUT';
+                    ajaxRequest("article", url,method, params,function (data){
                         layer.alert(msg, {
                             title: '提示框',
                             icon: 1,
@@ -128,17 +129,17 @@ var vue = new Vue({
             });
         },
         addCatalog:function (){
-            vue.showModel("/strategies/catalogs/save", "添加成功", "save");
+            vue.showModel("/backend/strategies/catalogs", "添加成功", "save");
         },
         editTheme:function (id){
-            ajaxGet("article", "/strategies/catalogs/detail", {id:id}, function (data){
+            ajaxGet("article","/backend/strategies/catalogs/"+ id, {}, function (data){
                 vue.catalog = data.data
-                vue.showModel("/strategies/catalogs/update", "编辑成功", "edit");
+                vue.showModel("/backend/strategies/catalogs", "编辑成功", "edit");
             })
         },
         delete:function (id){
             layer.confirm('确认要删除吗？', function (index) {
-                ajaxPost("article", "/strategies/catalogs/delete/" + id, {}, function (data){
+                ajaxDelete("article", "/backend/strategies/catalogs/" + id, {}, function (data){
                     layer.msg('已删除!', {icon: 1, time: 200}, function (){
                         location.reload();
                     });
