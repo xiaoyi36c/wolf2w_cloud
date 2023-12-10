@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.bycor.article.domain.StrategyCatalog;
+import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.service.StrategyService;
 import xyz.bycor.core.response.R;
 
@@ -45,5 +46,29 @@ public class StrategyController {
     public R<List<StrategyCatalog>> catalogGroups(Long destId) {
         log.info("查询所有攻略详细");
         return R.ok(strategyService.findCatalogGroupsByDestId(destId));
+    }
+
+    /**
+     * 概况下的攻略内容
+     * @return
+     */
+
+    @ApiOperation(value = "概况下的攻略内容")
+    @GetMapping("/content")
+    public R<StrategyContent> content(Long id) {
+        log.info("概况下的攻略文章");
+        return R.ok(strategyService.findContent(id));
+    }
+
+    /**
+     * 概况下的攻略 top3
+     * @return
+     */
+
+    @ApiOperation(value = "概况下的攻略 top3")
+    @GetMapping("/viewnumTop3")
+    public R<StrategyContent> viewnumTop3(Long destId) {
+        log.info("概况下的攻略");
+        return R.ok(strategyService.findViewingTop3(destId));
     }
 }

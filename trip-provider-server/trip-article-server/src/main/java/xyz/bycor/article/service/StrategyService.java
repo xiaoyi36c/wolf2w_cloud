@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import xyz.bycor.article.domain.Strategy;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.article.domain.StrategyCatalog;
+import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.core.qo.QueryObject;
 
 import java.util.List;
@@ -18,4 +19,8 @@ public interface StrategyService extends IService<Strategy> {
     Page<Strategy> findPage(QueryObject qo);
 
     List<StrategyCatalog> findCatalogGroupsByDestId(Long destId);
+
+    StrategyContent findContent(Long id);
+
+    StrategyContent findViewingTop3(Long destId);
 }

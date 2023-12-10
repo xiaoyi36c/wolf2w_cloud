@@ -71,6 +71,23 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         return catalogList;
     }
 
+    @Override
+    public StrategyContent findContent(Long id) {
+        return strategyContentService.getById(id) != null ? strategyContentService.getById(id) : new StrategyContent();
+    }
+
+    @Override
+    public StrategyContent findViewingTop3(Long destId) {
+        List<Strategy> strategies = super.list(new QueryWrapper<Strategy>().lambda()
+                .eq(Strategy::getDestId, destId)
+                .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                .orderByDesc(Strategy::getViewnum)
+                .last("limit 3"));
+
+
+        return null;
+    }
+
 
     @Override
     public Strategy getById(Serializable id) {

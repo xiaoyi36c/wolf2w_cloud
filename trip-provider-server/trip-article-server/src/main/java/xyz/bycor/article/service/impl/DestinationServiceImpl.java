@@ -70,7 +70,11 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
             destinations.add(destination);
             parentId = destination.getParentId();
         } while (parentId != null);
-        return destinations;
+        // 反转集合
+        return destinations.stream().collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
+            Collections.reverse(list);
+            return list;
+        }));
     }
 
     @Override
