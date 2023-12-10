@@ -35,6 +35,6 @@ public class StrategyCatalog implements Serializable {
     private Integer seq; //排序
 
     @TableField(exist = false)
-    private List<ResourceProperties.Strategy> strategies = new ArrayList<>();
+    private List<Strategy> strategies = new ArrayList<>();
 
 }

@@ -49,9 +49,9 @@ public class DestinationController {
      */
     @ApiOperation(value = "吐司,面包屑")
     @GetMapping("/toasts")
-    public R<List<Destination>> toasts(Long parentId) {
+    public R<List<Destination>> toasts(Long destId) {
         log.info("吐司,面包屑");
-        return R.ok(destinationService.findToastList(parentId));
+        return R.ok(destinationService.findToastList(destId));
     }
 
 

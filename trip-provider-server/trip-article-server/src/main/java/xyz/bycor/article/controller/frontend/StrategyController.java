@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/backend/strategies")
+@RequestMapping("/strategies")
 @Api(tags = "攻略详细接口")
 @Slf4j
 @Validated

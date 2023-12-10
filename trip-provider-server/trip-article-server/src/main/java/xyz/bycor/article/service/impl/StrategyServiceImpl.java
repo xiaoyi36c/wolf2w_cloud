@@ -61,11 +61,12 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         List<StrategyCatalog> catalogList = strategyCatalogService.findListByDestId(destId);
         // 遍历分类，查询每个分类下的攻略
         for (StrategyCatalog catalog : catalogList) {
-            super.list(new QueryWrapper<Strategy>().lambda()
+            List<Strategy> strategies = super.list(new QueryWrapper<Strategy>().lambda()
                     .eq(Strategy::getCatalogId, catalog.getId())
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .orderByDesc(Strategy::getViewnum)
                     .last("limit 4"));
+            catalog.setStrategies(strategies);
         }
         return catalogList;
     }
