@@ -64,7 +64,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean save(Strategy entity) {
-        extracted(entity);
+        handleEntity(entity);
 
         // 6．没置创建时间
         entity.setCreateTime(new Date());
@@ -84,7 +84,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         return strategyContentService.save(entity.getContent());
     }
 
-    private void extracted(Strategy entity) {
+    private void handleEntity(Strategy entity) {
         // 1．处理Url
         if (entity.getCoverUrl() != null) {
             String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
@@ -118,7 +118,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
 
     @Override
     public boolean updateById(Strategy entity) {
-        extracted(entity);
+        handleEntity(entity);
         super.updateById(entity);
         //10．将攻略自增id设置到攻略内容对象
         entity.getContent().setId(entity.getId());
