@@ -73,4 +73,18 @@ public class StrategyController {
         log.info("概况下的攻略");
         return R.ok(strategyService.findViewingTop3(destId));
     }
+
+    /**
+     * 概况下的攻略
+     *
+     * @return
+     */
+
+    @ApiOperation(value = "概况下的攻略")
+    @GetMapping("/detail")
+    public R<Strategy> detail(Long id) {
+        log.info("概况下的攻略");
+        Strategy strategy = strategyService.getById(id);
+        return R.ok(strategy.getState() == Strategy.STATE_PUBLISH ? strategy : new Strategy());
+    }
 }

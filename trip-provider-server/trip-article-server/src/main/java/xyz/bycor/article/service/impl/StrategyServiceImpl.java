@@ -83,8 +83,6 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
                 .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                 .orderByDesc(Strategy::getViewnum)
                 .last("limit 3"));
-
-
         return strategies;
     }
 
