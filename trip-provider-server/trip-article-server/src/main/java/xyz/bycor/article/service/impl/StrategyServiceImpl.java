@@ -89,7 +89,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         if (entity.getCoverUrl() != null) {
             String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
             String images = OssUtil.uploadImgByBase64("images", fileName, entity.getCoverUrl());
-            entity.setCoverUrl(images);
+            entity.setCoverUrl("https://"+images);
         }
         // 2．查询主题名称
         if (entity.getThemeId() != null) {
