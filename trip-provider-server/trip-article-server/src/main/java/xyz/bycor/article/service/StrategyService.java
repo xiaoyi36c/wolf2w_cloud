@@ -22,5 +22,5 @@ public interface StrategyService extends IService<Strategy> {
 
     StrategyContent findContent(Long id);
 
-    StrategyContent findViewingTop3(Long destId);
+    List<Strategy> findViewingTop3(Long destId);
 }

@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.service.StrategyService;
@@ -62,12 +63,13 @@ public class StrategyController {
 
     /**
      * 概况下的攻略 top3
+     *
      * @return
      */
 
     @ApiOperation(value = "概况下的攻略 top3")
     @GetMapping("/viewnumTop3")
-    public R<StrategyContent> viewnumTop3(Long destId) {
+    public R<List<Strategy>> viewnumTop3(Long destId) {
         log.info("概况下的攻略");
         return R.ok(strategyService.findViewingTop3(destId));
     }

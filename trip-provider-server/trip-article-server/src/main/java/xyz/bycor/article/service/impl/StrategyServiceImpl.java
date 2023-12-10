@@ -77,7 +77,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
-    public StrategyContent findViewingTop3(Long destId) {
+    public List<Strategy> findViewingTop3(Long destId) {
         List<Strategy> strategies = super.list(new QueryWrapper<Strategy>().lambda()
                 .eq(Strategy::getDestId, destId)
                 .eq(Strategy::getState, Strategy.STATE_PUBLISH)
@@ -85,7 +85,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
                 .last("limit 3"));
 
 
-        return null;
+        return strategies;
     }
 
 
