@@ -3,13 +3,9 @@ package xyz.bycor.article.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import xyz.bycor.article.domain.Destination;
-import xyz.bycor.article.domain.Strategy;
-import xyz.bycor.article.domain.StrategyCatalog;
-import xyz.bycor.article.domain.StrategyTheme;
+import xyz.bycor.article.domain.*;
 import xyz.bycor.article.mapper.StrategyMapper;
 import xyz.bycor.article.service.StrategyCatalogService;
 import xyz.bycor.article.service.StrategyContentService;
@@ -18,6 +14,7 @@ import xyz.bycor.article.service.StrategyThemeService;
 import xyz.bycor.core.qo.QueryObject;
 import xyz.bycor.core.utils.OssUtil;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -57,14 +54,20 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
 
 
     @Override
+    public Strategy getById(Serializable id) {
+        Strategy strategy = super.getById(id);
+        StrategyContent content = strategyContentService.getById(strategy.getId());
+        strategy.setContent(content);
+        return strategy;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean save(Strategy entity) {
-        // 1．处理cover_url图片数据，上传到阿里云
-        if (StringUtils.isNotBlank(entity.getCoverUrl())) {
+        // 1．处理Url
+        if (entity.getCoverUrl() != null) {
             String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
-            // 上传到阿里云
             String images = OssUtil.uploadImgByBase64("images", fileName, entity.getCoverUrl());
-            // 设置图片路径
             entity.setCoverUrl(images);
         }
         // 2．查询主题名称
@@ -89,7 +92,6 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
                     entity.setIsabroad(Strategy.ABROAD_NO);
                 }
             }
-
         }
         // 6．没置创建时间
         entity.setCreateTime(new Date());
