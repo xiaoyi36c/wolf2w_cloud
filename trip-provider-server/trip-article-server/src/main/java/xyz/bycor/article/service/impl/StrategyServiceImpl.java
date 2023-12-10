@@ -64,6 +64,27 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean save(Strategy entity) {
+        extracted(entity);
+
+        // 6．没置创建时间
+        entity.setCreateTime(new Date());
+        // 7．设置各种数量初始值
+        entity.setViewnum(0);
+        entity.setReplynum(0);
+        entity.setFavornum(0);
+        entity.setSharenum(0);
+        entity.setThumbsupnum(0);
+        // 8．设置攻略状态
+        entity.setState(Strategy.STATE_NORMAL);
+        // 9．保存攻略对象
+        super.save(entity);
+        //10．将攻略自增id设置到攻略内容对象
+        entity.getContent().setId(entity.getId());
+        // 11．保存攻略内容
+        return strategyContentService.save(entity.getContent());
+    }
+
+    private void extracted(Strategy entity) {
         // 1．处理Url
         if (entity.getCoverUrl() != null) {
             String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
@@ -93,22 +114,22 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
                 }
             }
         }
-        // 6．没置创建时间
-        entity.setCreateTime(new Date());
-        // 7．设置各种数量初始值
-        entity.setViewnum(0);
-        entity.setReplynum(0);
-        entity.setFavornum(0);
-        entity.setSharenum(0);
-        entity.setThumbsupnum(0);
-        // 8．设置攻略状态
-        entity.setState(Strategy.STATE_NORMAL);
-        // 9．保存攻略对象
-        super.save(entity);
+    }
+
+    @Override
+    public boolean updateById(Strategy entity) {
+        extracted(entity);
+        super.updateById(entity);
         //10．将攻略自增id设置到攻略内容对象
         entity.getContent().setId(entity.getId());
         // 11．保存攻略内容
-        return strategyContentService.save(entity.getContent());
+        return strategyContentService.updateById(entity.getContent());
+    }
+
+    @Override
+    public boolean removeById(Serializable id) {
+        strategyContentService.removeById(id);
+        return super.removeById(id);
     }
 }
 

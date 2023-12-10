@@ -67,10 +67,9 @@
                           <select name="catalogId"  class="text_add" style="width: 50%;;margin-left: 10px;"  v-bind:value="strategy.catalogId">
                            <option value="-1">--请选择--</option>
                               <optgroup :label="c.destName" v-for="c in catalogVOs">
-                                  <option :value="v.id" v-for="v in c.catalogList">{{v.name}}</option>
+                                  <option :value="v.id" v-for="v in c.catalogs">{{v.name}}</option>
                               </optgroup>
                           </select>
-
                     </span>
                 </li>
                 <li class="clearfix"><label class="label_name">主题</label>
