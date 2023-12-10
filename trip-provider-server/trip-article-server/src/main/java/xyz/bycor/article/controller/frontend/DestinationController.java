@@ -42,4 +42,18 @@ public class DestinationController {
         log.info("查询热点目的地");
         return R.ok(destinationService.findHotList(rid));
     }
+
+    /**
+     * 吐司,面包屑
+     * @return
+     */
+    @ApiOperation(value = "吐司,面包屑")
+    @GetMapping("/toasts")
+    public R<List<Destination>> toasts(Long parentId) {
+        log.info("吐司,面包屑");
+        return R.ok(destinationService.findToastList(parentId));
+    }
+
+
+
 }

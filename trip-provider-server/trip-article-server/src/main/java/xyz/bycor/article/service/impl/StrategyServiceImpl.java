@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import xyz.bycor.article.domain.*;
 import xyz.bycor.article.mapper.StrategyMapper;
 import xyz.bycor.article.service.StrategyCatalogService;
@@ -32,14 +32,17 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     private final StrategyCatalogService strategyCatalogService;
     private final StrategyContentService strategyContentService;
 
+    private final TransactionTemplate transactionTemplate;
+
 
     private final DestinationServiceImpl destinationService;
 
-    public StrategyServiceImpl(StrategyContentService strategyContentService, StrategyCatalogService strategyCatalogService, StrategyThemeService strategyThemeService, DestinationServiceImpl destinationService) {
+    public StrategyServiceImpl(StrategyContentService strategyContentService, StrategyCatalogService strategyCatalogService, StrategyThemeService strategyThemeService, DestinationServiceImpl destinationService, TransactionTemplate transactionTemplate) {
         this.strategyContentService = strategyContentService;
         this.strategyCatalogService = strategyCatalogService;
         this.strategyThemeService = strategyThemeService;
         this.destinationService = destinationService;
+        this.transactionTemplate = transactionTemplate;
     }
 
 
@@ -52,6 +55,21 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
 
     }
 
+    @Override
+    public List<StrategyCatalog> findCatalogGroupsByDestId(Long destId) {
+        // 根据目的地id查询所有分类
+        List<StrategyCatalog> catalogList = strategyCatalogService.findListByDestId(destId);
+        // 遍历分类，查询每个分类下的攻略
+        for (StrategyCatalog catalog : catalogList) {
+            super.list(new QueryWrapper<Strategy>().lambda()
+                    .eq(Strategy::getCatalogId, catalog.getId())
+                    .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                    .orderByDesc(Strategy::getViewnum)
+                    .last("limit 4"));
+        }
+        return catalogList;
+    }
+
 
     @Override
     public Strategy getById(Serializable id) {
@@ -62,7 +80,6 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean save(Strategy entity) {
         handleEntity(entity);
 
@@ -76,12 +93,18 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         entity.setThumbsupnum(0);
         // 8．设置攻略状态
         entity.setState(Strategy.STATE_NORMAL);
-        // 9．保存攻略对象
-        super.save(entity);
-        //10．将攻略自增id设置到攻略内容对象
-        entity.getContent().setId(entity.getId());
-        // 11．保存攻略内容
-        return strategyContentService.save(entity.getContent());
+
+        transactionTemplate.execute(transactionStatus -> {
+            // 9．保存攻略对象
+            super.save(entity);
+            //10．将攻略自增id设置到攻略内容对象
+            entity.getContent().setId(entity.getId());
+            // 11．保存攻略内容
+            return strategyContentService.save(entity.getContent());
+        });
+
+      return true;
+
     }
 
     private void handleEntity(Strategy entity) {

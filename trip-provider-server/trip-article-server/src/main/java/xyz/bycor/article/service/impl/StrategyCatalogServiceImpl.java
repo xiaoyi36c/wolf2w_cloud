@@ -48,6 +48,12 @@ public class StrategyCatalogServiceImpl extends ServiceImpl<StrategyCatalogMappe
     }
 
     @Override
+    public List<StrategyCatalog> findListByDestId(Long destId) {
+        return super.list(new QueryWrapper<StrategyCatalog>().lambda()
+                .eq(StrategyCatalog::getDestId, destId));
+    }
+
+    @Override
     public boolean saveOrUpdate(StrategyCatalog entity) {
         if (entity != null) {
             if (entity.getDestId() !=null) {
