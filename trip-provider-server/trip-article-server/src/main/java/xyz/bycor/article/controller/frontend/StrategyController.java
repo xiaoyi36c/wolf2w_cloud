@@ -1,6 +1,8 @@
 package xyz.bycor.article.controller.frontend;
 
 
+import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.domain.StrategyTheme;
+import xyz.bycor.article.qo.StrategyQuery;
 import xyz.bycor.article.service.StrategyService;
 import xyz.bycor.core.response.R;
 
@@ -100,5 +103,27 @@ public class StrategyController {
         return R.ok(strategyService.getThemesByDestId(destId));
     }
 
+
+    /**
+     * 概况下的攻略分页查询
+     */
+    @ApiOperation(value = "概况下的攻略分页查询")
+    @GetMapping("/query")
+    public R<Page<Strategy>>  query(StrategyQuery qo) {
+        log.info("概况下的攻略分页查询");
+        return R.ok(strategyService.queryStrategy(qo));
+    }
+
+
+    /**
+     * 旅游攻略下的排行榜
+     */
+
+    @ApiOperation(value = "旅游攻略下的排行榜")
+    @GetMapping("/ranks")
+    public R<JSONObject> ranks() {
+        log.info("旅游攻略下的排行榜");
+        return R.ok(strategyService.findRangs());
+    }
 
 }
