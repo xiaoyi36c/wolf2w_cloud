@@ -5,6 +5,7 @@ import xyz.bycor.article.domain.Strategy;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
+import xyz.bycor.article.domain.StrategyTheme;
 import xyz.bycor.core.qo.QueryObject;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface StrategyService extends IService<Strategy> {
     StrategyContent findContent(Long id);
 
     List<Strategy> findViewingTop3(Long destId);
+
+    List<StrategyTheme> getThemesByDestId(Long destId);
 }

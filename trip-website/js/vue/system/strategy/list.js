@@ -27,7 +27,7 @@ var vue = new Vue({
             })
         },
         queryTheme:function (){
-            ajaxGet("article","/strategies/themes/list", {}, function (data) {
+            ajaxGet("article","/strategies/themes/" +this.param.destId, {}, function (data) {
                 vue.themes = data.data;
             })
 

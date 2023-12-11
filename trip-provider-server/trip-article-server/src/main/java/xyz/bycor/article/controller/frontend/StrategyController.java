@@ -7,11 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
+import xyz.bycor.article.domain.StrategyTheme;
 import xyz.bycor.article.service.StrategyService;
 import xyz.bycor.core.response.R;
 
@@ -87,4 +89,16 @@ public class StrategyController {
         Strategy strategy = strategyService.getById(id);
         return R.ok(strategy.getState() == Strategy.STATE_PUBLISH ? strategy : new Strategy());
     }
+
+    /**
+     * 概况下的攻略标签
+     */
+    @ApiOperation(value = "概况下的攻略标签")
+    @GetMapping("/themes/{destId}")
+    public R<List<StrategyTheme>>  themes(@PathVariable Long destId) {
+        log.info("概况下的攻略标签");
+        return R.ok(strategyService.getThemesByDestId(destId));
+    }
+
+
 }

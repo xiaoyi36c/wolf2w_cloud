@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
 * @author BAI
@@ -84,6 +85,22 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
                 .orderByDesc(Strategy::getViewnum)
                 .last("limit 3"));
         return strategies;
+    }
+
+    @Override
+    public List<StrategyTheme> getThemesByDestId(Long destId) {
+        List<Strategy> strategies = list(new QueryWrapper<Strategy>()
+                .select("DISTINCT theme_id ,theme_name")
+                .lambda()
+                .eq(Strategy::getDestId, destId)
+                .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                .orderByDesc(Strategy::getViewnum));
+        return strategies.stream().map(strategy -> {
+            StrategyTheme theme = new StrategyTheme();
+            theme.setId(strategy.getThemeId());
+            theme.setName(strategy.getThemeName());
+            return theme;
+        }).collect(Collectors.toList());
     }
 
 
