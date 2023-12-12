@@ -158,6 +158,11 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         return json;
     }
 
+    @Override
+    public Page<Strategy> queryList(StrategyQuery qo) {
+        return getBaseMapper().selectListByQuery(new Page<>(qo.getCurrent(), qo.getSize()), qo);
+    }
+
 
     @Override
     public Strategy getById(Serializable id) {

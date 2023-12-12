@@ -69,7 +69,7 @@ var vue = new Vue({
         //分页
         doPage: function (page) {
             $("#searchForm input[name='current']").val(page);
-            ajaxGet("article", "/strategies/query", $("#searchForm").serialize(), function (data) {
+            ajaxGet("article", "/strategies/list", $("#searchForm").serialize(), function (data) {
                 vue.page = data.data;
                 buildPage(vue.page.current, vue.page.pages, vue.doPage);
             })

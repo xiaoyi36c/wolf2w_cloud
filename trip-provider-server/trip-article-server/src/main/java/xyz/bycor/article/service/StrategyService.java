@@ -34,4 +34,6 @@ public interface StrategyService extends IService<Strategy> {
     JSONObject findRangs();
 
     JSONObject findConditions();
+
+    Page<Strategy> queryList(StrategyQuery qo);
 }

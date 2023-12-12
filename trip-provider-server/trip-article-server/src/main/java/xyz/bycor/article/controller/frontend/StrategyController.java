@@ -135,4 +135,15 @@ public class StrategyController {
         log.info("旅游攻略下的条件查询");
         return R.ok(strategyService.findConditions());
     }
+
+
+    /**
+     * 概况下的攻略分页查询
+     */
+    @ApiOperation(value = "概况下的攻略分页查询全部")
+    @GetMapping("/list")
+    public R<Page<Strategy>>  queryList(StrategyQuery qo) {
+        log.info("概况下的攻略分页查询");
+        return R.ok(strategyService.queryList(qo));
+    }
 }

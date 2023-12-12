@@ -48,7 +48,7 @@
     </select>
 
     <select id="selectAbroadConditions" resultType="map">
-        SELECT IFNULL(parent.id s.dest_id )as refid, IFNULL(parent.name, child.name) as name, count(*) total
+        SELECT IFNULL(parent.id ,s.dest_id )as refid, IFNULL(parent.name, child.name) as name, count(*) total
         FROM strategy s
                  JOIN destination child
                       ON child.id = s.dest_id
@@ -64,6 +64,28 @@
         WHERE state = 1
         GROUP BY theme_id, theme_name
         ORDER BY total DESC
+    </select>
+
+
+    <select id="selectListByQuery" resultMap="BaseResultMap">
+    select
+        s.*
+    from strategy s JOIN destination c ON s.dest_id = c.id
+    left join destination p on c.parent_id = p.id
+    <where>
+        <if test="qo.type > 0">
+            <choose>
+                <when test="qo.type == 3">
+                    and s.theme_id = #{qo.refId}
+                </when>
+            <otherwise>
+        (s.dest_id = #{qo.refId} or p.id = #{qo.refId}))
+            </otherwise>
+            </choose>
+        </if>
+      and s.state = 1
+    </where>
+    ORDER BY ${qo.orderBy} DESC
     </select>
 
 </mapper>
