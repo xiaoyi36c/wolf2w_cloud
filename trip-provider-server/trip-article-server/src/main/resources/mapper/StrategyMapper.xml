@@ -37,7 +37,7 @@
     </sql>
 
     <select id="selectChinaConditions" resultType="map">
-        SELECT s.dest_id as refid, IF(parent.name = '中国', child.name, parent.name) as name, count(*) total
+        SELECT  IF(parent.name = '中国', s.dest_id , parent.id )as refid, IF(parent.name = '中国', child.name, parent.name) as name, count(*) total
         FROM strategy s
                  JOIN destination child
                       ON child.id = s.dest_id
@@ -48,7 +48,7 @@
     </select>
 
     <select id="selectAbroadConditions" resultType="map">
-        SELECT s.dest_id as refid, IFNULL(parent.name, child.name) as name, count(*) total
+        SELECT IFNULL(parent.id s.dest_id )as refid, IFNULL(parent.name, child.name) as name, count(*) total
         FROM strategy s
                  JOIN destination child
                       ON child.id = s.dest_id
