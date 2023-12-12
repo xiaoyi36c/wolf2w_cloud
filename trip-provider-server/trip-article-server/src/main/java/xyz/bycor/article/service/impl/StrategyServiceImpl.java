@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -111,6 +112,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
+    @Cacheable( key =" 'query:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
     public Page<Strategy> queryStrategy(StrategyQuery qo) {
         Page<Strategy> strategyPage = new Page<>(qo.getCurrent(), qo.getSize());
         QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
@@ -210,6 +212,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
+    @CacheEvict
     public boolean save(Strategy entity) {
         handleEntity(entity);
 
@@ -270,6 +273,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
+    @CacheEvict
     public boolean updateById(Strategy entity) {
         handleEntity(entity);
         super.updateById(entity);
@@ -280,6 +284,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
+    @CacheEvict
     public boolean removeById(Serializable id) {
         strategyContentService.removeById(id);
         return super.removeById(id);
