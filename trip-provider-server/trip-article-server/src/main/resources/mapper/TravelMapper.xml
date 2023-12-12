@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.bycor.article.mapper.TravelMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.bycor.article.domain.Travel">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="destId" column="dest_id" jdbcType="BIGINT"/>
+            <result property="destName" column="dest_name" jdbcType="VARCHAR"/>
+            <result property="authorId" column="author_id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="summary" column="summary" jdbcType="VARCHAR"/>
+            <result property="coverUrl" column="cover_url" jdbcType="VARCHAR"/>
+            <result property="travelTime" column="travel_time" jdbcType="TIMESTAMP"/>
+            <result property="avgConsume" column="avg_consume" jdbcType="INTEGER"/>
+            <result property="day" column="day" jdbcType="INTEGER"/>
+            <result property="person" column="person" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="releaseTime" column="release_time" jdbcType="TIMESTAMP"/>
+            <result property="lastUpdateTime" column="last_update_time" jdbcType="TIMESTAMP"/>
+            <result property="ispublic" column="ispublic" jdbcType="INTEGER"/>
+            <result property="viewnum" column="viewnum" jdbcType="INTEGER"/>
+            <result property="replynum" column="replynum" jdbcType="INTEGER"/>
+            <result property="favornum" column="favornum" jdbcType="INTEGER"/>
+            <result property="sharenum" column="sharenum" jdbcType="INTEGER"/>
+            <result property="thumbsupnum" column="thumbsupnum" jdbcType="INTEGER"/>
+            <result property="state" column="state" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dest_id,dest_name,
+        author_id,title,summary,
+        cover_url,travel_time,avg_consume,
+        day,person,create_time,
+        release_time,last_update_time,ispublic,
+        viewnum,replynum,favornum,
+        sharenum,thumbsupnum,state
+    </sql>
+</mapper>
