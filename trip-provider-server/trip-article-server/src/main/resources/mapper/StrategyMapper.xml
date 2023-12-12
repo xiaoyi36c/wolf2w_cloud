@@ -81,10 +81,10 @@
             <if test="qo.type > 0">
                 <choose>
                     <when test="qo.type == 3">
-                        and s.theme_id = #{qo.refId}
+                        s.theme_id = #{qo.refid}
                     </when>
                     <otherwise>
-                        (s.dest_id = #{qo.refId} or p.id = #{qo.refId}))
+                        (s.dest_id = #{qo.refid} or p.id = #{qo.refid})
                     </otherwise>
                 </choose>
             </if>

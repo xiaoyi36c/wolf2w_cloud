@@ -10,7 +10,7 @@ public class StrategyQuery extends QueryObject {
 
     private String orderBy;
 
-    private Long refId;
+    private Long refid;
     private Integer type;
 
     private Long destId;

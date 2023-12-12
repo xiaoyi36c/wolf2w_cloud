@@ -26,4 +26,4 @@ wolf2w:
     codeKey: "wolf2w:sms:code:key:"
 logging:
   level:
-    xyz.bycor.member.mapper: debug
+    xyz.bycor.article.mapper: debug
