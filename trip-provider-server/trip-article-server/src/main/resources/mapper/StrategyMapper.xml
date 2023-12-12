@@ -35,4 +35,35 @@
         favornum,sharenum,thumbsupnum,
         state
     </sql>
+
+    <select id="selectChinaConditions" resultType="map">
+        SELECT s.dest_id as refid, IF(parent.name = '中国', child.name, parent.name) as name, count(*) total
+        FROM strategy s
+                 JOIN destination child
+                      ON child.id = s.dest_id
+                 JOIN destination parent ON child.parent_id = parent.id
+        WHERE s.state = 1 AND s.isabroad = 0
+        GROUP BY s.dest_id, s.dest_name
+        ORDER BY total DESC
+    </select>
+
+    <select id="selectAbroadConditions" resultType="map">
+        SELECT s.dest_id as refid, IFNULL(parent.name, child.name) as name, count(*) total
+        FROM strategy s
+                 JOIN destination child
+                      ON child.id = s.dest_id
+                 LEFT JOIN destination parent ON child.parent_id = parent.id
+        WHERE s.state = 1 AND s.isabroad = 1
+        GROUP BY s.dest_id, s.dest_name
+        ORDER BY total DESC
+    </select>
+
+    <select id="selectThemeConditions" resultType="map">
+        SELECT theme_id as refid, theme_name as name, count(*) total
+        FROM strategy
+        WHERE state = 1
+        GROUP BY theme_id, theme_name
+        ORDER BY total DESC
+    </select>
+
 </mapper>

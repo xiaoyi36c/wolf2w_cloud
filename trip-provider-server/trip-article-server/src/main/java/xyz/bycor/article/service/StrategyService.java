@@ -2,8 +2,8 @@ package xyz.bycor.article.service;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import xyz.bycor.article.domain.Strategy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.domain.StrategyTheme;
@@ -32,4 +32,6 @@ public interface StrategyService extends IService<Strategy> {
     Page<Strategy> queryStrategy(StrategyQuery qo);
 
     JSONObject findRangs();
+
+    JSONObject findConditions();
 }

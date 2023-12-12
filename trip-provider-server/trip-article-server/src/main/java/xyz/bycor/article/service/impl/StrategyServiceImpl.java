@@ -19,6 +19,7 @@ import xyz.bycor.core.utils.OssUtil;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -142,6 +143,18 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         wrapper.clear();
         json.put("hotRank", hot);
 
+        return json;
+    }
+
+    @Override
+    public JSONObject findConditions() {
+        JSONObject json = new JSONObject();
+        List<Map<String, Object>> abroadConditions = getBaseMapper().selectAbroadConditions();
+        List<Map<String, Object>> themeConditions = getBaseMapper().selectThemeConditions();
+        List<Map<String, Object>> chinaConditions = getBaseMapper().selectChinaConditions();
+        json.put("abroadCondition", abroadConditions);
+        json.put("themeCondition", themeConditions);
+        json.put("chinaCondition", chinaConditions);
         return json;
     }
 

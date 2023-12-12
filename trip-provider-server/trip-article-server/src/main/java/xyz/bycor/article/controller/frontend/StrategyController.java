@@ -126,4 +126,13 @@ public class StrategyController {
         return R.ok(strategyService.findRangs());
     }
 
+    /**
+     * 旅游攻略下的条件查询
+     */
+    @ApiOperation(value = "旅游攻略下的条件查询")
+    @GetMapping("/conditions")
+    public R<JSONObject> findConditions() {
+        log.info("旅游攻略下的条件查询");
+        return R.ok(strategyService.findConditions());
+    }
 }
