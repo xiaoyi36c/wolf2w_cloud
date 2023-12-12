@@ -5,29 +5,30 @@
 <mapper namespace="xyz.bycor.article.mapper.StrategyMapper">
 
     <resultMap id="BaseResultMap" type="xyz.bycor.article.domain.Strategy">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="destId" column="dest_id" jdbcType="BIGINT"/>
-            <result property="destName" column="dest_name" jdbcType="VARCHAR"/>
-            <result property="themeId" column="theme_id" jdbcType="BIGINT"/>
-            <result property="themeName" column="theme_name" jdbcType="VARCHAR"/>
-            <result property="catalogId" column="catalog_id" jdbcType="BIGINT"/>
-            <result property="catalogName" column="catalog_name" jdbcType="VARCHAR"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="subTitle" column="sub_title" jdbcType="VARCHAR"/>
-            <result property="summary" column="summary" jdbcType="VARCHAR"/>
-            <result property="coverUrl" column="cover_url" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="isabroad" column="isabroad" jdbcType="INTEGER"/>
-            <result property="viewnum" column="viewnum" jdbcType="INTEGER"/>
-            <result property="replynum" column="replynum" jdbcType="INTEGER"/>
-            <result property="favornum" column="favornum" jdbcType="INTEGER"/>
-            <result property="sharenum" column="sharenum" jdbcType="INTEGER"/>
-            <result property="thumbsupnum" column="thumbsupnum" jdbcType="INTEGER"/>
-            <result property="state" column="state" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="destId" column="dest_id" jdbcType="BIGINT"/>
+        <result property="destName" column="dest_name" jdbcType="VARCHAR"/>
+        <result property="themeId" column="theme_id" jdbcType="BIGINT"/>
+        <result property="themeName" column="theme_name" jdbcType="VARCHAR"/>
+        <result property="catalogId" column="catalog_id" jdbcType="BIGINT"/>
+        <result property="catalogName" column="catalog_name" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="subTitle" column="sub_title" jdbcType="VARCHAR"/>
+        <result property="summary" column="summary" jdbcType="VARCHAR"/>
+        <result property="coverUrl" column="cover_url" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="isabroad" column="isabroad" jdbcType="INTEGER"/>
+        <result property="viewnum" column="viewnum" jdbcType="INTEGER"/>
+        <result property="replynum" column="replynum" jdbcType="INTEGER"/>
+        <result property="favornum" column="favornum" jdbcType="INTEGER"/>
+        <result property="sharenum" column="sharenum" jdbcType="INTEGER"/>
+        <result property="thumbsupnum" column="thumbsupnum" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,dest_id,dest_name,
+        id
+        ,dest_id,dest_name,
         theme_id,theme_name,catalog_id,
         catalog_name,title,sub_title,
         summary,cover_url,create_time,
@@ -37,23 +38,27 @@
     </sql>
 
     <select id="selectChinaConditions" resultType="map">
-        SELECT  IF(parent.name = '中国', s.dest_id , parent.id )as refid, IF(parent.name = '中国', child.name, parent.name) as name, count(*) total
+        SELECT IF(parent.name = '中国', s.dest_id, parent.id)    as refid,
+               IF(parent.name = '中国', child.name, parent.name) as name,
+               count(*)                                             total
         FROM strategy s
                  JOIN destination child
                       ON child.id = s.dest_id
                  JOIN destination parent ON child.parent_id = parent.id
-        WHERE s.state = 1 AND s.isabroad = 0
+        WHERE s.state = 1
+          AND s.isabroad = 0
         GROUP BY s.dest_id, s.dest_name
         ORDER BY total DESC
     </select>
 
     <select id="selectAbroadConditions" resultType="map">
-        SELECT IFNULL(parent.id ,s.dest_id )as refid, IFNULL(parent.name, child.name) as name, count(*) total
+        SELECT IFNULL(parent.id, s.dest_id) as refid, IFNULL(parent.name, child.name) as name, count(*) total
         FROM strategy s
                  JOIN destination child
                       ON child.id = s.dest_id
                  LEFT JOIN destination parent ON child.parent_id = parent.id
-        WHERE s.state = 1 AND s.isabroad = 1
+        WHERE s.state = 1
+          AND s.isabroad = 1
         GROUP BY s.dest_id, s.dest_name
         ORDER BY total DESC
     </select>
@@ -68,24 +73,24 @@
 
 
     <select id="selectListByQuery" resultMap="BaseResultMap">
-    select
+        select
         s.*
-    from strategy s JOIN destination c ON s.dest_id = c.id
-    left join destination p on c.parent_id = p.id
-    <where>
-        <if test="qo.type > 0">
-            <choose>
-                <when test="qo.type == 3">
-                    and s.theme_id = #{qo.refId}
-                </when>
-            <otherwise>
-        (s.dest_id = #{qo.refId} or p.id = #{qo.refId}))
-            </otherwise>
-            </choose>
-        </if>
-      and s.state = 1
-    </where>
-    ORDER BY ${qo.orderBy} DESC
+        from strategy s JOIN destination c ON s.dest_id = c.id
+        left join destination p on c.parent_id = p.id
+        <where>
+            <if test="qo.type > 0">
+                <choose>
+                    <when test="qo.type == 3">
+                        and s.theme_id = #{qo.refId}
+                    </when>
+                    <otherwise>
+                        (s.dest_id = #{qo.refId} or p.id = #{qo.refId}))
+                    </otherwise>
+                </choose>
+            </if>
+            and s.state = 1
+        </where>
+        ORDER BY ${qo.orderBy} DESC
     </select>
 
 </mapper>
