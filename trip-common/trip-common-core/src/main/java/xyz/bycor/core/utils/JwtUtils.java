@@ -4,10 +4,47 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.env.Environment;
+import xyz.bycor.core.exception.BusinessException;
 
 import java.util.Date;
 
 public class JwtUtils {
+
+    private static String privateKey;
+
+    public static String getSubject() {
+       //  获取privateKey
+        if (StringUtils.isEmpty(privateKey)) {
+            Environment environment = SpringContextUtil.getBean(Environment.class);
+            privateKey = environment.getProperty("trip.auth.private-key");
+        }
+        // 获取token
+        String token = getToken();
+
+        // 解析token
+        Claims claims = null;
+        try {
+            claims = parseToken(token, privateKey);
+        } catch (Exception e) {
+
+            return null;
+        }
+
+        // 获取用户名
+        return claims.getSubject();
+    }
+
+    private static String getToken() {
+        // 获取请求头中的token
+        String token = RequestUtil.getRequest().getHeader("Authorization");
+        if (StringUtils.isEmpty(token)) {
+            throw new BusinessException(403, "token不能为空");
+        }
+        return token;
+    }
+
 
     /**
      * 生成token

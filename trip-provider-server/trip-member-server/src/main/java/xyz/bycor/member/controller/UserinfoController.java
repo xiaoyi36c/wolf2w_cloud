@@ -131,7 +131,6 @@ public class UserinfoController {
     public R<Boolean> exists(String phone) {
         log.info("根据手机号查询用户信息");
         Userinfo userinfo = userinfoService.getPhone(phone);
-
         return R.ok(userinfo != null);
     }
 
@@ -181,5 +180,12 @@ public class UserinfoController {
     public R<JSONObject> refreshToken(@NotNull(message = "登录过期") String refreshToken) {
         log.info("刷新token");
         return userinfoService.refreshToken(refreshToken);
+    }
+
+    @GetMapping("/findByPhone")
+    @ApiOperation(value = "根据手机号查询用户信息")
+    public Userinfo findByPhone(String phone) {
+        log.info("根据手机号查询用户信息");
+        return userinfoService.getPhone(phone);
     }
 }

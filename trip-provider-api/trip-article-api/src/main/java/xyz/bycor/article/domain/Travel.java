@@ -42,13 +42,13 @@ public class Travel implements Serializable {
     private Date createTime; //创建时间
     private Date releaseTime; //发布时间
     private Date lastUpdateTime; //最新更新时间内
-    private Integer ispublic=ISPUBLIC_NO; //是否发布
+    private Integer ispublic;
     private Integer viewnum;  //点击/阅读数
     private Integer replynum; //回复数
     private Integer favornum;//收藏数
     private Integer sharenum;//分享数
     private Integer thumbsupnum;//点赞数
-    private Integer state = STATE_NORMAL;//游记状态
+    private Integer state;  //状态
     @TableField(exist = false)
     private TravelContent content;  //游记内容
 }

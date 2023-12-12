@@ -3,12 +3,12 @@
 })*/
 
 //延长登录时间
-var token = Cookies.get("token");
-var user = Cookies.get("user");
-if (token && user) {
+var token = getAccessToken();
+var user = getUserInfo();
+/*if (token && user) {
     Cookies.set('token', token, {expires: 1 / 48, path: '/'});
     Cookies.set('user', user, {expires: 1 / 48, path: '/'});
-}
+}*/
 
 //api ip与端口
 var serverUrlMap = {
@@ -144,7 +144,7 @@ function getParams() {
 
 //获取用户信息
 function getUserInfo() {
-    var userString = Cookies.get('user');
+    var userString = localStorage.getItem('user');
     if (userString) {
         var user = JSON.parse(userString);
 

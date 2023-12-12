@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  *
- * @TableName userinfo
+ * UserinfoDTO 实体的DTO对象
  */
 @Data
 public class UserinfoDTO implements Serializable {
@@ -22,7 +22,6 @@ public class UserinfoDTO implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -75,6 +74,15 @@ public class UserinfoDTO implements Serializable {
      */
     private Integer state;
 
+    /**
+     * 逻辑删除
+     */
+    private Integer deleted;
+
+    /**
+     * 乐观锁
+     */
+    private Integer version;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

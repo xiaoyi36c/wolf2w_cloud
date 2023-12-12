@@ -1,7 +1,9 @@
 package xyz.bycor.article.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import xyz.bycor.article.domain.Travel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.bycor.article.qo.TravelQuery;
 
 /**
 * @author BAI
@@ -10,4 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface TravelService extends IService<Travel> {
 
+    Page<Travel> findTravelByDestId(TravelQuery travelQuery);
 }
