@@ -38,8 +38,6 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         QueryWrapper<Travel> wrapper = new QueryWrapper<>();
         String phone = JwtUtils.getSubject();
 
-        // 目的地下
-        wrapper.lambda().eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId());
 
         // 如果登录了 查询登录用户的游记
         if (!StringUtils.isEmpty(phone)) {
@@ -49,12 +47,20 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             wrapper.lambda().eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId());
         }
 
+
+
         //  公开 和 审核通过 的游记
         wrapper.lambda().or( w ->
                 // 公开 和 审核通过
                 w.eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
                   .eq(Travel::getState,Travel.STATE_RELEASE)
         );
+
+        // 目的地下
+        wrapper.lambda().eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId());
+
+
+
         Page<Travel> page = super.page(new Page<>(travelQuery.getCurrent(), travelQuery.getSize()), wrapper);
         List<Travel> records = page.getRecords();
 
