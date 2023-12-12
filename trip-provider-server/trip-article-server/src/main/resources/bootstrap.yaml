@@ -1,4 +1,14 @@
 spring:
+  cache:
+    # 缓存类型为 redis
+    type: redis
+    redis:
+      # 设置缓存过期时间/毫秒
+      time-to-live: 18000000
+      # 是否开启 key 前缀
+      use-key-prefix: true
+      # 是否缓存空值，防止缓存穿透
+      cache-null-values: true
   application:
     name: trip-article-server
   cloud:

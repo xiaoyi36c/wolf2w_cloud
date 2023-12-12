@@ -4,6 +4,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import xyz.bycor.article.domain.*;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 * @createDate 2023-12-09 11:44:57
 */
 @Service
+@CacheConfig(cacheNames = "wlof2w:trip:article:strategy")
 public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     implements StrategyService{
 
@@ -119,12 +122,16 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
+    @Cacheable(key = "'rangs'")
     public JSONObject findRangs() {
-        QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
+
         JSONObject json = new JSONObject();
         CompletableFuture<Void> abroadFuture = CompletableFuture.runAsync(() -> {
+            QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
             // 海外排行
-            List<Strategy> abroad = list(wrapper.lambda().eq(Strategy::getIsabroad, Strategy.ABROAD_YES)
+            List<Strategy> abroad = list(wrapper.lambda()
+                    .select(Strategy::getId, Strategy::getTitle,Strategy::getDestId, Strategy::getDestName)
+                    .eq(Strategy::getIsabroad, Strategy.ABROAD_YES)
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .last("order by thumbsupnum desc , favornum desc limit 10"));
             wrapper.clear();
@@ -132,20 +139,23 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         });
 
         CompletableFuture<Void> chinaFuture = CompletableFuture.runAsync(() -> {
+            QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
             // 国内排行
-            List<Strategy> china = list(wrapper.lambda().eq(Strategy::getIsabroad, Strategy.ABROAD_NO)
+            List<Strategy> china = list(wrapper.lambda()
+                    .select(Strategy::getId, Strategy::getTitle,Strategy::getDestId, Strategy::getDestName)
+                    .eq(Strategy::getIsabroad, Strategy.ABROAD_NO)
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .last("order by thumbsupnum desc , favornum desc limit 10"));
-            wrapper.clear();
             json.put("chinaRank", china);
         });
 
         CompletableFuture<Void> hotFuture = CompletableFuture.runAsync(() -> {
+            QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
             // 热门排行
             List<Strategy> hot = list(wrapper.lambda()
+                    .select(Strategy::getId, Strategy::getTitle,Strategy::getDestId, Strategy::getDestName)
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .last("order by viewnum desc , replynum desc limit 10"));
-            wrapper.clear();
             json.put("hotRank", hot);
         });
 
@@ -159,6 +169,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
+    @Cacheable(key = "'conditions'")
     public JSONObject findConditions() {
         JSONObject json = new JSONObject();
         CompletableFuture<Void> abroadFuture = CompletableFuture.runAsync(() -> {
@@ -182,7 +193,9 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         return json;
     }
 
+
     @Override
+    @Cacheable( key =" 'list:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
     public Page<Strategy> queryList(StrategyQuery qo) {
         return getBaseMapper().selectListByQuery(new Page<>(qo.getCurrent(), qo.getSize()), qo);
     }

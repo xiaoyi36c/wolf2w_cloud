@@ -38,12 +38,9 @@
     </sql>
 
     <select id="selectChinaConditions" resultType="map">
-        SELECT s.dest_id as refid, s.dest_id as name,
+        SELECT s.dest_id as refid, s.dest_name as name,
                count(*)                                             total
         FROM strategy s
-                 JOIN destination child
-                      ON child.id = s.dest_id
-                 JOIN destination parent ON child.parent_id = parent.id
         WHERE s.state = 1
           AND s.isabroad = 0
         GROUP BY s.dest_id, s.dest_name
@@ -51,7 +48,7 @@
     </select>
 
     <select id="selectAbroadConditions" resultType="map">
-        SELECT s.dest_id as refid, s.dest_id as name, count(*) total
+        SELECT s.dest_id as refid, s.dest_name as name, count(*) total
         FROM strategy s
         WHERE s.state = 1
           AND s.isabroad = 1
