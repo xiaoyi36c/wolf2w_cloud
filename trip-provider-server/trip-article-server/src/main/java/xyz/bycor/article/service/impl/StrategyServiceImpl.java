@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -121,40 +122,63 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     public JSONObject findRangs() {
         QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
         JSONObject json = new JSONObject();
+        CompletableFuture<Void> abroadFuture = CompletableFuture.runAsync(() -> {
+            // 海外排行
+            List<Strategy> abroad = list(wrapper.lambda().eq(Strategy::getIsabroad, Strategy.ABROAD_YES)
+                    .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                    .last("order by thumbsupnum desc , favornum desc limit 10"));
+            wrapper.clear();
+            json.put("abroadRank", abroad);
+        });
 
-        // 国内排行
-        List<Strategy> china = list(wrapper.lambda().eq(Strategy::getIsabroad, Strategy.ABROAD_NO)
-                .eq(Strategy::getState, Strategy.STATE_PUBLISH)
-                .last("order by thumbsupnum + favornum desc limit 10"));
-        wrapper.clear();
-        json.put("chinaRank", china);
+        CompletableFuture<Void> chinaFuture = CompletableFuture.runAsync(() -> {
+            // 国内排行
+            List<Strategy> china = list(wrapper.lambda().eq(Strategy::getIsabroad, Strategy.ABROAD_NO)
+                    .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                    .last("order by thumbsupnum desc , favornum desc limit 10"));
+            wrapper.clear();
+            json.put("chinaRank", china);
+        });
 
+        CompletableFuture<Void> hotFuture = CompletableFuture.runAsync(() -> {
+            // 热门排行
+            List<Strategy> hot = list(wrapper.lambda()
+                    .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                    .last("order by viewnum desc , replynum desc limit 10"));
+            wrapper.clear();
+            json.put("hotRank", hot);
+        });
 
-        // 海外排行
-        List<Strategy> abroad = list(wrapper.lambda().eq(Strategy::getIsabroad, Strategy.ABROAD_YES)
-                .eq(Strategy::getState, Strategy.STATE_PUBLISH)
-                .last("order by thumbsupnum + favornum desc limit 10"));
-        wrapper.clear();
-        json.put("abroadRank", abroad);
-        // 热门排行
-        List<Strategy> hot = list(wrapper.lambda()
-                .eq(Strategy::getState, Strategy.STATE_PUBLISH)
-                .last("order by viewnum + replynum desc limit 10"));
-        wrapper.clear();
-        json.put("hotRank", hot);
-
+        try {
+            CompletableFuture.allOf(abroadFuture, chinaFuture, hotFuture).get();
+        } catch (Exception e) {
+            log.error("查询排行出错", e);
+            throw new RuntimeException(e);
+        }
         return json;
     }
 
     @Override
     public JSONObject findConditions() {
         JSONObject json = new JSONObject();
-        List<Map<String, Object>> abroadConditions = getBaseMapper().selectAbroadConditions();
-        List<Map<String, Object>> themeConditions = getBaseMapper().selectThemeConditions();
-        List<Map<String, Object>> chinaConditions = getBaseMapper().selectChinaConditions();
-        json.put("abroadCondition", abroadConditions);
-        json.put("themeCondition", themeConditions);
-        json.put("chinaCondition", chinaConditions);
+        CompletableFuture<Void> abroadFuture = CompletableFuture.runAsync(() -> {
+            List<Map<String, Object>> abroadConditions = getBaseMapper().selectAbroadConditions();
+            json.put("abroadCondition", abroadConditions);
+        });
+        CompletableFuture<Void> themeFuture = CompletableFuture.runAsync(() -> {
+            List<Map<String, Object>> themeConditions = getBaseMapper().selectThemeConditions();
+            json.put("themeCondition", themeConditions);
+        });
+        CompletableFuture<Void> chinaFuture = CompletableFuture.runAsync(() -> {
+            List<Map<String, Object>> chinaConditions = getBaseMapper().selectChinaConditions();
+            json.put("chinaCondition", chinaConditions);
+        });
+        try {
+            CompletableFuture.allOf(abroadFuture, themeFuture, chinaFuture).get();
+        } catch (Exception e) {
+            log.error("查询条件出错", e);
+            throw new RuntimeException(e);
+        }
         return json;
     }
 
