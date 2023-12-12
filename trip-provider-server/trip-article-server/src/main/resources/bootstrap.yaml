@@ -4,7 +4,7 @@ spring:
     type: redis
     redis:
       # 设置缓存过期时间/毫秒
-      time-to-live: 18000000
+      time-to-live: 3600000
       # 是否开启 key 前缀
       use-key-prefix: true
       # 是否缓存空值，防止缓存穿透
