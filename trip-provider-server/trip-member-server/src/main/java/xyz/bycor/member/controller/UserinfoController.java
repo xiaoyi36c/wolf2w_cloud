@@ -18,6 +18,7 @@ import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author baishuai
@@ -187,5 +188,12 @@ public class UserinfoController {
     public Userinfo findByPhone(String phone) {
         log.info("根据手机号查询用户信息");
         return userinfoService.getPhone(phone);
+    }
+
+    @GetMapping("/findByIds")
+    @ApiOperation(value = "根据id集合查询用户信息")
+    public List<Userinfo> findByIds(@RequestParam Set<Long> authorIds) {
+        log.info("根据id集合查询用户信息");
+        return userinfoService.listByIds(authorIds);
     }
 }

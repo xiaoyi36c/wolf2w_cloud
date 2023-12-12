@@ -14,6 +14,8 @@ import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.member.dto.UserinfoDTO;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * @author BAI
@@ -53,11 +55,14 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
                 w.eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
                   .eq(Travel::getState,Travel.STATE_RELEASE)
         );
-
-
-
         Page<Travel> page = super.page(new Page<>(travelQuery.getCurrent(), travelQuery.getSize()), wrapper);
         List<Travel> records = page.getRecords();
+
+        // 获取每篇游记的作者信息
+        Set<Long> authorIds = records.stream().map(Travel::getAuthorId).collect(Collectors.toSet());
+        List<UserinfoDTO> userinfoDTOS = userInfoFeignService.findByIds(authorIds);
+
+
 
         return  page;
     }

@@ -34,7 +34,7 @@ var vue = new Vue({
         },
         //游记分页
         queryTravelPage:function (){
-            ajaxGet("article","/travels/query", {destId:this.param.id}, function (data) {
+            ajaxGet("article","/travels", {destId:this.param.id}, function (data) {
                 vue.page = data.data;
                 buildPage(vue.page.number, vue.page.totalPages, vue.doPage)
             })
