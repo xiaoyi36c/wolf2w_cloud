@@ -212,7 +212,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
-    @CacheEvict
+    @CacheEvict(allEntries = true)
     public boolean save(Strategy entity) {
         handleEntity(entity);
 
@@ -273,7 +273,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
-    @CacheEvict
+    @CacheEvict(allEntries = true)
     public boolean updateById(Strategy entity) {
         handleEntity(entity);
         super.updateById(entity);
@@ -284,7 +284,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
-    @CacheEvict
+    @CacheEvict(allEntries = true)
     public boolean removeById(Serializable id) {
         strategyContentService.removeById(id);
         return super.removeById(id);
