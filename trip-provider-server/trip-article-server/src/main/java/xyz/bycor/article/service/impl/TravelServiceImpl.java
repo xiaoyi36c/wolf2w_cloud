@@ -221,16 +221,16 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             return travel.getId();
         } else {
             // 修改的逻辑
-            Travel byId = getById(entity.getId());
+            Travel travel = getById(entity.getId());
             try {
-                Assert.notNull(byId, "游记不存在");
+                Assert.notNull(travel, "游记不存在");
             } catch (Exception e) {
                 throw new BusinessException(404, "访问的游记不存在");
             }
             // 获取 登录用户的信息
             String phone = JwtUtils.getSubject();
             UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
-            if (!entity.getAuthorId().equals(userinfo.getId())) {
+            if (travel.getAuthorId().equals(userinfo.getId())) {
                 throw new BusinessException(403, "不能修改别人的游记");
             }
             // 设置目的地信息
@@ -248,9 +248,9 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
                 entity.setState(Travel.STATE_WAITING);
             }
             // 修改游记
-            Travel travel = new Travel();
-            BeanUtils.copyProperties(entity, travel);
-            super.updateById(travel);
+            Travel travelUpdate = new Travel();
+            BeanUtils.copyProperties(entity, travelUpdate);
+            super.updateById(travelUpdate);
             // 修改游记内容
             TravelContent content = new TravelContent(travel.getId(), entity.getContent());
             travelContentService.saveOrUpdate(content);
