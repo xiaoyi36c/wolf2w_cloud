@@ -3,7 +3,7 @@ var vue = new Vue({
     el:"#app",
     data:{
         page:{},
-        user:{}
+        user:{},
     },
     methods:{
         //排序

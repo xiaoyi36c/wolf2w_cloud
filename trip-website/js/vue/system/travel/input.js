@@ -57,6 +57,13 @@ var vue = new Vue({
         // 数据回显:  travels/detail?id=
 
 
+    },
+
+    created:function () {
+        if (!getAccessToken()){
+            alert("请先登录");
+            window.location.href = "/login.html";
+        }
     }
 });
 
