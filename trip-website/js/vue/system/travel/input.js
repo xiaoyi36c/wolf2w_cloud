@@ -46,10 +46,10 @@ var vue = new Vue({
 
 
 
-        /*ajaxGet("/travels/detail", {id:id}, function (data) {
+        ajaxGet("/travels/"+ id, {}, function (data) {
             vue.tv = data.data;
             ue.setContent( data.data.content);
-        })*/
+        })
 
 
         //接口设计原则:一个接口一个功能
