@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.domain.TravelContent;
 import xyz.bycor.article.feign.UserInfoFeignService;
@@ -13,24 +14,22 @@ import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelContentService;
 import xyz.bycor.article.service.TravelService;
 import xyz.bycor.article.utils.RangParam;
+import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.member.dto.UserinfoDTO;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
-* @author BAI
-* @description 针对表【travel】的数据库操作Service实现
-* @createDate 2023-12-12 16:40:25
-*/
+ * @author BAI
+ * @description 针对表【travel】的数据库操作Service实现
+ * @createDate 2023-12-12 16:40:25
+ */
 @Service
 public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
-    implements TravelService{
+        implements TravelService {
 
     private final UserInfoFeignService userInfoFeignService;
 
@@ -52,56 +51,55 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             // feign 发送的请求
             UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
             // 登录用户
-            wrapper.nested( w ->
-                    w.lambda().eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId())
-                            .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
+            wrapper.nested(w ->
+                    w.lambda().eq(userinfo.getId() != null, Travel::getAuthorId, userinfo.getId())
+                            .eq(travelQuery.getDestId() != null, Travel::getDestId, travelQuery.getDestId())
             );
 
             // 时间范围
             RangParam travelTime = travelQuery.getTravelTime();
             if (travelTime != null) {
-                wrapper.between("MONTH(create_time)",travelTime.getMin(),travelTime.getMax());
+                wrapper.between("MONTH(create_time)", travelTime.getMin(), travelTime.getMax());
             }
             // 人均消费范围
             RangParam travelConsume = travelQuery.getTravelConsume();
             if (travelConsume != null) {
-                wrapper.lambda().between(Travel::getAvgConsume,travelConsume.getMin(),travelConsume.getMax());
+                wrapper.lambda().between(Travel::getAvgConsume, travelConsume.getMin(), travelConsume.getMax());
             }
             // 出行天数范围
             RangParam travelDays = travelQuery.getTravelDays();
             if (travelDays != null) {
-                wrapper.lambda().between(Travel::getDay,travelDays.getMin(),travelDays.getMax());
+                wrapper.lambda().between(Travel::getDay, travelDays.getMin(), travelDays.getMax());
             }
         }
         //  公开 和 审核通过 的游记
-        wrapper.or( w ->
+        wrapper.or(w ->
                 // 公开 和 审核通过
-                w.lambda().eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
-                  .eq(Travel::getState,Travel.STATE_RELEASE)
+                w.lambda().eq(Travel::getIspublic, Travel.ISPUBLIC_YES)
+                        .eq(Travel::getState, Travel.STATE_RELEASE)
                         // 目的地下
-                  .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
+                        .eq(travelQuery.getDestId() != null, Travel::getDestId, travelQuery.getDestId())
         );
 
         // 时间范围
         RangParam travelTime = travelQuery.getTravelTime();
         if (travelTime != null) {
-            wrapper.between("MONTH(create_time)",travelTime.getMin(),travelTime.getMax());
+            wrapper.between("MONTH(create_time)", travelTime.getMin(), travelTime.getMax());
         }
         // 人均消费范围
         RangParam travelConsume = travelQuery.getTravelConsume();
         if (travelConsume != null) {
-            wrapper.lambda().between(Travel::getAvgConsume,travelConsume.getMin(),travelConsume.getMax());
+            wrapper.lambda().between(Travel::getAvgConsume, travelConsume.getMin(), travelConsume.getMax());
         }
         // 出行天数范围
         RangParam travelDays = travelQuery.getTravelDays();
         if (travelDays != null) {
-            wrapper.lambda().between(Travel::getDay,travelDays.getMin(),travelDays.getMax());
+            wrapper.lambda().between(Travel::getDay, travelDays.getMin(), travelDays.getMax());
         }
 
 
-
         // 排序
-        wrapper.orderByDesc(StringUtils.isEmpty(travelQuery.getOrderBy()),travelQuery.getOrderBy());
+        wrapper.orderByDesc(StringUtils.isEmpty(travelQuery.getOrderBy()), travelQuery.getOrderBy());
 
 
         Page<Travel> page = super.page(new Page<>(travelQuery.getCurrent(), travelQuery.getSize()), wrapper);
@@ -127,16 +125,16 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             });
         });
 
-        return  page;
+        return page;
     }
 
     @Override
     public List<Travel> findTravelTop3(Long destId) {
         // 查询目的地下的游记
         QueryWrapper<Travel> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(Travel::getDestId,destId)
-                .eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
-                .eq(Travel::getState,Travel.STATE_RELEASE)
+        wrapper.lambda().eq(Travel::getDestId, destId)
+                .eq(Travel::getIspublic, Travel.ISPUBLIC_YES)
+                .eq(Travel::getState, Travel.STATE_RELEASE)
                 .orderByDesc(Travel::getViewnum)
                 .last("limit 3");
         return super.list(wrapper);
@@ -159,7 +157,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         // 查询游记内容
         CompletableFuture<TravelContent> contentFuture = CompletableFuture.supplyAsync(() -> travelContentService.getById(id));
 
-        CompletableFuture.allOf(travelFuture,contentFuture).whenCompleteAsync((v, t) -> {
+        CompletableFuture.allOf(travelFuture, contentFuture).whenCompleteAsync((v, t) -> {
             Travel travel = travelFuture.join();
             travel.setContent(contentFuture.join());
         });
@@ -170,6 +168,75 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         }
     }
 
+
+    @Override
+    public boolean saveOrUpdate(Travel entity) {
+        // 判断是否有id
+        if (entity.getId() == null) {
+            // 新增的逻辑
+            // 获取 登录用户的信息
+            String phone = JwtUtils.getSubject();
+            UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
+            // 设置作者信息
+            entity.setAuthorId(userinfo.getId());
+            // 设置保存状态
+            if (entity.getIspublic() == null) {
+                entity.setIspublic(Travel.ISPUBLIC_NO);
+            }
+            // 设置 审核状态
+            if (entity.getState() == null || entity.getState() == Travel.STATE_NORMAL) {
+                entity.setState(Travel.STATE_NORMAL);
+            } else {
+                entity.setReleaseTime(new Date());
+                entity.setState(Travel.STATE_WAITING);
+            }
+            //初始化数据
+            entity.setViewnum(0);
+            entity.setReplynum(0);
+            entity.setFavornum(0);
+            entity.setSharenum(0);
+            entity.setThumbsupnum(0);
+            // 设置创建时间
+            entity.setCreateTime(new Date());
+            entity.setLastUpdateTime(new Date());
+            // 新增游记
+            super.save(entity);
+            // 新增游记内容
+            TravelContent content = entity.getContent();
+            content.setId(entity.getId());
+            return travelContentService.saveOrUpdate(content);
+        } else {
+            // 修改的逻辑
+            Travel byId = getById(entity.getId());
+            try {
+                Assert.notNull(byId, "游记不存在");
+            } catch (Exception e) {
+                throw new BusinessException(404, "访问的游记不存在");
+            }
+            // 获取 登录用户的信息
+            String phone = JwtUtils.getSubject();
+            UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
+            if (!entity.getAuthorId().equals(userinfo.getId())) {
+                throw new BusinessException(403, "不能修改别人的游记");
+            }
+            // 判断是否私密
+            if (entity.getState() == null || entity.getState() == Travel.STATE_NORMAL) {
+                // 如果是私密的 状态改为 草稿
+                entity.setState(Travel.STATE_NORMAL);
+            } else {
+                // 设置最新更新时间
+                entity.setLastUpdateTime(new Date());
+                // 待发布
+                entity.setState(Travel.STATE_WAITING);
+            }
+            // 修改游记
+            super.updateById(entity);
+            // 修改游记内容
+            TravelContent content = entity.getContent();
+            content.setId(entity.getId());
+            return travelContentService.saveOrUpdate(content);
+        }
+    }
 }
 
 

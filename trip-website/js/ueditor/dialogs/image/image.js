@@ -193,11 +193,11 @@
         },
         uploadComplete: function(r){
            var me = this;
-              if (r.state == "SUCCESS") {
+              if (r.state === "SUCCESS") {
                   Base.callback(me.editor, me.dialog, r.url, r.state);
              }else {
                  var lang = me.editor.getLang('image');
-                 Base.callback(me.editor, me.dialog, r.url, (lang && lang.uploadError) || 'Error!');
+                 Base.callback(me.editor, me.dialog, '', (lang && lang.uploadError) || 'Error!');
              }
 
         },

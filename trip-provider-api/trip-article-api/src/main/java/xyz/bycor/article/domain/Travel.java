@@ -49,6 +49,8 @@ public class Travel implements Serializable {
     private Integer sharenum;//分享数
     private Integer thumbsupnum;//点赞数
     private Integer state;  //状态
+
     @TableField(exist = false)
     private TravelContent content;  //游记内容
+
 }

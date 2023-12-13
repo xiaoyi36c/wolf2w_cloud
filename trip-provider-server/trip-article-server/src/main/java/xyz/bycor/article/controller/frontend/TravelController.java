@@ -72,17 +72,24 @@ public class TravelController {
             //文件类型 .+后缀名
             json.put("type", ".jpg");
             //文件路径
-            // map.put("url", uploadPath);    // 浏览器不能直接访问项目外目录的图片等文件，需要做虚拟路径映射
             json.put("url", "https://"+url);
             //文件大小（字节数）
             json.put("size", file.getSize());
-
         } catch (Exception e) {
             json.put("state", "ERROR");
             log.error("上传失败", e);
         }
         return json;
 
+    }
+
+
+    @ApiOperation(value = "游记明细新增或修改")
+    @PostMapping("/saveOrUpdate")
+    public R saveOrUpdate(@RequestBody Travel travel) {
+        log.info("游记明细新增或修改");
+        travelService.saveOrUpdate(travel);
+        return R.ok();
     }
 
 }
