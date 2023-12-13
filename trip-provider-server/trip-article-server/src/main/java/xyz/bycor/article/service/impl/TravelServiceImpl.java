@@ -8,11 +8,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import xyz.bycor.article.domain.Destination;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.domain.TravelContent;
 import xyz.bycor.article.feign.UserInfoFeignService;
 import xyz.bycor.article.mapper.TravelMapper;
 import xyz.bycor.article.qo.TravelQuery;
+import xyz.bycor.article.service.DestinationService;
 import xyz.bycor.article.service.TravelContentService;
 import xyz.bycor.article.service.TravelService;
 import xyz.bycor.article.utils.RangParam;
@@ -36,8 +38,11 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
     private final UserInfoFeignService userInfoFeignService;
 
-    public TravelServiceImpl(UserInfoFeignService userInfoFeignService, TravelContentService travelContentService) {
+    private final DestinationService destinationService;
+
+    public TravelServiceImpl(UserInfoFeignService userInfoFeignService, DestinationService destinationService, TravelContentService travelContentService) {
         this.userInfoFeignService = userInfoFeignService;
+        this.destinationService = destinationService;
         this.travelContentService = travelContentService;
     }
 
@@ -181,6 +186,11 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
             // 设置作者信息
             entity.setAuthorId(userinfo.getId());
+            // 设置目的地信息
+            Destination dest = destinationService.getById(entity.getDestId());
+
+            entity.setDestName(dest.getName());
+
             // 设置保存状态
             if (entity.getIspublic() == null) {
                 entity.setIspublic(Travel.ISPUBLIC_NO);
@@ -223,6 +233,10 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             if (!entity.getAuthorId().equals(userinfo.getId())) {
                 throw new BusinessException(403, "不能修改别人的游记");
             }
+            // 设置目的地信息
+            Destination dest = destinationService.getById(entity.getDestId());
+            entity.setDestName(dest.getName());
+
             // 判断是否私密
             if (entity.getState() == null || entity.getState() == Travel.STATE_NORMAL) {
                 // 如果是私密的 状态改为 草稿
