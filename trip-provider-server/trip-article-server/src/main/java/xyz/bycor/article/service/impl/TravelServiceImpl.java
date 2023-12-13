@@ -230,7 +230,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             // 获取 登录用户的信息
             String phone = JwtUtils.getSubject();
             UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
-            if (travel.getAuthorId().equals(userinfo.getId())) {
+            if (!travel.getAuthorId().equals(userinfo.getId())) {
                 throw new BusinessException(403, "不能修改别人的游记");
             }
             // 设置目的地信息
