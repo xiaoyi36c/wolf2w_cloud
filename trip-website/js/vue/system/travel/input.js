@@ -38,25 +38,20 @@ var vue = new Vue({
 
         ajaxGet("article","/backend/destinations/list", {}, function (data) {
             vue.dests = data.data;
-
-
         })
 
 
 
-
-
-        ajaxGet("/travels/"+ id, {}, function (data) {
-            vue.tv = data.data;
-            ue.setContent( data.data.content);
-        })
-
+        if (id){
+            ajaxGet("article","/travels/"+ id, {}, function (data) {
+                vue.tv = data.data;
+                ue.setContent( data.data.content);
+            })
+        }
 
         //接口设计原则:一个接口一个功能
         // 查询目的:  destinations/list
         // 数据回显:  travels/detail?id=
-
-
     },
 
     created:function () {
