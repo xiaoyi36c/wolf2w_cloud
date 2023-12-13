@@ -5,6 +5,8 @@ import xyz.bycor.article.domain.Travel;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.article.qo.TravelQuery;
 
+import java.util.List;
+
 /**
 * @author BAI
 * @description 针对表【travel】的数据库操作Service
@@ -13,4 +15,6 @@ import xyz.bycor.article.qo.TravelQuery;
 public interface TravelService extends IService<Travel> {
 
     Page<Travel> findTravelByDestId(TravelQuery travelQuery);
+
+    List<Travel> findTravelTop3(Long destId);
 }

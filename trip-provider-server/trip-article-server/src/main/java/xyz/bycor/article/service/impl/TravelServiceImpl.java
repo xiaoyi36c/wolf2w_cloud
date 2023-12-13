@@ -104,6 +104,18 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
         return  page;
     }
+
+    @Override
+    public List<Travel> findTravelTop3(Long destId) {
+        // 查询目的地下的游记
+        QueryWrapper<Travel> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Travel::getDestId,destId)
+                .eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
+                .eq(Travel::getState,Travel.STATE_RELEASE)
+                .orderByDesc(Travel::getViewnum)
+                .last("limit 3");
+        return super.list(wrapper);
+    }
 }
 
 
