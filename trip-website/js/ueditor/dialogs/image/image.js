@@ -215,7 +215,6 @@
                 $($(this).parent()[0]).ajaxSubmit(function (data) {
                     me.uploadComplete(data);
                     Upload.updateInput( input );
-                    console.log(data)
                     callback && callback();
                 })
             });
