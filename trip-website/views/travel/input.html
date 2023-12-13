@@ -30,6 +30,11 @@
                     url:url,
                     type:"post",
                     success:function (data) {
+                        if (data.code ===403){
+                            alert("请先登录");
+                            window.location.href = "/views/user/login.html";
+                            return;
+                        }
                         console.log(data)
                         url = data.url;
                         console.log(url)
