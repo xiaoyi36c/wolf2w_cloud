@@ -44,21 +44,20 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             // feign 发送的请求
             UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
             // 登录用户
-            wrapper.lambda().eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId());
+            wrapper.lambda().nested( w ->
+                    w.eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId())
+                            .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
+            );
         }
-
-
 
         //  公开 和 审核通过 的游记
         wrapper.lambda().or( w ->
                 // 公开 和 审核通过
                 w.eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
                   .eq(Travel::getState,Travel.STATE_RELEASE)
+                // 目的地下
+                        .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
         );
-
-        // 目的地下
-        wrapper.lambda().eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId());
-
 
 
         Page<Travel> page = super.page(new Page<>(travelQuery.getCurrent(), travelQuery.getSize()), wrapper);
