@@ -30,9 +30,12 @@
                     url:url,
                     type:"post",
                     success:function (data) {
+                        console.log(data)
+                        url = data.url;
+                        console.log(url)
                         $("#choseBtn").html(" + 选择封面");
-                        $("#coverImage").attr("src", data.url);
-                        $("#coverValue").val(data);
+                        $("#coverImage").attr("src", url);
+                        $("#coverValue").val(url);
                     }
                 })
             }
