@@ -62,7 +62,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         // 时间范围
         RangParam travelTime = travelQuery.getTravelTime();
         if (travelTime != null) {
-            wrapper.between("MONTH(created_time)",travelTime.getMin(),travelTime.getMax());
+            wrapper.between("MONTH(create_time)",travelTime.getMin(),travelTime.getMax());
         }
         // 人均消费范围
         RangParam travelConsume = travelQuery.getTravelConsume();
@@ -84,12 +84,14 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
         // 获取每篇游记的作者信息
         Set<Long> authorIds = records.stream().map(Travel::getAuthorId).collect(Collectors.toSet());
-        List<UserinfoDTO> userinfoDTOS = userInfoFeignService.findByIds(authorIds);
+
 
         // 如果没有作者信息 直接返回
-        if (userinfoDTOS == null || userinfoDTOS.isEmpty()) {
+        if (authorIds.isEmpty()) {
             return page;
         }
+
+        List<UserinfoDTO> userinfoDTOS = userInfoFeignService.findByIds(authorIds);
 
         // 将作者信息设置到游记中
         records.forEach(travel -> {

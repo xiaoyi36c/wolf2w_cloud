@@ -48,15 +48,15 @@ public class TravelQuery extends QueryObject {
     private RangParam travelDays;
 
 
-    public void travelTimeType(Integer type){
-        this.travelTime= TRAVEL_TIME.get(type);
+    public void setTravelTimeType(Integer travelTimeType){
+        this.travelTime= TRAVEL_TIME.get(travelTimeType);
     }
 
-    public void consumeType(Integer type){
-        this.travelConsume = TRAVEL_CONSUME.get(type);
+    public void setConsumeType(Integer consumeType){
+        this.travelConsume = TRAVEL_CONSUME.get(consumeType);
     }
 
-    public void dayType(Integer type){
-        this.travelDays = TRAVEL_DAYS.get(type);
+    public void setDayType(Integer dayType){
+        this.travelDays = TRAVEL_DAYS.get(dayType);
     }
 }

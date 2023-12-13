@@ -43,7 +43,7 @@ var vue = new Vue({
         commPage:function (page) {
             var p = $("#travelForm").serialize() + "&destId="+this.param.id + "&currentPage=" + page;
             //游记分页
-            ajaxGet("article","/travels/query?"+p,{}, function (data) {
+            ajaxGet("article","/travels?"+p,{}, function (data) {
                 vue.page = data.data;
                 buildPage(vue.page.number, vue.page.totalPages, vue.doPage)
             })
