@@ -17,9 +17,9 @@ var vue = new Vue({
         //分页
         commPage:function (page) {
             var param = getParams();
-            var p = $("#travelForm").serialize() + "&currentPage=" + page;
+            var p = $("#travelForm").serialize() + "&current=" + page;
             //游记分页
-            ajaxGet("article","/travels/query?"+p,{}, function (data) {
+            ajaxGet("article","/travels?"+p,{}, function (data) {
                 vue.page = data.data;
                 buildPage(vue.page.current, vue.page.pages,vue.doPage);
             })
@@ -31,7 +31,7 @@ var vue = new Vue({
             this.commPage(1);
         },
         queryPage:function (){
-            ajaxGet("article","/travels/query",{}, function (data) {
+            ajaxGet("article","/travels",{}, function (data) {
                 vue.page = data.data;
                 buildPage(vue.page.current, vue.page.pages,vue.doPage);
             })
