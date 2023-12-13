@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelService;
+import xyz.bycor.auth.anno.RequiredLogin;
 import xyz.bycor.core.response.R;
 import xyz.bycor.core.utils.OssUtil;
 
@@ -55,6 +56,7 @@ public class TravelController {
 
     @ApiOperation(value = "游记明细 图片上传")
     @PostMapping("/coverImageUpload")
+    @RequiredLogin // 必须登录
     public JSONObject coverImageUpload(@RequestParam("upfile") MultipartFile file) {
         log.info("游记明细 图片上传");
         // 生成 UUID  12位
