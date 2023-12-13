@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.qo.TravelQuery;
+import xyz.bycor.article.vo.TravelRequest;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface TravelService extends IService<Travel> {
 
     Travel findById(Long id);
 
+
+    boolean saveOrUpdateByTravelRequest(TravelRequest travel);
 }

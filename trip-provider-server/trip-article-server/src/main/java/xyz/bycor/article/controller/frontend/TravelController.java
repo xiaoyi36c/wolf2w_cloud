@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelService;
+import xyz.bycor.article.vo.TravelRequest;
 import xyz.bycor.auth.anno.RequiredLogin;
 import xyz.bycor.core.response.R;
 import xyz.bycor.core.utils.OssUtil;
@@ -88,9 +89,9 @@ public class TravelController {
 
     @ApiOperation(value = "游记明细新增或修改")
     @PostMapping("/saveOrUpdate")
-    public R saveOrUpdate(Travel travel) {
+    public R saveOrUpdate(TravelRequest travel) {
         log.info("游记明细新增或修改");
-        travelService.saveOrUpdate(travel);
+        travelService.saveOrUpdateByTravelRequest(travel);
         return R.ok();
     }
 

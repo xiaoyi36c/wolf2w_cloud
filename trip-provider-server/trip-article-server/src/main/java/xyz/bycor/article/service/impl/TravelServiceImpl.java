@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -15,6 +16,7 @@ import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelContentService;
 import xyz.bycor.article.service.TravelService;
 import xyz.bycor.article.utils.RangParam;
+import xyz.bycor.article.vo.TravelRequest;
 import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.member.dto.UserinfoDTO;
@@ -158,7 +160,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
         CompletableFuture.allOf(travelFuture, contentFuture).whenCompleteAsync((v, t) -> {
             Travel travel = travelFuture.join();
-            travel.setContentHtml(contentFuture.join());
+            travel.setContent(contentFuture.join());
         });
         try {
             return travelFuture.get();
@@ -168,9 +170,9 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
     }
 
 
-    @Override
+
     @Transactional
-    public boolean saveOrUpdate(Travel entity) {
+    public boolean saveOrUpdateByTravelRequest(TravelRequest entity) {
         // 判断是否有id
         if (entity.getId() == null) {
             // 新增的逻辑
@@ -200,9 +202,11 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             entity.setCreateTime(new Date());
             entity.setLastUpdateTime(new Date());
             // 新增游记
-            super.save(entity);
+            Travel travel = new Travel();
+            BeanUtils.copyProperties(entity, travel);
+            super.save(travel);
             // 新增游记内容
-            TravelContent content = new TravelContent(entity.getId(), entity.getContent());
+            TravelContent content = new TravelContent(travel.getId(), entity.getContent());
             return travelContentService.saveOrUpdate(content);
         } else {
             // 修改的逻辑
@@ -229,9 +233,11 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
                 entity.setState(Travel.STATE_WAITING);
             }
             // 修改游记
-            super.updateById(entity);
+            Travel travel = new Travel();
+            BeanUtils.copyProperties(entity, travel);
+            super.updateById(travel);
             // 修改游记内容
-            TravelContent content = new TravelContent(entity.getId(), entity.getContent());
+            TravelContent content = new TravelContent(travel.getId(), entity.getContent());
             return travelContentService.saveOrUpdate(content);
         }
     }
