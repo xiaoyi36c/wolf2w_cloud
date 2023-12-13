@@ -10,6 +10,7 @@ import xyz.bycor.article.feign.UserInfoFeignService;
 import xyz.bycor.article.mapper.TravelMapper;
 import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelService;
+import xyz.bycor.article.utils.RangParam;
 import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.member.dto.UserinfoDTO;
 
@@ -38,26 +39,44 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         QueryWrapper<Travel> wrapper = new QueryWrapper<>();
         String phone = JwtUtils.getSubject();
 
-
         // 如果登录了 查询登录用户的游记
         if (!StringUtils.isEmpty(phone)) {
             // feign 发送的请求
             UserinfoDTO userinfo = userInfoFeignService.findByPhone(phone);
             // 登录用户
-            wrapper.lambda().nested( w ->
-                    w.eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId())
+            wrapper.nested( w ->
+                    w.lambda().eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId())
                             .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
             );
         }
 
         //  公开 和 审核通过 的游记
-        wrapper.lambda().or( w ->
+        wrapper.or( w ->
                 // 公开 和 审核通过
-                w.eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
+                w.lambda().eq(Travel::getIspublic,Travel.ISPUBLIC_YES)
                   .eq(Travel::getState,Travel.STATE_RELEASE)
-                // 目的地下
-                        .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
+                        // 目的地下
+                  .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
         );
+
+        // 时间范围
+        RangParam travelTime = travelQuery.getTravelTime();
+        if (travelTime != null) {
+            wrapper.between("MONTH(created_time)",travelTime.getMin(),travelTime.getMax());
+        }
+        // 人均消费范围
+        RangParam travelConsume = travelQuery.getTravelConsume();
+        if (travelConsume != null) {
+            wrapper.lambda().between(Travel::getAvgConsume,travelConsume.getMin(),travelConsume.getMax());
+        }
+        // 出行天数范围
+        RangParam travelDays = travelQuery.getTravelDays();
+        if (travelDays != null) {
+            wrapper.lambda().between(Travel::getDay,travelDays.getMin(),travelDays.getMax());
+        }
+
+        // 排序
+        wrapper.orderByDesc(StringUtils.isEmpty(travelQuery.getOrderBy()),travelQuery.getOrderBy());
 
 
         Page<Travel> page = super.page(new Page<>(travelQuery.getCurrent(), travelQuery.getSize()), wrapper);
