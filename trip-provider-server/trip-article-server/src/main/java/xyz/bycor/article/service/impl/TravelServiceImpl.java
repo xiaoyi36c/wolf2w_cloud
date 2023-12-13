@@ -6,16 +6,21 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import xyz.bycor.article.domain.Travel;
+import xyz.bycor.article.domain.TravelContent;
 import xyz.bycor.article.feign.UserInfoFeignService;
 import xyz.bycor.article.mapper.TravelMapper;
 import xyz.bycor.article.qo.TravelQuery;
+import xyz.bycor.article.service.TravelContentService;
 import xyz.bycor.article.service.TravelService;
 import xyz.bycor.article.utils.RangParam;
 import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.member.dto.UserinfoDTO;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -29,9 +34,12 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
     private final UserInfoFeignService userInfoFeignService;
 
-    public TravelServiceImpl(UserInfoFeignService userInfoFeignService) {
+    public TravelServiceImpl(UserInfoFeignService userInfoFeignService, TravelContentService travelContentService) {
         this.userInfoFeignService = userInfoFeignService;
+        this.travelContentService = travelContentService;
     }
+
+    private final TravelContentService travelContentService;
 
 
     @Override
@@ -115,6 +123,34 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
                 .orderByDesc(Travel::getViewnum)
                 .last("limit 3");
         return super.list(wrapper);
+    }
+
+    @Override
+    public Travel findById(Long id) {
+        //查询游记
+        CompletableFuture<Travel> travelFuture = CompletableFuture.supplyAsync(() -> super.getById(id)).whenComplete((travel, throwable) -> {
+            // 查询作者信息
+            Set<Long> ids = new HashSet<>(Collections.singletonList(travel.getAuthorId()));
+            userInfoFeignService.findByIds(ids).forEach(userinfoDTO -> {
+                if (travel.getAuthorId().equals(userinfoDTO.getId())) {
+                    travel.setAuthor(userinfoDTO);
+                }
+            });
+        });
+
+
+        // 查询游记内容
+        CompletableFuture<TravelContent> contentFuture = CompletableFuture.supplyAsync(() -> travelContentService.getById(id));
+
+        CompletableFuture.allOf(travelFuture,contentFuture).whenCompleteAsync((v, t) -> {
+            Travel travel = travelFuture.join();
+            travel.setContent(contentFuture.join());
+        });
+        try {
+            return travelFuture.get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

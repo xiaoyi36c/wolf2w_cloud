@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelService;
@@ -38,9 +37,17 @@ public class TravelController {
 
 
     @ApiOperation(value = "游记Top3")
-    @GetMapping("/viewnumTop3")
+    @GetMapping("/viewnnumTop3")
     public R<List<Travel>> viewnumTop3(Long destId) {
         log.info("游记Top3");
         return R.ok(travelService.findTravelTop3(destId));
     }
+
+    @ApiOperation(value = "游记明细")
+    @GetMapping("/{id}")
+    public R<Travel> findById(Long id) {
+        log.info("游记明细");
+        return R.ok(travelService.findById(id));
+    }
+
 }

@@ -17,4 +17,6 @@ public interface TravelService extends IService<Travel> {
     Page<Travel> findTravelByDestId(TravelQuery travelQuery);
 
     List<Travel> findTravelTop3(Long destId);
+
+    Travel findById(Long id);
 }

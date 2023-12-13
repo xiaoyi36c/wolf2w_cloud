@@ -127,7 +127,7 @@ var vue = new Vue({
         //游记明细
         queryDetail:function (){
             //游记
-            ajaxGet("article","/travels/detail",{id:this.param.id}, function (data) {
+            ajaxGet("article","/travels/"+ this.param.id,{}, function (data) {
                 vue.detail = data.data;
                 vue.content = data.data.content
                 vue.param.destId = vue.detail.destId;
