@@ -54,6 +54,12 @@ public class CheckLoginTokenFilter implements GlobalFilter {
         }
         // 4.如果不是白名单中的url,则获取请求头中的token
         String token = exchange.getRequest().getHeaders().getFirst(authorization);
+        if (token.isEmpty()){
+            // 从请求参数中获取token
+            token = exchange.getRequest().getQueryParams().getFirst(authorization);
+        }
+
+
         try {
             // 2. 解析 token
             JwtUtils.parseToken(token, privateKey);

@@ -24,7 +24,7 @@
 
     <script>
         function uploadPic () {
-            var url = getServiceUrl("article") +"/travels/coverImageUpload?access_token="+getAccessToken();
+            var url = getServiceUrl("article") +"/travels/coverImageUpload?Authorization="+getAccessToken();
             if($("#coverBtn").val()){
                 $("#coverForm").ajaxSubmit({
                     url:url,
