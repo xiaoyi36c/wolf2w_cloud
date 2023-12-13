@@ -172,7 +172,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
 
     @Transactional
-    public boolean saveOrUpdateByTravelRequest(TravelRequest entity) {
+    public Long saveOrUpdateByTravelRequest(TravelRequest entity) {
         // 判断是否有id
         if (entity.getId() == null) {
             // 新增的逻辑
@@ -207,7 +207,8 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             super.save(travel);
             // 新增游记内容
             TravelContent content = new TravelContent(travel.getId(), entity.getContent());
-            return travelContentService.saveOrUpdate(content);
+            travelContentService.saveOrUpdate(content);
+            return travel.getId();
         } else {
             // 修改的逻辑
             Travel byId = getById(entity.getId());
@@ -238,7 +239,8 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             super.updateById(travel);
             // 修改游记内容
             TravelContent content = new TravelContent(travel.getId(), entity.getContent());
-            return travelContentService.saveOrUpdate(content);
+            travelContentService.saveOrUpdate(content);
+            return travel.getId();
         }
     }
 }

@@ -22,5 +22,5 @@ public interface TravelService extends IService<Travel> {
     Travel findById(Long id);
 
 
-    boolean saveOrUpdateByTravelRequest(TravelRequest travel);
+    Long saveOrUpdateByTravelRequest(TravelRequest travel);
 }

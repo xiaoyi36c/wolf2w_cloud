@@ -91,8 +91,8 @@ public class TravelController {
     @PostMapping("/saveOrUpdate")
     public R saveOrUpdate(TravelRequest travel) {
         log.info("游记明细新增或修改");
-        travelService.saveOrUpdateByTravelRequest(travel);
-        return R.ok();
+        Long id = travelService.saveOrUpdateByTravelRequest(travel);
+        return R.ok(id);
     }
 
 }
