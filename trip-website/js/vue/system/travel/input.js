@@ -45,7 +45,7 @@ var vue = new Vue({
         if (id){
             ajaxGet("article","/travels/"+ id, {}, function (data) {
                 vue.tv = data.data;
-                ue.setContent( data.data.content);
+                ue.setContent( data.data.content.content);
             })
         }
 
