@@ -192,14 +192,14 @@
             return me;
         },
         uploadComplete: function(r){
-            var me = this;
-            try{
-                var json = eval('('+r+')');
-                Base.callback(me.editor, me.dialog, json.url, json.state);
-            }catch (e){
-                var lang = me.editor.getLang('image');
-                Base.callback(me.editor, me.dialog, '', (lang && lang.uploadError) || 'Error!');
-            }
+           var me = this;
+              if (r.state == "SUCCESS") {
+                  Base.callback(me.editor, me.dialog, r.url, r.state);
+             }else {
+                 var lang = me.editor.getLang('image');
+                 Base.callback(me.editor, me.dialog, r.url, (lang && lang.uploadError) || 'Error!');
+             }
+
         },
         submit: function (callback) {
 
