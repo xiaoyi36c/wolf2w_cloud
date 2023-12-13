@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.domain.TravelContent;
@@ -96,8 +97,6 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         if (travelDays != null) {
             wrapper.lambda().between(Travel::getDay, travelDays.getMin(), travelDays.getMax());
         }
-
-
         // 排序
         wrapper.orderByDesc(StringUtils.isEmpty(travelQuery.getOrderBy()), travelQuery.getOrderBy());
 
@@ -159,7 +158,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
         CompletableFuture.allOf(travelFuture, contentFuture).whenCompleteAsync((v, t) -> {
             Travel travel = travelFuture.join();
-            travel.setContent(contentFuture.join());
+            travel.setContentHtml(contentFuture.join());
         });
         try {
             return travelFuture.get();
@@ -170,6 +169,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
 
 
     @Override
+    @Transactional
     public boolean saveOrUpdate(Travel entity) {
         // 判断是否有id
         if (entity.getId() == null) {
@@ -202,8 +202,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             // 新增游记
             super.save(entity);
             // 新增游记内容
-            TravelContent content = entity.getContent();
-            content.setId(entity.getId());
+            TravelContent content = new TravelContent(entity.getId(), entity.getContent());
             return travelContentService.saveOrUpdate(content);
         } else {
             // 修改的逻辑
@@ -232,8 +231,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             // 修改游记
             super.updateById(entity);
             // 修改游记内容
-            TravelContent content = entity.getContent();
-            content.setId(entity.getId());
+            TravelContent content = new TravelContent(entity.getId(), entity.getContent());
             return travelContentService.saveOrUpdate(content);
         }
     }

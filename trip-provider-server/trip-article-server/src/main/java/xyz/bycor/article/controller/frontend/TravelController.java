@@ -88,7 +88,7 @@ public class TravelController {
 
     @ApiOperation(value = "游记明细新增或修改")
     @PostMapping("/saveOrUpdate")
-    public R saveOrUpdate(@RequestBody Travel travel) {
+    public R saveOrUpdate(Travel travel) {
         log.info("游记明细新增或修改");
         travelService.saveOrUpdate(travel);
         return R.ok();

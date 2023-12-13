@@ -51,6 +51,8 @@ public class Travel implements Serializable {
     private Integer state;  //状态
 
     @TableField(exist = false)
-    private TravelContent content;  //游记内容
+    private String content;  //内容,前端传递的内容
+    @TableField(exist = false)
+    private TravelContent contentHtml; //返回给前端的内容
 
 }
