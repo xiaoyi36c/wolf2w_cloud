@@ -68,6 +68,11 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         Set<Long> authorIds = records.stream().map(Travel::getAuthorId).collect(Collectors.toSet());
         List<UserinfoDTO> userinfoDTOS = userInfoFeignService.findByIds(authorIds);
 
+        // 如果没有作者信息 直接返回
+        if (userinfoDTOS == null || userinfoDTOS.isEmpty()) {
+            return page;
+        }
+
         // 将作者信息设置到游记中
         records.forEach(travel -> {
             userinfoDTOS.forEach(userinfoDTO -> {
