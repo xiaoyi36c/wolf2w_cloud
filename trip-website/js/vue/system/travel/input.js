@@ -17,7 +17,7 @@ var vue = new Vue({
         saveOrUpdate:function (state) {
             $("#state").val(state);
             var param = $("#editForm").serialize() ;
-            ajaxPost("/travels/saveOrUpdate", param, function (data) {
+            ajaxPost("article","/travels/saveOrUpdate", param, function (data) {
                 //还缺一参数：目的地id
                 var destId = $("#region").val();
                 window.location.href = "/views/travel/detail.html?id=" + data.data + "&destId=" + destId;
@@ -36,7 +36,7 @@ var vue = new Vue({
             vue.dests = map.dests;
         })*/
 
-        ajaxGet("/destinations/list", {}, function (data) {
+        ajaxGet("article","/backend/destinations/list", {}, function (data) {
             vue.dests = data.data;
 
 

@@ -56,8 +56,23 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
                     w.lambda().eq(userinfo.getId() !=null, Travel::getAuthorId,userinfo.getId())
                             .eq(travelQuery.getDestId() !=null, Travel::getDestId,travelQuery.getDestId())
             );
-        }
 
+            // 时间范围
+            RangParam travelTime = travelQuery.getTravelTime();
+            if (travelTime != null) {
+                wrapper.between("MONTH(create_time)",travelTime.getMin(),travelTime.getMax());
+            }
+            // 人均消费范围
+            RangParam travelConsume = travelQuery.getTravelConsume();
+            if (travelConsume != null) {
+                wrapper.lambda().between(Travel::getAvgConsume,travelConsume.getMin(),travelConsume.getMax());
+            }
+            // 出行天数范围
+            RangParam travelDays = travelQuery.getTravelDays();
+            if (travelDays != null) {
+                wrapper.lambda().between(Travel::getDay,travelDays.getMin(),travelDays.getMax());
+            }
+        }
         //  公开 和 审核通过 的游记
         wrapper.or( w ->
                 // 公开 和 审核通过
@@ -82,6 +97,8 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
         if (travelDays != null) {
             wrapper.lambda().between(Travel::getDay,travelDays.getMin(),travelDays.getMax());
         }
+
+
 
         // 排序
         wrapper.orderByDesc(StringUtils.isEmpty(travelQuery.getOrderBy()),travelQuery.getOrderBy());
@@ -152,6 +169,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             throw new RuntimeException(e);
         }
     }
+
 }
 
 

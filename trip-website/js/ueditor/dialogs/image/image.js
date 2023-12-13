@@ -185,7 +185,7 @@
             var me = this,
                 url=me.editor.options.imageUrl;
 
-            url=url + (url.indexOf("?") == -1 ? "?" : "&") + "editorid="+me.editor.id;//初始form提交地址;
+           // url=url + (url.indexOf("?") == -1 ? "?" : "&") + "editorid="+me.editor.id;//初始form提交地址;
 
             $("form", $(sel, me.dialog)).attr("action", url);
 
@@ -212,28 +212,10 @@
                 if ( !this.parentNode ) {
                     return;
                 }
-                /*var _win = window;
-                var iframeee = $('<iframe name="up" id="luowowo" style="display: none"></iframe>')
-
-                //iframeee = $("<span name=\"up\" ></span>")
-
-                iframeee.insertBefore(me.dialog).on('load', function(){
-                    console.log(this.src)
-                    //var r = this.contentWindow.document.body.innerHTML;
-                    //if(r == '')return;
-                    var r = '{"name":"41901584872954231.jpeg", "originalName": "6bc7c1bb-fefb-4884-9be5-970de7277fbd.jpeg", "size": 1000, "state": "SUCCESS", "type": ".jpeg", "url": "https://luowowo-test.oss-cn-shenzhen.aliyuncs.com/images/upload/14e039c0-a7b4-446e-94ce-d4165b7d1d88.jpeg"}';
-                    me.uploadComplete(r);
-                    $(this).unbind('load');
-                    $(this).remove();
-
-                });
-
-                $(this).parent()[0].submit();*/
-
-
                 $($(this).parent()[0]).ajaxSubmit(function (data) {
                     me.uploadComplete(data);
                     Upload.updateInput( input );
+                    console.log(data)
                     callback && callback();
                 })
             });

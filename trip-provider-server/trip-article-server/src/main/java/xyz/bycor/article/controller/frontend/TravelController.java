@@ -1,18 +1,20 @@
 package xyz.bycor.article.controller.frontend;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.qo.TravelQuery;
 import xyz.bycor.article.service.TravelService;
 import xyz.bycor.core.response.R;
+import xyz.bycor.core.utils.OssUtil;
 
 import java.util.List;
+import java.util.UUID;
 
 @Api(tags = "游记详细接口")
 @RestController
@@ -45,9 +47,42 @@ public class TravelController {
 
     @ApiOperation(value = "游记明细")
     @GetMapping("/{id}")
-    public R<Travel> findById(Long id) {
+    public R<Travel> findById(@PathVariable Long id) {
         log.info("游记明细");
         return R.ok(travelService.findById(id));
+    }
+
+
+    @ApiOperation(value = "游记明细 图片上传")
+    @PostMapping("/coverImageUpload")
+    public JSONObject coverImageUpload(@RequestParam("upfile") MultipartFile file) {
+        log.info("游记明细 图片上传");
+        // 生成 UUID  12位
+        String url = null;
+        JSONObject json = new JSONObject();
+        try {
+            String fileMainName = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+            url = OssUtil.upload("travels/images", fileMainName, file);
+            //是否上传成功
+            json.put("state", "SUCCESS");
+            //现在文件名称
+            json.put("title", fileMainName);
+            //文件原名称
+            json.put("original", file.getOriginalFilename());
+            //文件类型 .+后缀名
+            json.put("type", ".jpg");
+            //文件路径
+            // map.put("url", uploadPath);    // 浏览器不能直接访问项目外目录的图片等文件，需要做虚拟路径映射
+            json.put("url", "https://"+url);
+            //文件大小（字节数）
+            json.put("size", file.getSize());
+
+        } catch (Exception e) {
+            json.put("state", "ERROR");
+            log.error("上传失败", e);
+        }
+        return json;
+
     }
 
 }

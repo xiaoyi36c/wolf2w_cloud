@@ -4,7 +4,7 @@ $(function () {
     // 初始化富文本编辑器
     ue = UM.getEditor('editor',{
         textarea:"content",
-        imageUrl:domainUrl+"/travels/contentImage",
+        imageUrl:getServiceUrl('article')+"/travels/coverImageUpload",
         imageFieldName:"upfile",
         imagePath:''
     });

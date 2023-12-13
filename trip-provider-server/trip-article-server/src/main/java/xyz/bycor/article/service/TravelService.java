@@ -1,8 +1,8 @@
 package xyz.bycor.article.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import xyz.bycor.article.domain.Travel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.qo.TravelQuery;
 
 import java.util.List;
@@ -19,4 +19,5 @@ public interface TravelService extends IService<Travel> {
     List<Travel> findTravelTop3(Long destId);
 
     Travel findById(Long id);
+
 }
