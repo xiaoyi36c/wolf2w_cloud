@@ -1,6 +1,5 @@
 package xyz.bycor.comment.service;
 
-import org.springframework.data.domain.Page;
 import xyz.bycor.comment.domian.TravelComment;
 import xyz.bycor.comment.qo.CommentQuery;
 
@@ -17,7 +16,6 @@ public interface TravelCommentService {
 
     TravelComment findById(String id);
 
-    List<TravelComment> findList();
+    List<TravelComment> findList(CommentQuery qo);
 
-    Page<TravelComment> findPage(CommentQuery qo);
 }

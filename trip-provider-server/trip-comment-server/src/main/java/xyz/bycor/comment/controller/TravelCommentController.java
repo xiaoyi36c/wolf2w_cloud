@@ -4,7 +4,6 @@ package xyz.bycor.comment.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +13,8 @@ import xyz.bycor.comment.domian.TravelComment;
 import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.service.TravelCommentService;
 import xyz.bycor.core.response.R;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/travels/comments")
@@ -38,9 +39,9 @@ public class TravelCommentController {
 
     @ApiOperation("分页查询游记评论")
     @GetMapping("/page")
-    public R<Page<TravelComment>> findPage(CommentQuery qo){
+    public R<List<TravelComment>> findPage(CommentQuery qo){
         log.info("分页查询游记评论");
-        return R.ok(commentService.findPage(qo));
+        return R.ok(commentService.findList(qo));
     }
 
 

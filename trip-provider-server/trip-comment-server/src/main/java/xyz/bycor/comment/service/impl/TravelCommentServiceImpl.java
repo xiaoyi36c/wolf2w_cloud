@@ -1,6 +1,5 @@
 package xyz.bycor.comment.service.impl;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -43,7 +42,7 @@ public class TravelCommentServiceImpl implements TravelCommentService {
         String phone = JwtUtils.getSubject();
         UserinfoDTO user = userInfoFeignService.findByPhone(phone);
         try {
-            Assert.notNull(user, "请不存在");
+            Assert.notNull(user, "请先登录");
         } catch (Exception e) {
             throw new BusinessException(401,e.getMessage());
         }
@@ -56,20 +55,19 @@ public class TravelCommentServiceImpl implements TravelCommentService {
         comment.setCreateTime(new Date());
         // 3.关联评论
         if (comment.getType() ==TravelComment.TRAVEL_COMMENT_TYPE && comment.getRefComment() !=null){
-
-
+            Optional<TravelComment> optional = commentRepository.findById(comment.getRefComment().getId());
+            TravelComment refComment = optional.orElseThrow(() -> new BusinessException(400, "评论的数据不存在"));
+            refComment.setRefComment(null);
+            comment.setRefComment(refComment);
         }
         // 4. 保存评论
-
-
-
+        commentRepository.save(comment);
     }
 
     @Override
-    public Page<TravelComment> findPage(CommentQuery qo ) {
-       return null;
+    public List<TravelComment> findList(CommentQuery qo) {
+        return commentRepository.findByTravelId(qo.getArticleId());
     }
-
 
 
     @Override
@@ -88,10 +86,6 @@ public class TravelCommentServiceImpl implements TravelCommentService {
         return optional.orElse(null);
     }
 
-    @Override
-    public List<TravelComment> findList() {
-        return commentRepository.findAll();
-    }
 
 
 }

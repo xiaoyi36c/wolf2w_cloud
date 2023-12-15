@@ -75,7 +75,7 @@ var vue = new Vue({
         //评论分页
         commentPage: function (page, strategyId) {//分页
             strategyId = strategyId || vue.strategy.id;
-            ajaxGet("comment", "/strategies/comments/page", {current: page, strategyId: strategyId}, function (data) {
+            ajaxGet("comment", "/strategies/comments/page", {current: page, articleId: strategyId}, function (data) {
                 vue.page = data.data;
                 vue.page.number = parseInt(vue.page.number) + 1;
                 buildPage(vue.page.number, vue.page.totalPages, vue.commentPage);
