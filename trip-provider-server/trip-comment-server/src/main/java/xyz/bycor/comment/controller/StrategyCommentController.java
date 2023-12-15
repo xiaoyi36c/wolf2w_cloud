@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,7 @@ public class StrategyCommentController {
     }
 
     @ApiOperation("分页查询攻略评论")
-    @PostMapping("/page")
+    @GetMapping("/page")
     public R<Page<StrategyComment>> findPage(StrategyCommentQuery qo){
         log.info("查询攻略评论");
 

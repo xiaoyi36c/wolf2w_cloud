@@ -8,9 +8,4 @@ import xyz.bycor.core.qo.QueryObject;
 @Setter
 public class StrategyCommentQuery extends QueryObject {
         private Long strategyId;
-        // 跳过多少条数据
-        private Integer start;
-
-
-
 }
