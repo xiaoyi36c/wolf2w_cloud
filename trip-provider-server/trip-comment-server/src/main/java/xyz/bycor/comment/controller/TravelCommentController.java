@@ -38,7 +38,7 @@ public class TravelCommentController {
     }
 
     @ApiOperation("分页查询游记评论")
-    @GetMapping("/page")
+    @GetMapping("/list")
     public R<List<TravelComment>> findPage(CommentQuery qo){
         log.info("分页查询游记评论");
         return R.ok(commentService.findList(qo));

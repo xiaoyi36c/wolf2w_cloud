@@ -12,8 +12,8 @@ import java.util.Date;
 @Getter
 @Document("travel_comment")
 public class TravelComment implements Serializable {
-    public static final int TRAVEL_COMMENT_TYPE_COMMENT = 0; //普通评论
-    public static final int TRAVEL_COMMENT_TYPE = 1; //评论的评论
+    public static final Integer TRAVEL_COMMENT_TYPE_COMMENT = 0; //普通评论
+    public static final Integer TRAVEL_COMMENT_TYPE = 1; //评论的评论
     @Id
     private String id;  //id
     private Long travelId;  //游记id

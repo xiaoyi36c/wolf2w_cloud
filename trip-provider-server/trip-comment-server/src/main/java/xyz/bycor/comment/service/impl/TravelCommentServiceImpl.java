@@ -53,6 +53,8 @@ public class TravelCommentServiceImpl implements TravelCommentService {
         comment.setLevel(user.getLevel());
         comment.setHeadImgUrl(user.getHeadImgUrl());
         comment.setCreateTime(new Date());
+        Integer type = comment.getType();
+        TravelComment refComment1 = comment.getRefComment();
         // 3.关联评论
         if (comment.getType() ==TravelComment.TRAVEL_COMMENT_TYPE && comment.getRefComment() !=null){
             Optional<TravelComment> optional = commentRepository.findById(comment.getRefComment().getId());
