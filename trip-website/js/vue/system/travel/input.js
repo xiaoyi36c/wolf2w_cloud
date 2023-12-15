@@ -59,6 +59,17 @@ var vue = new Vue({
             alert("请先登录");
             window.location.href = "/login.html";
         }
+    },
+    beforeUpdate:function () {
+        var aouthId = vue.dests[0].aouthId;
+        var userInfo = getUserInfo();
+        if (aouthId !== userInfo.id){
+            alert("不能编辑别人的游记");
+            window.location.href = "/views/travel/list.html";
+        }
     }
+
+
+
 });
 
