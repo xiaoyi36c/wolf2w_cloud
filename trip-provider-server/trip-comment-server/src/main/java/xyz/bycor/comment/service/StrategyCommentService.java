@@ -11,13 +11,15 @@ public interface StrategyCommentService {
     void save(StrategyComment strategyComment);
 
 
-    void delete(Long id);
+    void delete(String id);
 
     void update(StrategyComment strategyComment);
 
-    StrategyComment findById(Long id);
+    StrategyComment findById(String id);
 
     List<StrategyComment> findList();
 
     Page<StrategyComment> findPage(StrategyCommentQuery qo);
+
+    void likes(String id);
 }

@@ -16,7 +16,7 @@ import xyz.bycor.comment.service.StrategyCommentService;
 import xyz.bycor.core.response.R;
 
 @RestController
-@RequestMapping("/strategies")
+@RequestMapping("/strategies/comments")
 @Api(tags = "攻略评论相关接口")
 @Slf4j
 public class StrategyCommentController {
@@ -39,9 +39,16 @@ public class StrategyCommentController {
     @ApiOperation("分页查询攻略评论")
     @GetMapping("/page")
     public R<Page<StrategyComment>> findPage(StrategyCommentQuery qo){
-        log.info("查询攻略评论");
-
+        log.info("分页查询攻略评论");
         return R.ok(commentService.findPage(qo));
+    }
+
+    @ApiOperation("点赞或取消点赞 攻略评论")
+    @PostMapping("/likes")
+    public R<?> likes(String id){
+        log.info("点赞或取消点赞 攻略评论:{}",id);
+        commentService.likes(id);
+        return R.ok();
     }
 
 

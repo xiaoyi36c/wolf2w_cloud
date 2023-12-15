@@ -6,8 +6,6 @@ import java.util.concurrent.TimeUnit;
 @Getter
 public enum RedisEnum {
 
-
-
     SMS_REGISTER_LIMIT_KEY("wolf2w:sms:limit:key:", 5L, TimeUnit.MINUTES),
 
     SMS_REGISTER_CODE_KEY("wolf2w:sms:code:key:", 30L, TimeUnit.MINUTES),

@@ -13,11 +13,16 @@ import xyz.bycor.comment.feign.UserInfoFeignService;
 import xyz.bycor.comment.qo.StrategyCommentQuery;
 import xyz.bycor.comment.repository.StrategyCommentRepository;
 import xyz.bycor.comment.service.StrategyCommentService;
+import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.utils.JwtUtils;
+import xyz.bycor.framework.redis.config.RedisJsonService;
+import xyz.bycor.framework.redis.config.key.RedisEnum;
+import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.dto.UserinfoDTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StrategyCommentServiceImpl implements StrategyCommentService {
@@ -27,10 +32,14 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
 
     private final MongoTemplate mongoTemplate;
 
-    public StrategyCommentServiceImpl(StrategyCommentRepository strategyCommentRepository, UserInfoFeignService userInfoFeignService, MongoTemplate mongoTemplate) {
+
+    private final RedisJsonService redisJsonService;
+
+    public StrategyCommentServiceImpl(StrategyCommentRepository strategyCommentRepository, UserInfoFeignService userInfoFeignService, MongoTemplate mongoTemplate, RedisJsonService redisJsonService) {
         this.commentRepository = strategyCommentRepository;
         this.userInfoFeignService = userInfoFeignService;
         this.mongoTemplate = mongoTemplate;
+        this.redisJsonService = redisJsonService;
     }
 
 
@@ -77,11 +86,37 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
         return new PageImpl<>(strategyComments,pageable ,total);
     }
 
+    @Override
+    public void likes(String id) {
+        // 1. 获取当前登录用户
+        String phone = JwtUtils.getSubject();
+        Userinfo user = redisJsonService.get(RedisEnum.USER_LOGIN_INFO_KEY, phone);
+        if (user == null){
+            throw new BusinessException(401,"用户未登录");
+        }
 
+        // 2. 根据评论id查询评论
+        Optional<StrategyComment> optional = commentRepository.findById(id);
+        StrategyComment strategyComment = optional.orElseThrow(() -> new BusinessException(400, "评论不存在"));
+
+        // 3. 判断当前用户是否已经点赞
+        List<Long> thumbuplist = strategyComment.getThumbuplist();
+        if (thumbuplist.contains(user.getId())){
+            // 4. 如果已经点赞,则取消点赞,数量-1,取消集合中的用户id
+            strategyComment.setThumbupnum(strategyComment.getThumbupnum() - 1);
+            strategyComment.getThumbuplist().remove(user.getId());
+        }else {
+            // 5. 如果没有点赞,则点赞,数量+1
+            strategyComment.setThumbupnum(strategyComment.getThumbupnum() + 1);
+            strategyComment.getThumbuplist().add(user.getId());
+        }
+        // 6. 保存评论
+        commentRepository.save(strategyComment);
+    }
 
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         commentRepository.deleteById(id);
     }
 
@@ -91,8 +126,9 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
     }
 
     @Override
-    public StrategyComment findById(Long id) {
-        return commentRepository.findById(id).get();
+    public StrategyComment findById(String id) {
+        Optional<StrategyComment> optional = commentRepository.findById(id);
+        return optional.orElse(null);
     }
 
     @Override

@@ -5,5 +5,5 @@ import xyz.bycor.comment.domian.StrategyComment;
 
 
 
-public interface StrategyCommentRepository extends MongoRepository<StrategyComment,Long> {
+public interface StrategyCommentRepository extends MongoRepository<StrategyComment,String> {
 }
