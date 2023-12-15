@@ -69,7 +69,10 @@ var vue = new Vue({
                 vue.tv = data.data;
                 ue.setContent( data.data.content.content);
                 if (authorId !== userInfo.id){
-                    alert("不能编辑别人的游记");
+                    this.$message({
+                        message: '您无权修改该游记',
+                        type: 'warning'
+                    });
                     // 返回上一页
                     window.history.back();
                 }
