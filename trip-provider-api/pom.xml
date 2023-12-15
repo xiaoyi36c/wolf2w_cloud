@@ -13,6 +13,7 @@
     <modules>
         <module>trip-member-api</module>
         <module>trip-article-api</module>
+        <module>trip-comment-api</module>
     </modules>
 
     <artifactId>trip-provider-api</artifactId>
