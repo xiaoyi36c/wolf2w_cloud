@@ -7,4 +7,8 @@ public class QueryObject {
     private Integer current = 1;
     private Integer size = 10;
     private String keyword;
+
+    public Integer getStart() {
+        return (current - 1) * size;
+    }
 }

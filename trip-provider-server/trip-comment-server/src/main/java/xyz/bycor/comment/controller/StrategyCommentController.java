@@ -4,10 +4,13 @@ package xyz.bycor.comment.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.bycor.auth.anno.RequiredLogin;
 import xyz.bycor.comment.domian.StrategyComment;
+import xyz.bycor.comment.qo.StrategyCommentQuery;
 import xyz.bycor.comment.service.StrategyCommentService;
 import xyz.bycor.core.response.R;
 
@@ -25,10 +28,19 @@ public class StrategyCommentController {
 
     @ApiOperation("添加攻略评论")
     @PostMapping
+    @RequiredLogin
     public R<?> save(StrategyComment strategyComment){
     log.info("添加攻略评论:{}",strategyComment);
     commentService.save(strategyComment);
     return R.ok();
+    }
+
+    @ApiOperation("分页查询攻略评论")
+    @PostMapping("/page")
+    public R<Page<StrategyComment>> findPage(StrategyCommentQuery qo){
+        log.info("查询攻略评论");
+
+        return R.ok(commentService.findPage(qo));
     }
 
 

@@ -18,10 +18,6 @@
         <module>trip-comment-server</module>
     </modules>
     <dependencies>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
 
         <!--nacos客户端-->
         <dependency>
