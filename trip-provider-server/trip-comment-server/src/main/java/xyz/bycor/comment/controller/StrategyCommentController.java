@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.bycor.auth.anno.RequiredLogin;
 import xyz.bycor.comment.domian.StrategyComment;
-import xyz.bycor.comment.qo.StrategyCommentQuery;
+import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.service.StrategyCommentService;
 import xyz.bycor.core.response.R;
 
@@ -38,16 +38,17 @@ public class StrategyCommentController {
 
     @ApiOperation("分页查询攻略评论")
     @GetMapping("/page")
-    public R<Page<StrategyComment>> findPage(StrategyCommentQuery qo){
+    public R<Page<StrategyComment>> findPage(CommentQuery qo){
         log.info("分页查询攻略评论");
         return R.ok(commentService.findPage(qo));
     }
 
     @ApiOperation("点赞或取消点赞 攻略评论")
     @PostMapping("/likes")
-    public R<?> likes(String id){
-        log.info("点赞或取消点赞 攻略评论:{}",id);
-        commentService.likes(id);
+    @RequiredLogin
+    public R<?> likes(String cid){
+        log.info("点赞或取消点赞 攻略评论:{}",cid);
+        commentService.likes(cid);
         return R.ok();
     }
 

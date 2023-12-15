@@ -1,0 +1,97 @@
+package xyz.bycor.comment.service.impl;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import xyz.bycor.comment.domian.TravelComment;
+import xyz.bycor.comment.feign.UserInfoFeignService;
+import xyz.bycor.comment.qo.CommentQuery;
+import xyz.bycor.comment.repository.TravelCommentRepository;
+import xyz.bycor.comment.service.TravelCommentService;
+import xyz.bycor.core.exception.BusinessException;
+import xyz.bycor.core.utils.JwtUtils;
+import xyz.bycor.framework.redis.config.RedisJsonService;
+import xyz.bycor.member.dto.UserinfoDTO;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TravelCommentServiceImpl implements TravelCommentService {
+
+    private final TravelCommentRepository commentRepository;
+    private final UserInfoFeignService userInfoFeignService;
+
+    private final MongoTemplate mongoTemplate;
+
+
+    private final RedisJsonService redisJsonService;
+
+    public TravelCommentServiceImpl(TravelCommentRepository TravelCommentRepository, UserInfoFeignService userInfoFeignService, MongoTemplate mongoTemplate, RedisJsonService redisJsonService) {
+        this.commentRepository = TravelCommentRepository;
+        this.userInfoFeignService = userInfoFeignService;
+        this.mongoTemplate = mongoTemplate;
+        this.redisJsonService = redisJsonService;
+    }
+
+
+    @Override
+    public void save(TravelComment comment) {
+        // 1. 获取当前登录用户
+        String phone = JwtUtils.getSubject();
+        UserinfoDTO user = userInfoFeignService.findByPhone(phone);
+        try {
+            Assert.notNull(user, "请不存在");
+        } catch (Exception e) {
+            throw new BusinessException(401,e.getMessage());
+        }
+        // 2. 设置用户信息
+        comment.setUserId(user.getId());
+        comment.setNickname(user.getNickname());
+        comment.setCity(user.getCity());
+        comment.setLevel(user.getLevel());
+        comment.setHeadImgUrl(user.getHeadImgUrl());
+        comment.setCreateTime(new Date());
+        // 3.关联评论
+        if (comment.getType() ==TravelComment.TRAVEL_COMMENT_TYPE && comment.getRefComment() !=null){
+
+
+        }
+        // 4. 保存评论
+
+
+
+    }
+
+    @Override
+    public Page<TravelComment> findPage(CommentQuery qo ) {
+       return null;
+    }
+
+
+
+    @Override
+    public void delete(String id) {
+        commentRepository.deleteById(id);
+    }
+
+    @Override
+    public void update(TravelComment TravelComment) {
+        commentRepository.save(TravelComment);
+    }
+
+    @Override
+    public TravelComment findById(String id) {
+        Optional<TravelComment> optional = commentRepository.findById(id);
+        return optional.orElse(null);
+    }
+
+    @Override
+    public List<TravelComment> findList() {
+        return commentRepository.findAll();
+    }
+
+
+}

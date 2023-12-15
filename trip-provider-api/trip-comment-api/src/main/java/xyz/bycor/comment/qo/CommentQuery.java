@@ -6,6 +6,6 @@ import xyz.bycor.core.qo.QueryObject;
 
 @Getter
 @Setter
-public class StrategyCommentQuery extends QueryObject {
-        private Long strategyId;
+public class CommentQuery extends QueryObject {
+        private Long articleId;
 }

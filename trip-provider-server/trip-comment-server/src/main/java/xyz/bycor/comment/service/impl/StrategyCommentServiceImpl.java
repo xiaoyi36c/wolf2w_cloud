@@ -10,15 +10,15 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import xyz.bycor.comment.domian.StrategyComment;
 import xyz.bycor.comment.feign.UserInfoFeignService;
-import xyz.bycor.comment.qo.StrategyCommentQuery;
+import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.repository.StrategyCommentRepository;
 import xyz.bycor.comment.service.StrategyCommentService;
 import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.framework.redis.config.RedisJsonService;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
-import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.dto.UserinfoDTO;
+import xyz.bycor.member.vo.LoginResponseUser;
 
 import java.util.Date;
 import java.util.List;
@@ -62,9 +62,9 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
     }
 
     @Override
-    public Page<StrategyComment> findPage(StrategyCommentQuery qo ) {
+    public Page<StrategyComment> findPage(CommentQuery qo ) {
         //  1. 根据攻略 id 查询评论
-        Criteria criteria = Criteria.where("strategyId").is(qo.getStrategyId());
+        Criteria criteria = Criteria.where("strategyId").is(qo.getArticleId());
         Query query = Query.query(criteria);
 
         //  2. 配置分页参数
@@ -90,7 +90,7 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
     public void likes(String id) {
         // 1. 获取当前登录用户
         String phone = JwtUtils.getSubject();
-        Userinfo user = redisJsonService.get(RedisEnum.USER_LOGIN_INFO_KEY, phone);
+        LoginResponseUser user = redisJsonService.get(RedisEnum.USER_LOGIN_INFO_KEY, phone);
         if (user == null){
             throw new BusinessException(401,"用户未登录");
         }

@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class LoginResponseUser {
 
+    private Long id;
+
 
     /**
      * 昵称

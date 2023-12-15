@@ -113,7 +113,7 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
         // 5.  用户信息存入redis
         LoginResponseUser loginResponseUser = new LoginResponseUser();
         BeanUtils.copyProperties(user, loginResponseUser);
-        redisJsonService.set(RedisEnum.USER_LOGIN_INFO_KEY, user, user.getPhone());
+        redisJsonService.set(RedisEnum.USER_LOGIN_INFO_KEY, loginResponseUser, user.getPhone());
         // 6.  封装返回结果
         LoginResponse loginResponse = new LoginResponse(secretToken, refreshToken, loginResponseUser);
 
