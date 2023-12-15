@@ -30,8 +30,23 @@
             <artifactId>trip-comment-api</artifactId>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>xyz.bycor</groupId>
+            <artifactId>trip-member-api</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-openfeign-core</artifactId>
+        </dependency>
+
+
+    </dependencies>
 
 
 </project>

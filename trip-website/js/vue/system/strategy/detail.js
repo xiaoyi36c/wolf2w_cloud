@@ -95,7 +95,7 @@ var vue = new Vue({
             param.content = content;
             $("#content").val('');
 
-            ajaxPost("comment", "/strategies/comments/save", param, function (data) {
+            ajaxPost("comment", "/strategies", param, function (data) {
                 // 刷新评论列表
                 vue.commentPage(1, param.strategyId);
 
