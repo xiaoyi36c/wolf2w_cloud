@@ -42,12 +42,12 @@ var vue = new Vue({
 
 
 
-        if (id){
+        /*if (id){
             ajaxGet("article","/travels/"+ id, {}, function (data) {
                 vue.tv = data.data;
                 ue.setContent( data.data.content.content);
             })
-        }
+        }*/
 
         //接口设计原则:一个接口一个功能
         // 查询目的:  destinations/list
@@ -59,15 +59,22 @@ var vue = new Vue({
             alert("请先登录");
             window.location.href = "/login.html";
         }
-    },
-    beforeUpdate:function () {
-        var aouthId = vue.dests[0].aouthId;
-        var userInfo = getUserInfo();
-        if (aouthId !== userInfo.id){
-            alert("不能编辑别人的游记");
-            window.location.href = "/views/travel/list.html";
+
+
+        var id = getParams().id;
+        if (id){
+            ajaxGet("article","/travels/"+ id, {}, function (data) {
+                var authorId = data.data.authorId;
+                var userInfo = getUserInfo();
+                vue.tv = data.data;
+                ue.setContent( data.data.content.content);
+                if (authorId !== userInfo.id){
+                    alert("不能编辑别人的游记");
+                    window.location.href = "/views/travel/list.html";
+                }
+            })
         }
-    }
+    },
 
 
 
