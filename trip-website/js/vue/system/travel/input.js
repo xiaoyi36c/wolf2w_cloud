@@ -70,7 +70,8 @@ var vue = new Vue({
                 ue.setContent( data.data.content.content);
                 if (authorId !== userInfo.id){
                     alert("不能编辑别人的游记");
-                    window.location.href = "/views/travel/list.html";
+                    // 返回上一页
+                    window.history.back();
                 }
             })
         }
