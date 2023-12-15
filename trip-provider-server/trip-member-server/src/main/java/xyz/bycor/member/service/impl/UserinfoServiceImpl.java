@@ -21,7 +21,7 @@ import xyz.bycor.member.mapper.UserinfoMapper;
 import xyz.bycor.member.service.UserinfoService;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
 import xyz.bycor.member.vo.LoginResponse;
-import xyz.bycor.member.vo.LoginResponseUser;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 import java.util.HashMap;

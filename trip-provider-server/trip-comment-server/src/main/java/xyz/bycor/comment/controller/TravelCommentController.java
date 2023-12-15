@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.bycor.auth.anno.RequestUser;
 import xyz.bycor.auth.anno.RequiredLogin;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.comment.domian.TravelComment;
 import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.service.TravelCommentService;
@@ -31,9 +33,9 @@ public class TravelCommentController {
     @ApiOperation("添加游记评论")
     @PostMapping
     @RequiredLogin
-    public R<?> save(TravelComment comment){
+    public R<?> save(TravelComment comment, @RequestUser LoginResponseUser user){
     log.info("添加游记评论:{}",comment);
-    commentService.save(comment);
+    commentService.save(comment,user);
     return R.ok();
     }
 

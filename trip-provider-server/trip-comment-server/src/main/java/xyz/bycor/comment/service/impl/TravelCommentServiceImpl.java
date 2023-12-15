@@ -2,16 +2,14 @@ package xyz.bycor.comment.service.impl;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.comment.domian.TravelComment;
 import xyz.bycor.comment.feign.UserInfoFeignService;
 import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.repository.TravelCommentRepository;
 import xyz.bycor.comment.service.TravelCommentService;
 import xyz.bycor.core.exception.BusinessException;
-import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.framework.redis.config.RedisJsonService;
-import xyz.bycor.member.dto.UserinfoDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -37,15 +35,8 @@ public class TravelCommentServiceImpl implements TravelCommentService {
 
 
     @Override
-    public void save(TravelComment comment) {
-        // 1. 获取当前登录用户
-        String phone = JwtUtils.getSubject();
-        UserinfoDTO user = userInfoFeignService.findByPhone(phone);
-        try {
-            Assert.notNull(user, "请先登录");
-        } catch (Exception e) {
-            throw new BusinessException(401,e.getMessage());
-        }
+    public void save(TravelComment comment, LoginResponseUser user) {
+
         // 2. 设置用户信息
         comment.setUserId(user.getId());
         comment.setNickname(user.getNickname());

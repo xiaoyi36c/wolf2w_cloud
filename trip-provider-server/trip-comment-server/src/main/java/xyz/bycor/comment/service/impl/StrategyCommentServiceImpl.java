@@ -8,17 +8,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.comment.domian.StrategyComment;
 import xyz.bycor.comment.feign.UserInfoFeignService;
 import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.repository.StrategyCommentRepository;
 import xyz.bycor.comment.service.StrategyCommentService;
 import xyz.bycor.core.exception.BusinessException;
-import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.framework.redis.config.RedisJsonService;
-import xyz.bycor.framework.redis.config.key.RedisEnum;
-import xyz.bycor.member.dto.UserinfoDTO;
-import xyz.bycor.member.vo.LoginResponseUser;
 
 import java.util.Date;
 import java.util.List;
@@ -44,11 +41,7 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
 
 
     @Override
-    public void save(StrategyComment comment) {
-        // 获取当前登录的用户信息
-        String phone = JwtUtils.getSubject();
-        // feign调用user-server获取用户信息
-        UserinfoDTO userInfo = userInfoFeignService.findByPhone(phone);
+    public void save(StrategyComment comment, LoginResponseUser userInfo) {
         // 设置用户信息
         comment.setUserId(userInfo.getId());
         comment.setNickname(userInfo.getNickname());
@@ -87,13 +80,7 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
     }
 
     @Override
-    public void likes(String id) {
-        // 1. 获取当前登录用户
-        String phone = JwtUtils.getSubject();
-        LoginResponseUser user = redisJsonService.get(RedisEnum.USER_LOGIN_INFO_KEY, phone);
-        if (user == null){
-            throw new BusinessException(401,"用户未登录");
-        }
+    public void likes(String id, LoginResponseUser user) {
 
         // 2. 根据评论id查询评论
         Optional<StrategyComment> optional = commentRepository.findById(id);

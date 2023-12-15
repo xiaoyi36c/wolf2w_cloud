@@ -1,10 +1,11 @@
-package xyz.bycor.member.vo;
+package xyz.bycor.auth.vo;
 
 import lombok.Data;
 
 
 @Data
 public class LoginResponseUser {
+
 
     private Long id;
 

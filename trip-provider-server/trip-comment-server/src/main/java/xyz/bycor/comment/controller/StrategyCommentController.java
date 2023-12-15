@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.bycor.auth.anno.RequestUser;
 import xyz.bycor.auth.anno.RequiredLogin;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.comment.domian.StrategyComment;
 import xyz.bycor.comment.qo.CommentQuery;
 import xyz.bycor.comment.service.StrategyCommentService;
@@ -30,9 +32,9 @@ public class StrategyCommentController {
     @ApiOperation("添加攻略评论")
     @PostMapping
     @RequiredLogin
-    public R<?> save(StrategyComment strategyComment){
-    log.info("添加攻略评论:{}",strategyComment);
-    commentService.save(strategyComment);
+    public R<?> save(StrategyComment strategyComment, @RequestUser LoginResponseUser user){
+    log.info("添加攻略评论,评论信息:{},用户信息:{}",strategyComment,user);
+    commentService.save(strategyComment,user);
     return R.ok();
     }
 
@@ -46,9 +48,9 @@ public class StrategyCommentController {
     @ApiOperation("点赞或取消点赞 攻略评论")
     @PostMapping("/likes")
     @RequiredLogin
-    public R<?> likes(String cid){
-        log.info("点赞或取消点赞 攻略评论:{}",cid);
-        commentService.likes(cid);
+    public R<?> likes(String cid, @RequestUser LoginResponseUser user){
+        log.info("点赞或取消点赞,评论id:{},用户信息:{}",cid,user);
+        commentService.likes(cid,user);
         return R.ok();
     }
 

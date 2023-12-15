@@ -23,6 +23,11 @@
             <artifactId>mybatis-plus-annotation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>xyz.bycor</groupId>
+            <artifactId>trip-common-auth-boot-stater</artifactId>
+        </dependency>
+
     </dependencies>
 
 
