@@ -15,6 +15,7 @@
     <modules>
         <module>trip-member-server</module>
         <module>trip-article-server</module>
+        <module>trip-comment-server</module>
     </modules>
     <dependencies>
         <dependency>
