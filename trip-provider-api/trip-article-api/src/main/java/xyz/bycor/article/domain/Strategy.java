@@ -64,4 +64,6 @@ public class Strategy implements Serializable {
     @TableField(exist = false)
     private StrategyContent content; //攻略内容
 
+    private Date lastUpdateTime; //最后更新时间
+
 }

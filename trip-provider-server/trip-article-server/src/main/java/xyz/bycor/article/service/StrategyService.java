@@ -7,10 +7,12 @@ import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.domain.StrategyTheme;
+import xyz.bycor.article.qo.StatDataQuery;
 import xyz.bycor.article.qo.StrategyQuery;
 import xyz.bycor.core.qo.QueryObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author BAI
@@ -36,4 +38,6 @@ public interface StrategyService extends IService<Strategy> {
     JSONObject findConditions();
 
     Page<Strategy> queryList(StrategyQuery qo);
+
+    List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery);
 }

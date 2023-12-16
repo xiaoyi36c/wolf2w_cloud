@@ -1,6 +1,7 @@
 package xyz.bycor.article.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import xyz.bycor.article.domain.*;
 import xyz.bycor.article.mapper.StrategyMapper;
+import xyz.bycor.article.qo.StatDataQuery;
 import xyz.bycor.article.qo.StrategyQuery;
 import xyz.bycor.article.service.StrategyCatalogService;
 import xyz.bycor.article.service.StrategyContentService;
@@ -20,10 +22,7 @@ import xyz.bycor.core.qo.QueryObject;
 import xyz.bycor.core.utils.OssUtil;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -200,6 +199,16 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     @Cacheable( key =" 'list:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
     public Page<Strategy> queryList(StrategyQuery qo) {
         return getBaseMapper().selectListByQuery(new Page<>(qo.getCurrent(), qo.getSize()), qo);
+    }
+
+    @Override
+    public List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery) {
+        LambdaQueryWrapper<Strategy> lambda = new QueryWrapper<Strategy>().lambda();
+        lambda.select(Strategy::getId,Strategy::getViewnum,Strategy::getReplynum,Strategy::getFavornum,Strategy::getSharenum,Strategy::getThumbsupnum);
+        lambda.gt(Strategy::getLastUpdateTime, statQuery.getDate());
+        lambda.last("limit " + statQuery.getStart() + ", " + statQuery.getSize());
+        List<Map<String, Object>> maps = listMaps(lambda);
+        return maps;
     }
 
 

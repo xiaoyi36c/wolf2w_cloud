@@ -12,7 +12,8 @@ public enum RedisEnum {
     USER_LOGIN_INFO_KEY("wolf2w:login:info:key:", 30L, TimeUnit.MINUTES),
     AUTH_BLACKLIST("wolf2w:auth:black_list"),
     AUTH_LAST_BLACKLIST("wolf2w:auth:last_black_list"),
-    AUTH_BLACKLIST_CHANNEL("wolf2w:auth:black_list:channel");
+    AUTH_BLACKLIST_CHANNEL("wolf2w:auth:black_list:channel"),
+    ARTICLE_STAT_DATA_HASH("wolf2w:article:stat:data:hash:");
 
 
     private String prefix;

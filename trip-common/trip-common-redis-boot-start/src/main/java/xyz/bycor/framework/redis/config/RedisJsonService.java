@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -100,5 +101,18 @@ public class RedisJsonService {
 
     public Object valueDeserializer(byte[] data) {
         return redisTemplate.getValueSerializer().deserialize(data);
+    }
+
+    public boolean exists(RedisEnum redisEnum, String... suffix) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(redisEnum.join(suffix)));
+    }
+
+    public void putAll(RedisEnum redisEnum, Map<String, Object> map, String... suffix) {
+        redisTemplate.opsForHash().putAll(redisEnum.join(suffix) , map);
+    }
+
+    public void increment(RedisEnum redisEnum, String field, Integer value,String... suffix) {
+        redisTemplate.opsForHash().increment(redisEnum.join(suffix), field, value);
+
     }
 }

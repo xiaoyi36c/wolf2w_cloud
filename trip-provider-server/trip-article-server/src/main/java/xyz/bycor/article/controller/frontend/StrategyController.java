@@ -16,11 +16,15 @@ import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.domain.StrategyTheme;
+import xyz.bycor.core.event.StatDataEvent;
+import xyz.bycor.article.qo.StatDataQuery;
 import xyz.bycor.article.qo.StrategyQuery;
 import xyz.bycor.article.service.StrategyService;
 import xyz.bycor.core.response.R;
+import xyz.bycor.core.utils.SpringContextUtil;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author baishuai
@@ -89,6 +93,13 @@ public class StrategyController {
     @GetMapping("/detail")
     public R<Strategy> detail(Long id) {
         log.info("概况下的攻略");
+        // 发布攻略的浏览事件
+        StatDataEvent.Data data = new StatDataEvent.Data();
+        data.setId(id);
+        data.setField("viewnum");
+        data.setValue(1);
+        SpringContextUtil.publishEvent(new StatDataEvent(data));
+
         Strategy strategy = strategyService.getById(id);
         return R.ok(strategy.getState() == Strategy.STATE_PUBLISH ? strategy : new Strategy());
     }
@@ -145,5 +156,12 @@ public class StrategyController {
     public R<Page<Strategy>>  queryList(StrategyQuery qo) {
         log.info("概况下的攻略分页查询");
         return R.ok(strategyService.queryList(qo));
+    }
+
+
+    @ApiOperation(value = "查询攻略统计数据")
+    @GetMapping("/stat/lastSevenDay")
+   public List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery){
+        return strategyService.findStatByLastSevenDay(statQuery);
     }
 }
