@@ -37,10 +37,7 @@ public class StrategyCommentController {
     public R<?> save(StrategyComment strategyComment, @RequestUser LoginResponseUser user) {
         log.info("添加攻略评论,评论信息:{},用户信息:{}", strategyComment, user);
         // 发布攻略的浏览事件
-        StatDataEvent.Data data = new StatDataEvent.Data();
-        data.setId(strategyComment.getStrategyId());
-        data.setField("replynum");
-        data.setValue(1);
+        StatDataEvent.Data data = StatDataEvent.Data.builder(strategyComment.getStrategyId()).field("replynum").value(1).build();
         SpringContextUtil.publishEvent(new StatDataEvent(data));
         commentService.save(strategyComment, user);
         return R.ok();

@@ -94,12 +94,8 @@ public class StrategyController {
     public R<Strategy> detail(Long id) {
         log.info("概况下的攻略");
         // 发布攻略的浏览事件
-        StatDataEvent.Data data = new StatDataEvent.Data();
-        data.setId(id);
-        data.setField("viewnum");
-        data.setValue(1);
+        StatDataEvent.Data data = StatDataEvent.Data.builder(id).field("viewnum").value(1).build();
         SpringContextUtil.publishEvent(new StatDataEvent(data));
-
         Strategy strategy = strategyService.getById(id);
         return R.ok(strategy.getState() == Strategy.STATE_PUBLISH ? strategy : new Strategy());
     }
