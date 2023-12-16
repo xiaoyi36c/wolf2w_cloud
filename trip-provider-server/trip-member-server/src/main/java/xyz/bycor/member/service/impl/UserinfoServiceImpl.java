@@ -161,13 +161,13 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
             getBaseMapper().deleteFavorite(sid,userId);
             // 发布取消收藏事件
             SpringContextUtil.publishEvent(new StatDataEvent(favornum.value(-1).build()));
-            return true;
+            return false;
         }else {
             // 3. 未收藏,添加收藏
             getBaseMapper().insertFavorite(sid,userId);
             // 发布收藏事件
             SpringContextUtil.publishEvent(new StatDataEvent(favornum.value(1).build()));
-            return false;
+            return true;
         }
     }
 
