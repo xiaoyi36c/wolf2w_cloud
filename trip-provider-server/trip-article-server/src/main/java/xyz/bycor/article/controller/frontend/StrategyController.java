@@ -16,10 +16,13 @@ import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
 import xyz.bycor.article.domain.StrategyTheme;
-import xyz.bycor.core.event.StatDataEvent;
 import xyz.bycor.article.qo.StatDataQuery;
 import xyz.bycor.article.qo.StrategyQuery;
 import xyz.bycor.article.service.StrategyService;
+import xyz.bycor.auth.anno.RequestUser;
+import xyz.bycor.auth.anno.RequiredLogin;
+import xyz.bycor.auth.vo.LoginResponseUser;
+import xyz.bycor.core.event.StatDataEvent;
 import xyz.bycor.core.response.R;
 import xyz.bycor.core.utils.SpringContextUtil;
 
@@ -159,5 +162,15 @@ public class StrategyController {
     @GetMapping("/stat/lastSevenDay")
    public List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery){
         return strategyService.findStatByLastSevenDay(statQuery);
+    }
+
+
+    @RequiredLogin
+    @GetMapping("/thumbnumIncr")
+    @ApiOperation(value = "顶攻略")
+    public R<?> thumbnumIncr(Long sid, @RequestUser LoginResponseUser user) {
+        log.info("顶攻略");
+        strategyService.thumbnumIncr(sid, user.getId());
+        return R.ok();
     }
 }

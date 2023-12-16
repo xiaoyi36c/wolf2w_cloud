@@ -18,39 +18,50 @@ import xyz.bycor.article.service.StrategyCatalogService;
 import xyz.bycor.article.service.StrategyContentService;
 import xyz.bycor.article.service.StrategyService;
 import xyz.bycor.article.service.StrategyThemeService;
+import xyz.bycor.core.event.StatDataEvent;
+import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.qo.QueryObject;
 import xyz.bycor.core.utils.OssUtil;
+import xyz.bycor.core.utils.SpringContextUtil;
+import xyz.bycor.framework.redis.config.RedisJsonService;
+import xyz.bycor.framework.redis.config.key.RedisEnum;
 
 import java.io.Serializable;
-import java.util.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
-* @author BAI
-* @description 针对表【strategy】的数据库操作Service实现
-* @createDate 2023-12-09 11:44:57
-*/
+ * @author BAI
+ * @description 针对表【strategy】的数据库操作Service实现
+ * @createDate 2023-12-09 11:44:57
+ */
 @Service
 @CacheConfig(cacheNames = "wlof2w:trip:article:strategy")
 public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
-    implements StrategyService{
+        implements StrategyService {
 
     private final StrategyThemeService strategyThemeService;
     private final StrategyCatalogService strategyCatalogService;
     private final StrategyContentService strategyContentService;
 
     private final TransactionTemplate transactionTemplate;
-
-
+    private final RedisJsonService redisJsonService;
     private final DestinationServiceImpl destinationService;
 
-    public StrategyServiceImpl(StrategyContentService strategyContentService, StrategyCatalogService strategyCatalogService, StrategyThemeService strategyThemeService, DestinationServiceImpl destinationService, TransactionTemplate transactionTemplate) {
+    public StrategyServiceImpl(StrategyContentService strategyContentService, StrategyCatalogService strategyCatalogService, StrategyThemeService strategyThemeService, DestinationServiceImpl destinationService, TransactionTemplate transactionTemplate, RedisJsonService redisJsonService) {
         this.strategyContentService = strategyContentService;
         this.strategyCatalogService = strategyCatalogService;
         this.strategyThemeService = strategyThemeService;
         this.destinationService = destinationService;
         this.transactionTemplate = transactionTemplate;
+        this.redisJsonService = redisJsonService;
     }
 
 
@@ -59,7 +70,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         Page<Strategy> strategyPage = new Page<>(qo.getCurrent(), qo.getSize());
         QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
         wrapper.lambda().like(!qo.getKeyword().isEmpty(), Strategy::getThemeName, qo.getKeyword());
-        return   super.page(strategyPage, wrapper);
+        return super.page(strategyPage, wrapper);
 
     }
 
@@ -111,7 +122,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     }
 
     @Override
-    @Cacheable( key =" 'query:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
+    @Cacheable(key = " 'query:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
     public Page<Strategy> queryStrategy(StrategyQuery qo) {
         Page<Strategy> strategyPage = new Page<>(qo.getCurrent(), qo.getSize());
         QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
@@ -131,7 +142,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
             QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
             // 海外排行
             List<Strategy> abroad = list(wrapper.lambda()
-                    .select(Strategy::getId, Strategy::getTitle,Strategy::getDestId, Strategy::getDestName)
+                    .select(Strategy::getId, Strategy::getTitle, Strategy::getDestId, Strategy::getDestName)
                     .eq(Strategy::getIsabroad, Strategy.ABROAD_YES)
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .last("order by thumbsupnum desc , favornum desc limit 10"));
@@ -143,7 +154,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
             QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
             // 国内排行
             List<Strategy> china = list(wrapper.lambda()
-                    .select(Strategy::getId, Strategy::getTitle,Strategy::getDestId, Strategy::getDestName)
+                    .select(Strategy::getId, Strategy::getTitle, Strategy::getDestId, Strategy::getDestName)
                     .eq(Strategy::getIsabroad, Strategy.ABROAD_NO)
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .last("order by thumbsupnum desc , favornum desc limit 10"));
@@ -154,7 +165,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
             QueryWrapper<Strategy> wrapper = new QueryWrapper<>();
             // 热门排行
             List<Strategy> hot = list(wrapper.lambda()
-                    .select(Strategy::getId, Strategy::getTitle,Strategy::getDestId, Strategy::getDestName)
+                    .select(Strategy::getId, Strategy::getTitle, Strategy::getDestId, Strategy::getDestName)
                     .eq(Strategy::getState, Strategy.STATE_PUBLISH)
                     .last("order by viewnum desc , replynum desc limit 10"));
             json.put("hotRank", hot);
@@ -196,7 +207,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
 
 
     @Override
-    @Cacheable( key =" 'list:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
+    @Cacheable(key = " 'list:' + #qo.orderBy + ':' + #qo.refid + ':' + #qo.type + ':' + #qo.current + ':' + #qo.size")
     public Page<Strategy> queryList(StrategyQuery qo) {
         return getBaseMapper().selectListByQuery(new Page<>(qo.getCurrent(), qo.getSize()), qo);
     }
@@ -204,11 +215,33 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
     @Override
     public List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery) {
         LambdaQueryWrapper<Strategy> lambda = new QueryWrapper<Strategy>().lambda();
-        lambda.select(Strategy::getId,Strategy::getViewnum,Strategy::getReplynum,Strategy::getFavornum,Strategy::getSharenum,Strategy::getThumbsupnum);
+        lambda.select(Strategy::getId, Strategy::getViewnum, Strategy::getReplynum, Strategy::getFavornum, Strategy::getSharenum, Strategy::getThumbsupnum);
         lambda.gt(Strategy::getLastUpdateTime, statQuery.getDate());
         lambda.last("limit " + statQuery.getStart() + ", " + statQuery.getSize());
         List<Map<String, Object>> maps = listMaps(lambda);
         return maps;
+    }
+
+    @Override
+    public void thumbnumIncr(Long sid, Long userId) {
+        // 1.设置redis的key的过期时间
+        RedisEnum keyEnum = RedisEnum.STRATEGY_THUMBS_RECORD_STRING;
+        // 获取今天最后一秒
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime lastSeconds = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59);
+        long seconds = Duration.between(now, lastSeconds).getSeconds();
+
+        keyEnum.setTimeOut(seconds);
+        keyEnum.setTimeUnit(TimeUnit.SECONDS);
+
+        boolean ret = redisJsonService.setIfAbsent(keyEnum, sid, userId + "", sid + "");
+        // 2. 判断该用户今天是否已经置顶过了
+        if (!ret) {
+            throw new BusinessException("今天已经置顶过了~");
+        }
+        // 3. 发送事件增加置顶数
+        SpringContextUtil.publishEvent(new StatDataEvent(StatDataEvent.Data.builder(sid).field("thumbsupnum").value(1).build()));
+
     }
 
 
@@ -245,7 +278,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
             return strategyContentService.save(entity.getContent());
         });
 
-      return true;
+        return true;
 
     }
 
@@ -254,7 +287,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
         if (entity.getCoverUrl() != null) {
             String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
             String images = OssUtil.uploadImgByBase64("images", fileName, entity.getCoverUrl());
-            entity.setCoverUrl("https://"+images);
+            entity.setCoverUrl("https://" + images);
         }
         // 2．查询主题名称
         if (entity.getThemeId() != null) {

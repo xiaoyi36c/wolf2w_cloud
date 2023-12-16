@@ -1,6 +1,7 @@
 package xyz.bycor.framework.redis.config.key;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.concurrent.TimeUnit;
 @Getter
@@ -13,12 +14,15 @@ public enum RedisEnum {
     AUTH_BLACKLIST("wolf2w:auth:black_list"),
     AUTH_LAST_BLACKLIST("wolf2w:auth:last_black_list"),
     AUTH_BLACKLIST_CHANNEL("wolf2w:auth:black_list:channel"),
-    ARTICLE_STAT_DATA_HASH("wolf2w:article:stat:data:hash:");
+    ARTICLE_STAT_DATA_HASH("wolf2w:article:stat:data:hash:"),
+
+    STRATEGY_THUMBS_RECORD_STRING("wolf2w:articles:strategies:thumbs:record");
 
 
     private String prefix;
+    @Setter
     private Long timeOut =-1L;
-
+    @Setter
     private TimeUnit timeUnit;
 
     RedisEnum(String prefix) {

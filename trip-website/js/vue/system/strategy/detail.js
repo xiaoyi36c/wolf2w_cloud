@@ -30,13 +30,9 @@ var vue = new Vue({
         //攻略点赞
         strategyThumbup: function () {
             ajaxGet("article", "/strategies/thumbnumIncr", {sid: vue.strategy.id}, function (data) {
-                if (data.data) {
                     popup("顶成功啦");
                     // 刷新统计数据
                     vue.queryStatData();
-                } else {
-                    popup("今天你已经顶过了");
-                }
             })
         },
         //攻略收藏

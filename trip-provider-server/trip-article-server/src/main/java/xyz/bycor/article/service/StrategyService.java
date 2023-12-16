@@ -40,4 +40,6 @@ public interface StrategyService extends IService<Strategy> {
     Page<Strategy> queryList(StrategyQuery qo);
 
     List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery);
+
+    void thumbnumIncr(Long sid, Long id);
 }
