@@ -102,26 +102,4 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
     }
 
 
-    @Override
-    public void delete(String id) {
-        commentRepository.deleteById(id);
-    }
-
-    @Override
-    public void update(StrategyComment strategyComment) {
-        commentRepository.save(strategyComment);
-    }
-
-    @Override
-    public StrategyComment findById(String id) {
-        Optional<StrategyComment> optional = commentRepository.findById(id);
-        return optional.orElse(null);
-    }
-
-    @Override
-    public List<StrategyComment> findList() {
-        return commentRepository.findAll();
-    }
-
-
 }

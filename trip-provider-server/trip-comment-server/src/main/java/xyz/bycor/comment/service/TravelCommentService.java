@@ -11,11 +11,6 @@ public interface TravelCommentService {
     void save(TravelComment TravelComment, LoginResponseUser user);
 
 
-    void delete(String id);
-
-    void update(TravelComment TravelComment);
-
-    TravelComment findById(String id);
 
     List<TravelComment> findList(CommentQuery qo);
 
