@@ -61,21 +61,6 @@ public class TravelCommentServiceImpl implements TravelCommentService {
     }
 
 
-    @Override
-    public void delete(String id) {
-        commentRepository.deleteById(id);
-    }
-
-    @Override
-    public void update(TravelComment TravelComment) {
-        commentRepository.save(TravelComment);
-    }
-
-    @Override
-    public TravelComment findById(String id) {
-        Optional<TravelComment> optional = commentRepository.findById(id);
-        return optional.orElse(null);
-    }
 
 
 
