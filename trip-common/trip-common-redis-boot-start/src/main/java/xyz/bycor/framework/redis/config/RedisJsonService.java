@@ -115,4 +115,9 @@ public class RedisJsonService {
         redisTemplate.opsForHash().increment(redisEnum.join(suffix), field, value);
 
     }
+
+    public Map<Object, Object> hgetAll(RedisEnum redisEnum, String... suffix) {
+        return redisTemplate.opsForHash().entries(redisEnum.join(suffix));
+    }
+
 }

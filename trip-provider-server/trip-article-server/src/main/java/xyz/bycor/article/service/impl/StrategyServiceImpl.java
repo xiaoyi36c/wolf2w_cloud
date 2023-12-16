@@ -244,6 +244,15 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
 
     }
 
+    @Override
+    public Map<Object,Object> findstatData(Long id) {
+        // 1.查询攻略的统计数据,从redis中查询
+       Map<Object,Object>  map=redisJsonService.hgetAll(RedisEnum.ARTICLE_STAT_DATA_HASH, id + "");
+
+
+        return map;
+    }
+
 
     @Override
     public Strategy getById(Serializable id) {

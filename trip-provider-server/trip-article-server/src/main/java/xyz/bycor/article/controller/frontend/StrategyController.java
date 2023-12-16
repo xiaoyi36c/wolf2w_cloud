@@ -173,4 +173,12 @@ public class StrategyController {
         strategyService.thumbnumIncr(sid, user.getId());
         return R.ok();
     }
+
+    @ApiOperation(value = "查询攻略统计数据")
+    @GetMapping("stat/data")
+    public R<Map<Object,Object>> statData(Long id) {
+        log.info("查询攻略统计数据");
+        return R.ok(strategyService.findstatData(id));
+    }
+
 }
