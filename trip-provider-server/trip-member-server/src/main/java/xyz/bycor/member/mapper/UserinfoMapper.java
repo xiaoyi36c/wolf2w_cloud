@@ -1,8 +1,8 @@
 package xyz.bycor.member.mapper;
 
 
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import xyz.bycor.member.domain.Userinfo;
 
 /**
@@ -13,6 +13,11 @@ import xyz.bycor.member.domain.Userinfo;
 */
 public interface UserinfoMapper extends BaseMapper<Userinfo> {
 
+    Long selectFavorite(@Param("sid") Long sid, @Param("userId") Long userId);
+
+    void deleteFavorite(@Param("sid") Long sid, @Param("userId") Long userId);
+
+    void insertFavorite(@Param("sid") Long sid, @Param("userId") Long userId);
 }
 
 

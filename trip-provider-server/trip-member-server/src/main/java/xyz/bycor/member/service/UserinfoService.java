@@ -4,6 +4,7 @@ package xyz.bycor.member.service;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.core.response.R;
 import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
@@ -35,4 +36,6 @@ public interface UserinfoService extends IService<Userinfo> {
      * @return
      */
     R<JSONObject> refreshToken(String refreshToken);
+
+    boolean favorStrategy(Long id, LoginResponseUser user);
 }

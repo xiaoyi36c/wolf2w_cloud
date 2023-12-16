@@ -10,10 +10,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.bycor.auth.config.AuthProperties;
+import xyz.bycor.core.event.StatDataEvent;
 import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.response.R;
 import xyz.bycor.core.utils.JwtUtils;
 import xyz.bycor.core.utils.SecurityUtils;
+import xyz.bycor.core.utils.SpringContextUtil;
 import xyz.bycor.framework.redis.config.RedisJsonService;
 import xyz.bycor.framework.redis.config.key.RedisEnum;
 import xyz.bycor.member.domain.Userinfo;
@@ -148,9 +150,26 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
         }
     }
 
-
-
-
+    @Override
+    public boolean favorStrategy(Long sid,LoginResponseUser user) {
+        // 1. 判断用户是否已经收藏
+        Long userId = user.getId();
+        Long id = getBaseMapper().selectFavorite(sid,userId);
+        StatDataEvent.Data.DataBuilder favornum = StatDataEvent.Data.builder(sid).field("favornum");
+        if (id != null) {
+            // 2. 已经收藏,取消收藏
+            getBaseMapper().deleteFavorite(sid,userId);
+            // 发布取消收藏事件
+            SpringContextUtil.publishEvent(new StatDataEvent(favornum.value(-1).build()));
+            return true;
+        }else {
+            // 3. 未收藏,添加收藏
+            getBaseMapper().insertFavorite(sid,userId);
+            // 发布收藏事件
+            SpringContextUtil.publishEvent(new StatDataEvent(favornum.value(1).build()));
+            return false;
+        }
+    }
 
 
     /**

@@ -24,4 +24,17 @@
         level,city,head_img_url,
         info,state
     </sql>
+
+    <insert id="insertFavorite">
+        insert into user_favorite_stategies(user_id,strategy_id) values(#{userId},#{sid})
+    </insert>
+
+
+    <delete id="deleteFavorite">
+        delete from user_favorite_stategies where user_id = #{userId} and strategy_id = #{sid}
+    </delete>
+
+    <select id="selectFavorite" resultType="java.lang.Long">
+        select strategy_id from user_favorite_stategies where user_id = #{userId} and strategy_id = #{sid}
+    </select>
 </mapper>

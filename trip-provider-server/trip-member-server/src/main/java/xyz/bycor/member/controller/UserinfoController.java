@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import xyz.bycor.auth.anno.RequestUser;
+import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.core.response.R;
 import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.service.UserinfoService;
@@ -195,5 +197,14 @@ public class UserinfoController {
     public List<Userinfo> findByIds(@RequestParam Set<Long> authorIds) {
         log.info("根据id集合查询用户信息");
         return userinfoService.listByIds(authorIds);
+    }
+
+
+    @ApiOperation(value = "收藏或取消收藏")
+    @PostMapping("/favor/strategies")
+    public R<Boolean> favorStrategy(Long sid, @RequestUser LoginResponseUser user) {
+        log.info("收藏或取消收藏,攻略id:{},用户信息:{}", sid, user);
+
+        return R.ok(userinfoService.favorStrategy(sid, user));
     }
 }

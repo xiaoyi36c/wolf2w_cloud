@@ -41,7 +41,7 @@ var vue = new Vue({
         },
         //攻略收藏
         favor: function () {
-            ajaxPost("u", "/users/favor/strategies", {sid: vue.strategy.id}, function (data) {
+            ajaxPost("members", "/userinfo/favor/strategies", {sid: vue.strategy.id}, function (data) {
                 if (data.data) {
                     popup("收藏成功");
                     vue.strategy.favorite = true;
