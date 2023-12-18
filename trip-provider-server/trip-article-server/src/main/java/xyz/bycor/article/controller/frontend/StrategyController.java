@@ -163,10 +163,10 @@ public class StrategyController {
 
 
     @ApiOperation(value = "持久化攻略统计数据")
-    @PostMapping("/strategies/stat/saveBatch")
+    @PostMapping("/stat/saveBatch")
     public void saveBatch(@RequestBody List<Strategy> list) {
         log.info("持久化攻略统计数据: {}", list);
-       strategyService.saveBatch(list);
+       strategyService.saveOrUpdateBatch(list);
     }
 
 
