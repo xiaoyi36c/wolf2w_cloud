@@ -29,7 +29,7 @@ public class StatEventListener implements ApplicationListener<StatDataEvent> {
         StatDataEvent.Data source = (StatDataEvent.Data) statDataEvent.getSource();
         log.info("监听到的数据：{}",source);
         // 根据文章id查询文章是否存在
-        if (!redisJsonService.exists(RedisEnum.ARTICLE_STAT_DATA_HASH,source.getId().toString())) {
+        if (!redisJsonService.exists(RedisEnum.STRATEGY_STAT_DATA_HASH,source.getId().toString())) {
             // 如果不存则查询数据库
             Strategy strategy = strategyService.getById(source.getId());
             JSONObject strategyMap = new JSONObject();
@@ -39,8 +39,12 @@ public class StatEventListener implements ApplicationListener<StatDataEvent> {
             strategyMap.put("favornum",strategy.getFavornum());
             strategyMap.put("sharenum",strategy.getSharenum());
             strategyMap.put("thumbsupnum",strategy.getThumbsupnum());
-            redisJsonService.putAll(RedisEnum.ARTICLE_STAT_DATA_HASH,strategyMap,strategy.getId().toString());
+            redisJsonService.putAll(RedisEnum.STRATEGY_STAT_DATA_HASH,strategyMap,strategy.getId().toString());
         }
-        redisJsonService.increment(RedisEnum.ARTICLE_STAT_DATA_HASH,source.getField(),source.getValue(),source.getId().toString());
+        redisJsonService.increment(RedisEnum.STRATEGY_STAT_DATA_HASH,source.getField(),source.getValue(),source.getId().toString());
+
+        // 记录当前发生过数据统计  id
+        redisJsonService.zadd(RedisEnum.STRATEGY_STAT_DATA_ZSET,System.currentTimeMillis(),source.getId());
+
     }
 }

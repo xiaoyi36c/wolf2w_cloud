@@ -23,7 +23,7 @@ public class StatEventListener implements ApplicationListener<StatDataEvent> {
         StatDataEvent.Data source = (StatDataEvent.Data) statDataEvent.getSource();
         log.info("监听到的数据：{}",source);
 
-        redisJsonService.increment(RedisEnum.ARTICLE_STAT_DATA_HASH,source.getField(),source.getValue(),source.getId().toString());
+        redisJsonService.increment(RedisEnum.STRATEGY_STAT_DATA_HASH,source.getField(),source.getValue(),source.getId().toString());
 
 
     }

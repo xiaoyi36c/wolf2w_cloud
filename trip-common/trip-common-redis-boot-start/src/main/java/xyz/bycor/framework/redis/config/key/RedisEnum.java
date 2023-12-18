@@ -14,9 +14,9 @@ public enum RedisEnum {
     AUTH_BLACKLIST("wolf2w:auth:black_list"),
     AUTH_LAST_BLACKLIST("wolf2w:auth:last_black_list"),
     AUTH_BLACKLIST_CHANNEL("wolf2w:auth:black_list:channel"),
-    ARTICLE_STAT_DATA_HASH("wolf2w:article:stat:data:hash:"),
-
-    STRATEGY_THUMBS_RECORD_STRING("wolf2w:articles:strategies:thumbs:record");
+    STRATEGY_STAT_DATA_HASH("wolf2w:article:stat:data:hash:"),
+    STRATEGY_THUMBS_RECORD_STRING("wolf2w:articles:strategies:thumbs:record"),
+    STRATEGY_STAT_DATA_ZSET("wolf2w:article:stat:data:zset");
 
 
     private String prefix;

@@ -15,11 +15,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
-public class ArticleDataInitJob {
+public class StrategyDataInitJob {
     private final RedisJsonService redisJsonService;
     private final ArticleFeignService articleFeignService;
 
-    public ArticleDataInitJob(RedisJsonService redisJsonService, ArticleFeignService articleFeignService) {
+    public StrategyDataInitJob(RedisJsonService redisJsonService, ArticleFeignService articleFeignService) {
         this.redisJsonService = redisJsonService;
         this.articleFeignService = articleFeignService;
     }
@@ -41,11 +41,11 @@ public class ArticleDataInitJob {
             // 循环判断文章是否存在，如果不存在则插入
             for (StatData data : statData) {
                 // 根据文章id查询文章是否存在
-                boolean exists = redisJsonService.exists(RedisEnum.ARTICLE_STAT_DATA_HASH, data.getId()+"");
+                boolean exists = redisJsonService.exists(RedisEnum.STRATEGY_STAT_DATA_HASH, data.getId()+"");
                 // 如果不存在则插入
                 if (!exists) {
                     JSONObject map = (JSONObject) JSON.toJSON(data);
-                    redisJsonService.putAll(RedisEnum.ARTICLE_STAT_DATA_HASH, map,data.getId()+"");
+                    redisJsonService.putAll(RedisEnum.STRATEGY_STAT_DATA_HASH, map,data.getId()+"");
                 }
             }
             // 查询下一页

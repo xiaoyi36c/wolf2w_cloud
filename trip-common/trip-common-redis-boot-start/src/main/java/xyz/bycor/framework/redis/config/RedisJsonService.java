@@ -120,4 +120,11 @@ public class RedisJsonService {
         return redisTemplate.opsForHash().entries(redisEnum.join(suffix));
     }
 
+    public void zadd(RedisEnum redisEnum, long score, Object member, String... suffix) {
+        redisTemplate.opsForZSet().add(redisEnum.join(suffix), member, score);
+    }
+
+    public Set<Object> reverseRangeByScore(RedisEnum redisEnum, long min, long max) {
+        return redisTemplate.opsForZSet().reverseRangeByScore(redisEnum.join(), min, max);
+    }
 }

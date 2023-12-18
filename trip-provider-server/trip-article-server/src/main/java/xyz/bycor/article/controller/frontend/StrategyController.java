@@ -8,10 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.bycor.article.domain.Strategy;
 import xyz.bycor.article.domain.StrategyCatalog;
 import xyz.bycor.article.domain.StrategyContent;
@@ -162,6 +159,14 @@ public class StrategyController {
     @GetMapping("/stat/lastSevenDay")
    public List<Map<String, Object>> findStatByLastSevenDay(StatDataQuery statQuery){
         return strategyService.findStatByLastSevenDay(statQuery);
+    }
+
+
+    @ApiOperation(value = "持久化攻略统计数据")
+    @PostMapping("/strategies/stat/saveBatch")
+    public void saveBatch(@RequestBody List<Strategy> list) {
+        log.info("持久化攻略统计数据: {}", list);
+       strategyService.saveBatch(list);
     }
 
 
