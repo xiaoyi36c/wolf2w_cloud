@@ -1,11 +1,13 @@
 package xyz.bycor.core.event;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.context.ApplicationEvent;
 
 public class StatDataEvent extends ApplicationEvent {
 
     @Getter
+    @ToString
     public static class Data{
         private final Long id;
         private final String field;

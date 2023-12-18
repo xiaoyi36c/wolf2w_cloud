@@ -25,7 +25,7 @@ public class ArticleDataInitJob {
     }
 
 
-    @Scheduled(cron = "0 0 5 1/7 * ?")
+    @Scheduled(cron = "0/10 * * * * ?") //0 0 5 1/7 * ?
     public void initArticleData() {
         // 定义一个时间变量，用于存储当前时间前7天时间
         StatDataQuery statQuery = new StatDataQuery();
