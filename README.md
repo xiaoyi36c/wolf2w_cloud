@@ -83,24 +83,25 @@
 ├─ root(根)
 │  
 ├─trip-common(通用模块)
-│  └─trip-common-core(通用核心模块)
-│  └─trip-common-redis-boot-starter(redis starter)
-│  ├─trip-common-auth-boot-stater(权限认证模块)
+│  ├─trip-common-core(通用核心模块)
+│  ├─trip-common-redis-boot-starter(redis starter)
+│  └─trip-common-auth-boot-stater(权限认证模块)
 │  
 ├─trip-gateway(网关 + swagger )
 │
 ├─trip-mgrsite(后台管理前端页面)
 │
 ├─trip-provider-api(服务api)
-│  └─trip-member-api(用户服务api)
 │  ├─trip-article-api(文章服务api)
 │  ├─trip-comment-api(评论服务api)
-|
+│  └─trip-member-api(用户服务api)
+│ 
+│ 
 ├─trip-provider-server(服务实现)
-│  └─trip-member-server(会员服务)
 │  ├─trip-article-server(文章服务)
 │  ├─trip-comment-server(评论服务)
 │  ├─trip-data-server(数据统计服务)
+│  └─trip-member-server(会员服务)
 │  
 └─trip-website(前台展示前端页面)
 ```
