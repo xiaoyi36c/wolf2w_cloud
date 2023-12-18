@@ -1,8 +1,10 @@
 package xyz.bycor.article.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 import xyz.bycor.article.domain.StrategyContent;
 
 import java.io.Serializable;
@@ -52,6 +54,8 @@ public class StrategyDTO implements Serializable {
 
     private StrategyContent content; //攻略内容
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") //入参格式化
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//出参格式化
     private Date lastUpdateTime; //最后更新时间
 
 }

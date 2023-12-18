@@ -10,10 +10,7 @@ import xyz.bycor.framework.redis.config.key.RedisEnum;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -76,6 +73,7 @@ public class StrategyDataPersistenceJob {
         strategy.setFavornum((Integer)map.get("favornum"));
         strategy.setSharenum((Integer)map.get("sharenum"));
         strategy.setThumbsupnum((Integer)map.get("thumbsupnum"));
+        strategy.setLastUpdateTime(new Date());
         return strategy;
     }
 
