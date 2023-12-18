@@ -54,8 +54,8 @@ public class StrategyDTO implements Serializable {
 
     private StrategyContent content; //攻略内容
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") //入参格式化
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//出参格式化
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date lastUpdateTime; //最后更新时间
 
 }

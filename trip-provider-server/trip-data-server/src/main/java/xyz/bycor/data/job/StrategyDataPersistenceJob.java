@@ -32,8 +32,8 @@ public class StrategyDataPersistenceJob {
     }
 
 
-    //@Scheduled(cron = "0 0 1 * * ?")
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0/10 * * * * ?")
+   // @Scheduled(cron = "0 0/30 * * * ?")
     public void execute() {
         log.info("策略数据持久化任务开始执行");
         // 1. 获取前一天更新的策略数据
@@ -59,8 +59,9 @@ public class StrategyDataPersistenceJob {
                 list.add(mapToStrategy(map));
             }
             // 4. 持久化策略数据
-            articleFeignService.saveBatch(list);
             log.info("策略数据持久化任务开始执行,第{}批,处理完成,数据为{}", i, list);
+            articleFeignService.saveBatch(list);
+
         }
 
     }
