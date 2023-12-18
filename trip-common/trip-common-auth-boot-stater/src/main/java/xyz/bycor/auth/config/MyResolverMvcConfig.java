@@ -10,8 +10,11 @@ import java.util.List;
 
 @Configuration
 public class MyResolverMvcConfig implements WebMvcConfigurer {
-    @Autowired
-    private GetRequestUserMethodArgumentResolver getRequestUserMethodArgumentResolver;
+    private final GetRequestUserMethodArgumentResolver getRequestUserMethodArgumentResolver;
+
+    public MyResolverMvcConfig(GetRequestUserMethodArgumentResolver getRequestUserMethodArgumentResolver) {
+        this.getRequestUserMethodArgumentResolver = getRequestUserMethodArgumentResolver;
+    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
