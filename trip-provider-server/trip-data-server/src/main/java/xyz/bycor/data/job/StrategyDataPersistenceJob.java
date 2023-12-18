@@ -1,5 +1,6 @@
 package xyz.bycor.data.job;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import xyz.bycor.article.dto.StrategyDTO;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
+@Slf4j
 public class StrategyDataPersistenceJob {
 
     private final RedisJsonService redisJsonService;
@@ -35,6 +37,7 @@ public class StrategyDataPersistenceJob {
 
     @Scheduled(cron = "0 0 1 * * ?")
     public void execute() {
+        log.info("策略数据持久化任务开始执行");
         // 1. 获取前一天更新的策略数据
         // 转成时间戳
         long max = toTimestamp(LocalDateTime.now());
@@ -49,6 +52,7 @@ public class StrategyDataPersistenceJob {
         // 3.分批处理,每批1000条
         int page = ids.size() % 1000 == 0 ? ids.size() / 1000 : ids.size() / 1000 + 1;
         for (int i = 0; i < page; i++) {
+            log.info("策略数据持久化任务开始执行,第{}批", i);
             List<StrategyDTO> list =new ArrayList<>(1000);
             // 3.1 针对每批数据进行处理,每次处理1000条
             for (int j = i * 1000; j < Math.min(j + 1000, ids.size()); j++) {
@@ -58,6 +62,7 @@ public class StrategyDataPersistenceJob {
             }
             // 4. 持久化策略数据
             articleFeignService.saveBatch(list);
+            log.info("策略数据持久化任务开始执行,第{}批,处理完成,数据为{}", i, list);
         }
 
     }
