@@ -36,7 +36,7 @@ public class StrategyDataPersistenceJob {
 
 
     //@Scheduled(cron = "0 0 1 * * ?")
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void execute() {
         log.info("策略数据持久化任务开始执行");
         // 1. 获取前一天更新的策略数据
