@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author BAI
+ */
 @Service
 public class StrategyEsServiceImpl implements IStrategyEsService {
 
@@ -80,6 +83,18 @@ public class StrategyEsServiceImpl implements IStrategyEsService {
         // 7.执行高亮查询
         SearchHits<StrategyEs> strategyEs = template.search(build, StrategyEs.class);
         // 8.获取高亮结果,封装到实体类中
+        List<StrategyEs> strategyEsList = getStrategyEsList(strategyEs);
+        return new PageImpl<>(strategyEsList, pageRequest, strategyEs.getTotalHits());
+    }
+
+
+    /**
+     * 获取高亮结果,封装到实体类中
+     * @param  strategyEs<StrategyEs> strategyEs 高亮结果 searchHits
+     * @return List<StrategyEs> 高亮结果
+     */
+
+    private static List<StrategyEs> getStrategyEsList(SearchHits<StrategyEs> strategyEs) {
         List<StrategyEs> strategyEsList = new ArrayList<>();
         for (SearchHit<StrategyEs> hit : strategyEs) {
             StrategyEs content = hit.getContent();
@@ -100,6 +115,6 @@ public class StrategyEsServiceImpl implements IStrategyEsService {
             }
             strategyEsList.add(content);
         }
-        return new PageImpl<>(strategyEsList, pageRequest, strategyEs.getTotalHits());
+        return strategyEsList;
     }
 }

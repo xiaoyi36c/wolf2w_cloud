@@ -30,7 +30,7 @@ var vue = new Vue({
         doPage:function (page) {
             var p = $("#searchForm").serialize() + "&currentPage=" + page;
             //游记分页
-            ajaxGet("article","/travels/query?"+p,{}, function (data) {
+            ajaxGet("article","/travels?"+p,{}, function (data) {
                 vue.page = data.data;
                 buildPage(vue.page.current, vue.page.pages, vue.doPage)
             })
