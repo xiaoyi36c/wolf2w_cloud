@@ -2,6 +2,7 @@ package xyz.bycor.search.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -14,6 +15,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString
 @Document(indexName=StrategyEs.INDEX_NAME)
 public class StrategyEs implements Serializable {
 
