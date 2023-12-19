@@ -1,10 +1,14 @@
 package xyz.bycor.search.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -13,7 +17,9 @@ import xyz.bycor.search.domain.StrategyEs;
 import xyz.bycor.search.repositroy.StrategyRepository;
 import xyz.bycor.search.service.IStrategyEsService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StrategyEsServiceImpl implements IStrategyEsService {
@@ -54,7 +60,7 @@ public class StrategyEsServiceImpl implements IStrategyEsService {
     }
 
     @Override
-    public List<StrategyEs> queryWithHighlight(String keyword, Integer current, Integer size) {
+    public Page<StrategyEs> queryWithHighlight(String keyword, Integer current, Integer size) {
         // 1.构建查询条件对象
         MultiMatchQueryBuilder multiMatchQueryBuilder = QueryBuilders.multiMatchQuery(keyword, "title", "subTitle", "summary");
         // 2.设置高亮
@@ -73,9 +79,27 @@ public class StrategyEsServiceImpl implements IStrategyEsService {
         NativeSearchQuery build = new NativeSearchQueryBuilder().withQuery(multiMatchQueryBuilder).withHighlightBuilder(field).withPageable(pageRequest).build();
         // 7.执行高亮查询
         SearchHits<StrategyEs> strategyEs = template.search(build, StrategyEs.class);
-        // 8.获取高亮结果,封装
-
-
-        return null;
+        // 8.获取高亮结果,封装到实体类中
+        List<StrategyEs> strategyEsList = new ArrayList<>();
+        for (SearchHit<StrategyEs> hit : strategyEs) {
+            StrategyEs content = hit.getContent();
+            Map<String, List<String>> highlightFields = hit.getHighlightFields();
+            for (Map.Entry<String, List<String>> entry : highlightFields.entrySet()) {
+                String key = entry.getKey();
+                List<String> value = entry.getValue();
+                String highlight = StringUtils.join(value, "");
+                if ("title".equals(key)) {
+                    content.setTitle(highlight);
+                }
+                if ("subTitle".equals(key)) {
+                    content.setSubTitle(highlight);
+                }
+                if ("summary".equals(key)) {
+                    content.setSummary(highlight);
+                }
+            }
+            strategyEsList.add(content);
+        }
+        return new PageImpl<>(strategyEsList, pageRequest, strategyEs.getTotalHits());
     }
 }

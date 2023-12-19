@@ -1,5 +1,6 @@
 package xyz.bycor.search.service;
 
+import org.springframework.data.domain.Page;
 import xyz.bycor.search.domain.StrategyEs;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface IStrategyEsService {
     StrategyEs get(String id);
     List<StrategyEs> list();
 
-    List<StrategyEs> queryWithHighlight(String keyword, Integer current, Integer size);
+    Page<StrategyEs> queryWithHighlight(String keyword, Integer current, Integer size);
 }

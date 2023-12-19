@@ -23,20 +23,6 @@
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>xyz.bycor</groupId>
-            <artifactId>trip-article-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xyz.bycor</groupId>
-            <artifactId>trip-member-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-data-redis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>xyz.bycor</groupId>

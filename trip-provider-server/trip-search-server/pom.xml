@@ -22,9 +22,23 @@
             <groupId>xyz.bycor</groupId>
             <artifactId>trip-search-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>xyz.bycor</groupId>
+            <artifactId>trip-article-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>xyz.bycor</groupId>
+                    <artifactId>trip-common-auth-boot-stater</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-openfeign-core</artifactId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
     </dependencies>
