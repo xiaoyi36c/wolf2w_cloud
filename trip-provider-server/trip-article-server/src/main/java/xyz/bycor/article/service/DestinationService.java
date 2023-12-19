@@ -21,4 +21,6 @@ public interface DestinationService extends IService<Destination> {
     List<Destination> findToastList(Long parentId);
 
     List<Destination> findHotList(Long rid);
+
+    Destination getDestByName(String destName);
 }

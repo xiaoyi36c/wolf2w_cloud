@@ -95,4 +95,11 @@ public class TravelController {
         return R.ok(id);
     }
 
+
+    @ApiOperation(value = "根据目的地id查询游记 5 条")
+    @GetMapping("/findTravelsByDestId")
+    public List<Travel> findTravelsByDestId(Long destId) {
+        return travelService.findTravelsByDestId(destId, 5);
+    }
+
 }

@@ -186,4 +186,11 @@ public class StrategyController {
         return R.ok(strategyService.findstatData(id));
     }
 
+
+    @ApiOperation(value = "根据目的地id查询攻略 5")
+    @GetMapping("/findStrategiesByDestId")
+    public List<Strategy> findStrategiesByDestId(Long destId) {
+        return strategyService.findStrategiesByDestId(destId,5);
+    }
+
 }

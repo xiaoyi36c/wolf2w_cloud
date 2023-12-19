@@ -1,5 +1,6 @@
 package xyz.bycor.article.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -137,6 +138,12 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
 
         // 返回父级目的地
         return parents;
+    }
+
+    @Override
+    public Destination getDestByName(String destName) {
+        LambdaQueryWrapper<Destination> eq = new QueryWrapper<Destination>().lambda().eq(Destination::getName, destName);
+        return super.getOne(eq);
     }
 }
 

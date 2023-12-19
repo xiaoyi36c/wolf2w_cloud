@@ -23,4 +23,6 @@ public interface TravelService extends IService<Travel> {
 
 
     Long saveOrUpdateByTravelRequest(TravelRequest travel);
+
+    List<Travel> findTravelsByDestId(Long destId, int limit);
 }

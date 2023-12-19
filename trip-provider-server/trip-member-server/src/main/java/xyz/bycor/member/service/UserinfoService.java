@@ -1,7 +1,6 @@
 package xyz.bycor.member.service;
 
 
-
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.bycor.auth.vo.LoginResponseUser;
@@ -10,6 +9,8 @@ import xyz.bycor.member.domain.Userinfo;
 import xyz.bycor.member.vo.LoginRequestUserinfo;
 import xyz.bycor.member.vo.LoginResponse;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
+
+import java.util.List;
 
 /**
 * @author BAI
@@ -38,4 +39,6 @@ public interface UserinfoService extends IService<Userinfo> {
     R<JSONObject> refreshToken(String refreshToken);
 
     boolean favorStrategy(Long id, LoginResponseUser user);
+
+    List<Userinfo> findUserByDestName(String destName);
 }

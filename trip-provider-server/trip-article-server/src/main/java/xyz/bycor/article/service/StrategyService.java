@@ -44,4 +44,6 @@ public interface StrategyService extends IService<Strategy> {
     void thumbnumIncr(Long sid, Long id);
 
     Map<Object,Object> findstatData(Long id);
+
+    List<Strategy> findStrategiesByDestId(Long destId, int limit);
 }

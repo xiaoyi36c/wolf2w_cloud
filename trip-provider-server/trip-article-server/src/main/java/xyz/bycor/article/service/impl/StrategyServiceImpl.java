@@ -251,6 +251,16 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy>
        return map;
     }
 
+    @Override
+    public List<Strategy> findStrategiesByDestId(Long destId, int limit) {
+        List<Strategy> strategies = super.list(new QueryWrapper<Strategy>().lambda()
+                .eq(Strategy::getDestId, destId)
+                .eq(Strategy::getState, Strategy.STATE_PUBLISH)
+                .orderByDesc(Strategy::getViewnum)
+                .last("limit " + limit));
+        return strategies;
+    }
+
 
     @Override
     public Strategy getById(Serializable id) {

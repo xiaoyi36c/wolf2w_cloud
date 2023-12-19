@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import xyz.bycor.article.domain.Destination;
 import xyz.bycor.article.domain.Travel;
 import xyz.bycor.article.domain.TravelContent;
+import xyz.bycor.article.dto.TravelDTO;
 import xyz.bycor.article.feign.UserInfoFeignService;
 import xyz.bycor.article.mapper.TravelMapper;
 import xyz.bycor.article.qo.TravelQuery;
@@ -256,6 +257,18 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel>
             travelContentService.saveOrUpdate(content);
             return travel.getId();
         }
+    }
+
+    @Override
+    public List<Travel> findTravelsByDestId(Long destId, int limit) {
+        // 查询目的地下的游记
+        QueryWrapper<Travel> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Travel::getDestId, destId)
+                .eq(Travel::getIspublic, Travel.ISPUBLIC_YES)
+                .eq(Travel::getState, Travel.STATE_RELEASE)
+                .orderByDesc(Travel::getViewnum)
+                .last("limit " + limit);
+        return super.list(wrapper);
     }
 }
 

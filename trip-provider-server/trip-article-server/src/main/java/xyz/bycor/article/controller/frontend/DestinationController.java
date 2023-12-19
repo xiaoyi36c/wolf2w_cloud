@@ -54,6 +54,13 @@ public class DestinationController {
         return R.ok(destinationService.findToastList(destId));
     }
 
+    @ApiOperation(value = "根据关键字查询目的地")
+    @GetMapping("/getDestByName")
+    public Destination getDestByName(String destName) {
+        log.info("根据关键字查询目的地");
+        return destinationService.getDestByName(destName);
+    }
+
 
 
 }

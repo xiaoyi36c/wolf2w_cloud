@@ -24,10 +24,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>xyz.bycor</groupId>
-            <artifactId>trip-common-core</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>xyz.bycor</groupId>

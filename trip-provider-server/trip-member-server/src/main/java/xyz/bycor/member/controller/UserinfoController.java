@@ -207,4 +207,12 @@ public class UserinfoController {
 
         return R.ok(userinfoService.favorStrategy(sid, user));
     }
+
+
+    @ApiOperation(value = "根据目的地名字查询用户信息")
+    @GetMapping("/findUserByDestId")
+    public List<Userinfo> findUserByDestId(String destName) {
+        log.info("根据目的地名字查询用户信息:查询参数{}", destName);
+        return userinfoService.findUserByDestName(destName);
+    }
 }

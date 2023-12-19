@@ -27,6 +27,7 @@ import xyz.bycor.auth.vo.LoginResponseUser;
 import xyz.bycor.member.vo.RegisterRequestUserinfo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -169,6 +170,12 @@ public class UserinfoServiceImpl extends ServiceImpl<UserinfoMapper, Userinfo>
             SpringContextUtil.publishEvent(new StatDataEvent(favornum.value(1).build()));
             return true;
         }
+    }
+
+    @Override
+    public List<Userinfo> findUserByDestName(String destName) {
+        LambdaQueryWrapper<Userinfo> eq = new QueryWrapper<Userinfo>().lambda().eq(Userinfo::getNickname, destName).eq(Userinfo::getState, Userinfo.STATE_NORMAL);
+        return super.list(eq);
     }
 
 
