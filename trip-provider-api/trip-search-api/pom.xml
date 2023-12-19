@@ -28,6 +28,18 @@
             <groupId>xyz.bycor</groupId>
             <artifactId>trip-common-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>xyz.bycor</groupId>
+            <artifactId>trip-article-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>xyz.bycor</groupId>
+                    <artifactId>trip-common-auth-boot-stater</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
 </project>
