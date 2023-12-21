@@ -6,13 +6,13 @@ import xyz.bycor.article.dto.StrategyDTO;
 import xyz.bycor.search.domain.StrategyEs;
 import xyz.bycor.search.feign.ArticleFeignService;
 import xyz.bycor.search.repositroy.StrategyRepository;
-import xyz.bycor.search.service.IStrategyEsService;
+import xyz.bycor.search.service.StrategyESService;
 
 /**
  * @author BAI
  */
 @Service
-public class StrategyEsServiceImpl extends SearchServiceImpl<StrategyDTO> implements IStrategyEsService {
+public class StrategyEsServiceImpl extends SearchServiceImpl<StrategyDTO> implements StrategyESService {
 
     private final StrategyRepository strategyRepository;
 

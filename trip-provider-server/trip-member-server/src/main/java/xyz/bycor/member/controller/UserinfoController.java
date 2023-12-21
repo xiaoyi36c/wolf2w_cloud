@@ -79,6 +79,18 @@ public class UserinfoController {
         return R.ok(userinfoService.getById(id));
     }
 
+    /**
+     * 根据id查询用户信息
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "根据id查询用户信息")
+    @GetMapping("/findById")
+    public R<Userinfo> findById(Long id) {
+        log.info("根据id查询用户信息");
+        return R.ok(userinfoService.getById(id));
+    }
+
 
     /**
      * 根据id删除用户信息

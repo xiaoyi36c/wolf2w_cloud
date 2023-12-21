@@ -29,4 +29,11 @@ public interface ArticleFeignService {
 
     @GetMapping("/strategies/getStrategyById")
     StrategyDTO getStrategyById(@RequestParam Serializable id);
+
+
+    @GetMapping("/travels/getTravelById")
+    TravelDTO getTravelById(@RequestParam Serializable id);
+
+    @GetMapping("/destinations/getDestById")
+    DestinationDTO getDestById(@RequestParam Serializable id);
 }

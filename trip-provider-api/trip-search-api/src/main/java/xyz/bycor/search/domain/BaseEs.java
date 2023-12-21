@@ -15,7 +15,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class BaseEs implements Serializable {
+
     @Id
     @Field(type = FieldType.Long)
-    private Long id;  //攻略id
+    private Long id;  //主键id
 }

@@ -102,4 +102,12 @@ public class TravelController {
         return travelService.findTravelsByDestId(destId, 5);
     }
 
+
+    @GetMapping("/getTravelById")
+    @ApiOperation(value = "根据id查询游记")
+    public Travel getTravelById(Long id) {
+        log.info("[接受到查询游记请求,请求参数id: ] - [{}]", id);
+        return travelService.findById(id);
+    }
+
 }

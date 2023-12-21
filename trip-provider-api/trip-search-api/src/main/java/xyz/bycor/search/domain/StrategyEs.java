@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * 攻略搜索对象
+ * @author BAI
  */
 @Getter
 @Setter

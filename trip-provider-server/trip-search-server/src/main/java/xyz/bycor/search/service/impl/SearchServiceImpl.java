@@ -15,7 +15,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 import xyz.bycor.search.domain.BaseEs;
 import xyz.bycor.search.qo.SearchQuery;
-import xyz.bycor.search.service.ISearchService;
+import xyz.bycor.search.service.SearchService;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @author BAI
  */
 @Service
-public class SearchServiceImpl<T> implements ISearchService<T> {
+public class SearchServiceImpl<T> implements SearchService<T> {
 
     private final ElasticsearchRestTemplate template;
 
@@ -70,7 +70,7 @@ public class SearchServiceImpl<T> implements ISearchService<T> {
         // 6.组合查询条件和分页对象
         NativeSearchQuery build = new NativeSearchQueryBuilder().withQuery(multiMatchQueryBuilder).withHighlightBuilder(field).withPageable(pageRequest).build();
         // 7.执行高亮查询
-        SearchHits<? extends BaseEs> strategyEs = template.search(build, BaseEs.class);
+        SearchHits<? extends BaseEs> strategyEs = template.search(build, searchClass);
         // 8.获取高亮结果,封装到实体类中
         List<T> baseEsList = new ArrayList<>();
         for (SearchHit<? extends BaseEs> hit : strategyEs) {

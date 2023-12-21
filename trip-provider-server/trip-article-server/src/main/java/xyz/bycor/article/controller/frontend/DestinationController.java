@@ -61,6 +61,13 @@ public class DestinationController {
         return destinationService.getDestByName(destName);
     }
 
+    @ApiOperation(value = "根据id查询目的地")
+    @GetMapping("/getDestById")
+    public Destination getDestById(Long id) {
+        log.info("根据id查询目的地");
+        return destinationService.getById(id);
+    }
+
 
 
 }

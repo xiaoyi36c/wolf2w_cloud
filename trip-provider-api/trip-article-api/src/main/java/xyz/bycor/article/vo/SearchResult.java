@@ -2,6 +2,7 @@ package xyz.bycor.article.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import xyz.bycor.article.dto.DestinationDTO;
 import xyz.bycor.article.dto.StrategyDTO;
 import xyz.bycor.article.dto.TravelDTO;
 import xyz.bycor.member.dto.UserinfoDTO;
@@ -19,6 +20,8 @@ import java.util.List;
 public class SearchResult {
     private Long total =0L;
 
+    private List<DestinationDTO> dests = new ArrayList<>();
+
     private List<StrategyDTO> strategies = new ArrayList<>();
 
     private List<TravelDTO> travels = new ArrayList<>();
@@ -30,7 +33,7 @@ public class SearchResult {
         if (this.total >0L) {
          return   this.total;
         }
-        return (long) (strategies.size() + travels.size() + users.size());
+        return (long) (dests.size() + strategies.size() + travels.size() + users.size());
     }
 
 
