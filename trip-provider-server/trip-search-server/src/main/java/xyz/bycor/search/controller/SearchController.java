@@ -15,10 +15,11 @@ import xyz.bycor.article.vo.SearchResult;
 import xyz.bycor.core.exception.BusinessException;
 import xyz.bycor.core.response.R;
 import xyz.bycor.member.dto.UserinfoDTO;
+import xyz.bycor.search.domain.StrategyEs;
 import xyz.bycor.search.feign.ArticleFeignService;
 import xyz.bycor.search.feign.UserInfoFeignService;
 import xyz.bycor.search.qo.SearchQuery;
-import xyz.bycor.search.service.IStrategyEsService;
+import xyz.bycor.search.service.impl.StrategyEsServiceImpl;
 
 import java.net.URLDecoder;
 import java.util.List;
@@ -39,9 +40,9 @@ public class SearchController {
 
     private final ArticleFeignService articleFeignService;
 
-    private final IStrategyEsService strategyEsService;
+    private final StrategyEsServiceImpl strategyEsService;
 
-    public SearchController(UserInfoFeignService userInfoFeignService, ArticleFeignService articleFeignService, IStrategyEsService strategyEsService) {
+    public SearchController(UserInfoFeignService userInfoFeignService, ArticleFeignService articleFeignService, StrategyEsServiceImpl strategyEsService) {
         this.userInfoFeignService = userInfoFeignService;
         this.articleFeignService = articleFeignService;
         this.strategyEsService = strategyEsService;
@@ -97,7 +98,10 @@ public class SearchController {
     }
 
     private JSONObject searchStrategy(SearchQuery qo) {
-        Page<StrategyDTO> page = strategyEsService.queryWithHighlight(qo.getKeyword(), qo.getCurrent(), qo.getSize());
+        Page<StrategyDTO> page = strategyEsService.queryWithHighlight(StrategyEs.class,qo,
+                id -> articleFeignService.getStrategyById(id),
+                "title", "subTitle", "summary"
+                );
         JSONObject json = new JSONObject();
         json.put("page", page);
         return json;

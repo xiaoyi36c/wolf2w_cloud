@@ -7,6 +7,7 @@ import xyz.bycor.article.dto.DestinationDTO;
 import xyz.bycor.article.dto.StrategyDTO;
 import xyz.bycor.article.dto.TravelDTO;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,5 +28,5 @@ public interface ArticleFeignService {
     List<TravelDTO> findTravelsByDestId(@RequestParam Long destId);
 
     @GetMapping("/strategies/getStrategyById")
-    StrategyDTO getStrategyById(@RequestParam Long id);
+    StrategyDTO getStrategyById(@RequestParam Serializable id);
 }
