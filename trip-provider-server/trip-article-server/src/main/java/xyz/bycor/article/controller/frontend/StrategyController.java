@@ -193,4 +193,9 @@ public class StrategyController {
         return strategyService.findStrategiesByDestId(destId,5);
     }
 
+    @GetMapping("/getStrategyById")
+    public Strategy getStrategyById(Long id) {
+        return strategyService.getById(id);
+    }
+
 }

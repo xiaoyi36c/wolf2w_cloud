@@ -1,8 +1,12 @@
 package xyz.bycor.core.qo;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class QueryObject {
     private Integer current = 1;
     private Integer size = 10;

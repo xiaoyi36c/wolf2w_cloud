@@ -47,6 +47,8 @@ public class Strategy implements Serializable {
 
     private String coverUrl;  //封面
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;  //创建时间
 
     private Integer isabroad = ABROAD_NO;  //是否是国外

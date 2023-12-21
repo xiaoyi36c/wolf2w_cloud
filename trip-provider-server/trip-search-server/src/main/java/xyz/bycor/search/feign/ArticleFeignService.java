@@ -26,4 +26,6 @@ public interface ArticleFeignService {
     @GetMapping("/travels/findTravelsByDestId")
     List<TravelDTO> findTravelsByDestId(@RequestParam Long destId);
 
+    @GetMapping("/strategies/getStrategyById")
+    StrategyDTO getStrategyById(@RequestParam Long id);
 }

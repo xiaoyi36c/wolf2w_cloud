@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import xyz.bycor.member.dto.UserinfoDTO;
 import xyz.bycor.search.feign.ArticleFeignService;
 import xyz.bycor.search.feign.UserInfoFeignService;
 import xyz.bycor.search.qo.SearchQuery;
+import xyz.bycor.search.service.IStrategyEsService;
 
 import java.net.URLDecoder;
 import java.util.List;
@@ -37,9 +39,12 @@ public class SearchController {
 
     private final ArticleFeignService articleFeignService;
 
-    public SearchController(UserInfoFeignService userInfoFeignService, ArticleFeignService articleFeignService) {
+    private final IStrategyEsService strategyEsService;
+
+    public SearchController(UserInfoFeignService userInfoFeignService, ArticleFeignService articleFeignService, IStrategyEsService strategyEsService) {
         this.userInfoFeignService = userInfoFeignService;
         this.articleFeignService = articleFeignService;
+        this.strategyEsService = strategyEsService;
     }
 
 
@@ -54,19 +59,20 @@ public class SearchController {
             log.info("[接收到搜索请求] - {}", qo);
 
             switch (qo.getType()) {
-                case 0:
+                case SearchQuery.TYPE_DEST:
                     ret = this.searchForDest(qo);
                     break;
-                case 1:
+                case SearchQuery.TYPE_STRATEGY:
                     ret = this.searchStrategy(qo);
                     break;
-                case 2:
+                case SearchQuery.TYPE_TRAVEL:
+                    ret = this.searchTravel(qo);
+                    break;
+                case SearchQuery.TYPE_USER:
                     ret = this.searchForUser(qo);
                     break;
-                case 3:
-                    ret = this.searchAll(qo);
-                    break;
                 default:
+                    ret = this.searchAll(qo);
                     break;
             }
             if (ret != null) {
@@ -78,6 +84,10 @@ public class SearchController {
         return R.ok(ret);
     }
 
+    private JSONObject searchTravel(SearchQuery qo) {
+        return null;
+    }
+
     private JSONObject searchAll(SearchQuery qo) {
         return null;
     }
@@ -87,7 +97,10 @@ public class SearchController {
     }
 
     private JSONObject searchStrategy(SearchQuery qo) {
-        return null;
+        Page<StrategyDTO> page = strategyEsService.queryWithHighlight(qo.getKeyword(), qo.getCurrent(), qo.getSize());
+        JSONObject json = new JSONObject();
+        json.put("page", page);
+        return json;
     }
 
     private JSONObject searchForDest(SearchQuery qo) {
